@@ -6,7 +6,9 @@ os.environ['QT_QPA_PLATFORM']='offscreen'
 os.environ['UNIFACE_CACHE_DIR']=str(ROOT/'models/uniface')
 import numpy as np
 def main():
- p=argparse.ArgumentParser();p.add_argument('--capture',type=Path,required=True);a=p.parse_args()
+ p=argparse.ArgumentParser();p.add_argument('--capture',type=Path,required=True)
+ p.add_argument('--output',type=Path,default=ROOT/'output/frontend_validation');a=p.parse_args()
+ a.output.mkdir(parents=True,exist_ok=True)
  from core.camera import Camera
  from core.face_test import detect_face_bbox
  from core.mask_detection import get_parser,get_face_data_single
@@ -34,9 +36,9 @@ def main():
   w=MainWindow();w.show();app.processEvents()
   assert w._stack.currentIndex()==0 and w._capture._stage==0
   w._capture.on_frame(data['rgb_closed'],data['depth_closed'],cam)
-  app.processEvents();w.grab().save(str(ROOT/'validation/capture_page.png'))
+  app.processEvents();w.grab().save(str(a.output/'capture_page.png'))
   w.close();app.processEvents()
  result.update(gui_capture_page=True,hardware_capture=False)
- (ROOT/'validation/frontend.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
+ (a.output/'frontend.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
  print(result)
 if __name__=='__main__':main()

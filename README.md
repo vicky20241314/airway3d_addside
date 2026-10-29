@@ -1,5 +1,9 @@
 # Airway3D 交叉人脸重建版
 
+**v0.7.0 多视角入口已加入。** 默认采集闭口正面/左右约40°及张口正面，保持人不动、移动相机；界面可切回原双帧模式。
+多视角共享身份与同状态表情/姿态，逐视角外参，暂关闭第三阶段。采集、回放和限制见 [多视角说明](docs/MULTIVIEW.md)，验证见 [验证记录](docs/MULTIVIEW_VALIDATION.md)。
+以下原有交叉版流程描述对应保留的双帧模式。
+
 当前基线版本：**v0.6.0**（见 `VERSION`）。项目更新同步至 [GitHub 仓库](https://github.com/vicky20241314/airway3d_addside)。模型和大型二进制文件使用 Git LFS，克隆前请安装 Git LFS；已有克隆可执行 `git lfs pull` 获取这些文件。此版本记录现有算法基线，尚未实现多视角采集与联合拟合。
 
 根目录 `start.cmd` 或 `main.py` 直接启动 RGB-D 采集界面，窗口标题为 **Airway3D**。保留实时预览、先闭口再张口采集、ArUco 检查、人脸检测、TUFA 关键点和语义分割。正常使用不需要提供 stage2 OBJ、prepared.npz 或历史采集数据。

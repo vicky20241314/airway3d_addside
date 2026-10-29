@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import numpy as np
 import torch
+import hashlib
 
 
 _TABLE_CACHE = {}
@@ -15,13 +16,9 @@ _TABLE_CACHE = {}
 
 def _faces_key(faces, n_verts):
     f = faces.detach()
-    return (
-        int(n_verts),
-        int(f.shape[0]),
-        int(f[0, 0]),
-        int(f[-1, -1]),
-        int(f.flatten()[f.numel() // 2]),
-    )
+    # View-specific visible face subsets may share size/first/middle/last
+    # elements while differing elsewhere. Hash the complete topology.
+    return (int(n_verts), hashlib.blake2b(f.cpu().numpy().tobytes(), digest_size=16).digest())
 
 
 def vertex_triangle_table(faces, n_verts):
@@ -40,6 +37,8 @@ def vertex_triangle_table(faces, n_verts):
             table[v, slot[v]] = tid
             slot[v] += 1
     packed = torch.as_tensor(table, dtype=torch.long)
+    if len(_TABLE_CACHE) > 16:
+        _TABLE_CACHE.clear()
     _TABLE_CACHE[key] = packed
     return packed.to(device=faces.device)
 

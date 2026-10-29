@@ -88,8 +88,9 @@ def vertex_normals(vertices, faces):
 
 
 class JointProblem:
-    def __init__(self, flame, camera, points, lmk3d, lmk2d, masks, parsing, options):
+    def __init__(self, flame, camera, points, lmk3d, lmk2d, masks, parsing, options, cameras=None):
         self.flame, self.camera, self.options = flame, camera, options
+        self.cameras = cameras or [camera]*len(points)
         self.layout = Layout(options.shape_components, options.expression_components,
                              options.pose_indices, len(points))
         self.faces = flame.faces_tensor
@@ -109,7 +110,7 @@ class JointProblem:
             from core.jaw_constraints import prepare_jaw
             for b in range(len(points)):
                 data=prepare_jaw(parsing[b],lmk2d[b].cpu().numpy(),lmk3d[b].cpu().numpy(),
-                    masks[b].cpu().numpy(),camera,points[b].cpu().numpy())
+                    masks[b].cpu().numpy(),self.cameras[b],points[b].cpu().numpy())
                 data['ids']=torch.as_tensor(data['ids'],device=self.device,dtype=torch.long)
                 data['normals']=torch.as_tensor(data['normals'],device=self.device,dtype=self.dtype)
                 data['weights']=torch.as_tensor(data['weights'],device=self.device,dtype=self.dtype)
@@ -219,7 +220,7 @@ class JointProblem:
                 normals=matched_points(vertex_normals(verts[b], self.faces), corr, normals=True)))
             if stage==2 and self.jaw:
                 data=self.jaw[b];ids=data['ids']
-                residual=((project(landmarks[b][ids],self.camera)-self.lmk2d[b][ids])*data['normals']).sum(1)*data['pixel_to_m']
+                residual=((project(landmarks[b][ids],self.cameras[b])-self.lmk2d[b][ids])*data['normals']).sum(1)*data['pixel_to_m']
                 self.context[-1]['jaw_irls']=torch.clamp(self.options.jaw_contour_huber_m/residual.abs().clamp_min(1e-12),max=1.)
 
     @torch.no_grad()
@@ -266,10 +267,10 @@ class JointProblem:
                     add(lm[ids]-self.lmk3d[b][ids], jl[ids] if need_jac else None,
                         math.sqrt(2./(3*self.semantic_count)))
                 if need_jac:
-                    uv, proj_j = project(lm, self.camera, True)
+                    uv, proj_j = project(lm, self.cameras[b], True)
                     juv = proj_j @ jl
                 else:
-                    uv, juv = project(lm, self.camera), None
+                    uv, juv = project(lm, self.cameras[b]), None
                 if self.jaw and self.options.jaw_contour_weight>0:
                     data=self.jaw[b];jids=data['ids']
                     if len(jids):

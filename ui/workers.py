@@ -90,3 +90,23 @@ class PipelineWorker(QThread):
             self.finished.emit(result["metrics"], proj_closed, proj_open, result["aruco_corners"])
         except Exception:
             self.error.emit(traceback.format_exc())
+
+
+class MultiPipelineWorker(QThread):
+    progress=Signal(str)
+    finished=Signal(dict,object,object,object)
+    error=Signal(str)
+
+    def __init__(self,observations,parent=None):
+        super().__init__(parent)
+        self.observations=observations
+
+    def run(self):
+        try:
+            from core.pipeline import run_multiview
+            from core.render import auto_render_mesh
+            result=run_multiview(self.observations,progress=self.progress.emit)
+            c,o=result['meshes']
+            self.finished.emit(result['metrics'],auto_render_mesh(c.vertices,c.faces,800,800),
+                auto_render_mesh(o.vertices,o.faces,800,800),result['aruco_corners'])
+        except Exception:self.error.emit(traceback.format_exc())

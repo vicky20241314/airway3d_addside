@@ -19,7 +19,7 @@ def write_json(path, value):
 
 
 def finish_meshes(stage2, depths, camera, parsing, targets, adam_3d, observed_landmarks,
-                  folder, progress=lambda _: None):
+                  folder, progress=lambda _: None, *, refine=True):
     """Compute metrics before refining independent copies for display."""
     from core.metrics import metrics_calculate
     from core.cross_refine import refine_mesh
@@ -39,6 +39,8 @@ def finish_meshes(stage2, depths, camera, parsing, targets, adam_3d, observed_la
     numeric = {n:dict(value=float(v),unit=u) for n,v,u in zip(names,values,units)}
     write_json(folder/'metrics.json',dict(geometry_stage=2, formula_source='old_version', values=numeric))
     metrics = {n:f'{v:.2f}{" " if u == "cm" else ""}{u}' for n,v,u in zip(names,values,units)}
+    if not refine:
+        return metrics, snapshots, tuple(copy.deepcopy(m) for m in snapshots), []
     display, diagnostics = [], []
     for name, mesh, depth, labels, target in zip(('closed','open'),snapshots,depths,parsing,targets):
         progress(f'正在执行交叉第三阶段：{"闭口" if name == "closed" else "张口"}网格...')
@@ -122,3 +124,59 @@ def run_pair(rgb_closed, rgb_open, depth_closed, depth_open, camera, *, landmark
         report.update(status='failed', error=str(exc),elapsed_s=time.perf_counter()-started)
         write_json(folder/'report.json',report)
         raise RuntimeError(f'{exc}\n已保存数据：{folder}') from exc
+
+
+def run_multiview(observations, *, output_root=None, options=None, device=None,
+                  progress=lambda _:None, front_only=False):
+    """Explicit multi-view entry; stage3 intentionally disabled in v0.7.
+
+    Both returned state meshes are in their respective FRONT camera frames.
+    No source capture or historical pair output is ever rewritten.
+    """
+    from core.multiview_data import save_session, validate_session
+    from core.multiview_fitting import fit_multiview
+    from core.aruco import detect_aruco
+    from core.multiview_geometry import RigidCamera
+    import hashlib
+    root=Path(output_root) if output_root else Path(__file__).resolve().parents[1]/'output'
+    folder=root/('mv_'+datetime.now().strftime('%Y%m%d_%H%M%S_%f'))
+    folder.mkdir(parents=True,exist_ok=False)
+    started=time.perf_counter()
+    report=dict(status='started',algorithm='multiview_shared_state_LM',metric_geometry_stage=2,
+        stage3_enabled=False,mesh_unit='m',depth_unit='mm',real_side_effect_validated=False)
+    try:
+        # Save even failed validation attempts for diagnosis, then work on copies.
+        observations=copy.deepcopy(observations)
+        save_session(folder/'capture',observations)
+        observations=validate_session(observations)
+        if front_only:observations=[o for o in observations if o.view=='front']
+        fronts={o.state:o for o in observations if o.view=='front'}
+        c=fronts['closed'];o=fronts['open']
+        corners,_,adam=detect_aruco(c.rgb,c.depth,c.camera)
+        if adam is None or not np.isfinite(adam).all():raise ValueError('正面闭口 ArUco 或喉结深度无效，请重采')
+        for obs in observations:
+            if obs.parsing is None or obs.points is None:
+                from core.mask_detection import get_face_data_single
+                data=get_face_data_single(obs.camera,obs.rgb,obs.depth)
+                if not data['valid']:raise ValueError(f'{obs.view_id}: 面颈分割失败')
+                obs.parsing=data['parsing'];obs.points=data['pts_face_neck']
+        save_session(folder/'prepared',observations)
+        report.update(stage='fitting',view_ids=[v.view_id for v in observations],
+            metric_sources=dict(closed_front=c.view_id,open_front=o.view_id,aruco=c.view_id,
+                coordinates='each state front camera; never side landmarks'))
+        write_json(folder/'report.json',report)
+        meshes,transforms,fitting=fit_multiview(observations,folder,options=options,device=device,progress=progress)
+        write_json(folder/'extrinsics.json',{k:dict(R=v.R,t=v.t,direction='state_front_to_view') for k,v in transforms.items()})
+        metrics,snapshots,display,diagnostics=finish_meshes((meshes['closed'],meshes['open']),
+            [c.depth,o.depth],c.camera,[c.parsing,o.parsing],[c.uv,o.uv],adam,[c.xyz,o.xyz],folder,progress,refine=False)
+        report.update(status='complete',stage='complete',fitting=fitting,elapsed_s=time.perf_counter()-started)
+        write_json(folder/'report.json',report)
+        version=(Path(__file__).resolve().parents[1]/'VERSION').read_text().strip()
+        sources={str(p.relative_to(Path(__file__).resolve().parents[1])):hashlib.sha256(p.read_bytes()).hexdigest()
+            for base in ('core','ui','third_party/flame') for p in (Path(__file__).resolve().parents[1]/base).rglob('*.py')}
+        write_json(folder/'provenance.json',dict(version=version,sources=sources,real_side_effect_validated=False))
+        return dict(metrics=metrics,stage2=snapshots,meshes=display,aruco_corners={'closed':corners,'open':None},folder=folder)
+    except Exception as exc:
+        report.update(status='failed',error=str(exc),elapsed_s=time.perf_counter()-started)
+        write_json(folder/'report.json',report)
+        raise RuntimeError(f'{exc}\n采集与诊断已保存：{folder}') from exc

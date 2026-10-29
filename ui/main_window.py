@@ -1,9 +1,9 @@
 from PyQt6.QtWidgets import QMainWindow, QStackedWidget, QMessageBox
 
-from .capture_widget    import CaptureWidget
+from .multiview_capture import MultiCaptureWidget as CaptureWidget
 from .processing_widget import ProcessingWidget
 from .result_widget     import ResultWidget
-from .workers           import CameraThread, PipelineWorker
+from .workers           import CameraThread, PipelineWorker, MultiPipelineWorker
 
 PAGE_CAPTURE    = 0
 PAGE_PROCESSING = 1
@@ -41,6 +41,7 @@ class MainWindow(QMainWindow):
 
         # signal connections
         self._capture.capture_done.connect(self._on_capture_done)
+        self._capture.session_done.connect(self._on_session_done)
         self._result.restart.connect(self._on_restart)
 
         self._pipeline: PipelineWorker | None = None
@@ -79,6 +80,19 @@ class MainWindow(QMainWindow):
         self._pipeline = PipelineWorker(rgb_c, rgb_o, dep_c, dep_o, camera,
                                         bbox_closed_xywh=bbox_c, bbox_open_xywh=bbox_o,
                                         landmarks=landmarks)
+        self._pipeline.progress.connect(self._process.set_status)
+        self._pipeline.finished.connect(self._on_finished)
+        self._pipeline.error.connect(self._on_error)
+        self._pipeline.start()
+
+    def _on_session_done(self,observations):
+        self._stop_camera()
+        fronts={o.state:o for o in observations if o.view=='front'}
+        c,o=fronts['closed'],fronts['open']
+        self._rgb_closed=c.rgb;self._rgb_open=o.rgb
+        self._process.setup(c.rgb,o.rgb,c.depth,o.depth)
+        self._stack.setCurrentIndex(PAGE_PROCESSING)
+        self._pipeline=MultiPipelineWorker(observations)
         self._pipeline.progress.connect(self._process.set_status)
         self._pipeline.finished.connect(self._on_finished)
         self._pipeline.error.connect(self._on_error)

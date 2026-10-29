@@ -32,7 +32,7 @@ def train(lmk3d_gt_closed, lmk3d_gt_open, lmk2d_gt_closed, lmk2d_gt_open,
           lmk_mask_closed, lmk_mask_open, ptcloud_closed, ptcloud_open, camera,
           rgb_closed=None, rgb_open=None, ptcloud_face_closed=None, ptcloud_face_open=None,
           device=None, debug_dir=None, parsing_closed=None, parsing_open=None,
-          options=None, progress=lambda _: None):
+          options=None, progress=lambda _: None, camera_open=None):
     options = options or FitOptions()
     options.schedule()
     if (not np.isfinite([options.jaw_contour_weight,options.jaw_contour_huber_m,options.jaw_max_yaw_deg]).all()
@@ -80,7 +80,7 @@ def train(lmk3d_gt_closed, lmk3d_gt_open, lmk2d_gt_closed, lmk2d_gt_open,
             p = p[rng.choice(len(p), options.max_points, replace=False)]
         points.append(as_tensor(p))
     problem = JointProblem(flame, camera, points, l3, l2, masks,
-                           [parsing_closed,parsing_open], options)
+                           [parsing_closed,parsing_open], options, cameras=[camera,camera_open or camera])
     t0 = time.perf_counter()
     theta, stage1 = solve_stage(problem, problem.theta, 1, progress)
     stage1['elapsed_s'] = time.perf_counter()-t0
@@ -93,7 +93,7 @@ def train(lmk3d_gt_closed, lmk3d_gt_open, lmk2d_gt_closed, lmk2d_gt_open,
     for b,data in enumerate(problem.jaw):
         from core.joint_lm import project
         ids=data['ids']
-        errors=((project(landmarks[b][ids],camera)-l2[b][ids])*data['normals']).sum(1).abs()
+        errors=((project(landmarks[b][ids],problem.cameras[b])-l2[b][ids])*data['normals']).sum(1).abs()
         jaw_report.append(dict(ids=ids.cpu().tolist(),reason=data['reason'],groups=data['groups'],
             group_budgets=data.get('group_budgets'),pixel_to_m=data['pixel_to_m'],
             initial_stage2_yaw_deg=data.get('initial_stage2_yaw_deg'),

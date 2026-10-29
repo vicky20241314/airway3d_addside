@@ -167,7 +167,7 @@ class FLAME(nn.Module):
     def _find_dynamic_lmk_idx_and_bcoords(
         self, vertices, pose,
         dynamic_lmk_faces_idx, dynamic_lmk_b_coords,
-        neck_kin_chain, dtype=torch.float32,
+        neck_kin_chain, dtype=torch.float32, view_rotation=None,
     ):
         """
         Selects the face contour depending on the relative position of the head.
@@ -186,6 +186,12 @@ class FLAME(nn.Module):
         for idx in range(len(neck_kin_chain)):
             rel_rot_mat = torch.bmm(rot_mats[:, idx], rel_rot_mat)
 
+        # Optional canonical -> actual camera rotation. Legacy callers keep
+        # their exact previous behavior. View-aware callers use this same
+        # selection for forward landmarks and their barycentric Jacobians.
+        if view_rotation is not None:
+            rel_rot_mat = torch.bmm(view_rotation, rel_rot_mat)
+
         y_rot_angle = torch.round(
             torch.clamp(-rot_mat_to_euler(rel_rot_mat) * 180.0 / np.pi, max=39)
         ).to(dtype=torch.long)
@@ -200,7 +206,7 @@ class FLAME(nn.Module):
         return dyn_lmk_faces_idx, dyn_lmk_b_coords
 
     def forward(self, shape_params=None, expression_params=None,
-                pose_params=None, eye_pose=None, transl=None):
+                pose_params=None, eye_pose=None, transl=None, view_rotation=None):
         """
         Input:
             shape_params:      (N, S) shape coefficients
@@ -238,6 +244,7 @@ class FLAME(nn.Module):
                     self.dynamic_lmk_bary_coords,
                     self.neck_kin_chain,
                     dtype=self.dtype,
+                    view_rotation=view_rotation,
                 )
             )
             lmk_faces_idx = torch.cat([dyn_lmk_faces_idx, lmk_faces_idx], 1)
