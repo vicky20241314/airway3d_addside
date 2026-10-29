@@ -197,7 +197,7 @@ class MultiProblem(JointProblem):
 
 def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda _:None):
     from core.integrated_fitting import train,make_flame
-    from core.multiview_registration import register_to_front
+    from core.multiview_registration import register_to_front,save_registration_diagnostics
     from core.pipeline import write_json
     options=options or FitOptions();options.schedule();folder=Path(folder)
     fronts={o.state:o for o in observations if o.view=='front'}
@@ -214,12 +214,13 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
         progress(f'配准 {obs.view_id}：稳定面部重叠区域...')
         try:T,diag,source,target=register_to_front(fronts[obs.state],obs)
         except Exception as exc:
-            write_json(folder/'registration_failure.json',dict(view_id=obs.view_id,error=str(exc)));raise
+            write_json(folder/'registration_failure.json',dict(view_id=obs.view_id,error=str(exc),diagnostics=getattr(exc,'diagnostics',{})))
+            if hasattr(exc,'transform'):
+                save_registration_diagnostics(folder,obs.view_id,exc.transform,exc.diagnostics,exc.source,exc.target,failed=True)
+            raise
         transforms.append(T.inverse().compose(front_T));registration.append(dict(view_id=obs.view_id,**diag))
-        # Colored overlay in STATE FRONT camera coordinates; explicit direction.
-        overlay=trimesh.points.PointCloud(np.vstack((target,T.to_view(source))),
-            colors=np.vstack((np.tile([60,160,255,255],(len(target),1)),np.tile([255,110,60,255],(len(source),1)))))
-        overlay.export(folder/f'registration_{obs.view_id}_front.ply')
+        save_registration_diagnostics(folder,obs.view_id,T,diag,source,target)
+        if diag['neck_check']['warning']:progress(f"{obs.view_id}：{diag['neck_check']['warning']}")
     write_json(folder/'registration.json',registration)
     device=device or ('cuda:0' if torch.cuda.is_available() else 'cpu')
     flame=make_flame(options,device,batch=len(observations))

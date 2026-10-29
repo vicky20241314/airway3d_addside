@@ -1,5 +1,15 @@
 # 多视角验证记录
 
+## v0.9.1
+
+- 修复输入来自真实六组采集的失败记录`output/mv_20261029_152628_711270`。原闭口左侧错误`neck=0.0274m`可复现：面部ICP RMSE为2.307mm，旧颈部单向全区域最近邻中位数27.375mm；旧下采样颈部点数正面344、左侧8119，存在大量非共同观察区域。
+- 改为双向投影共同语义区域、可靠朝向和点到面比较，不按残差大小预筛；10mm阈值保留。闭口左侧修正后1.446mm，张口左/右1.607/1.288mm；闭口右侧共同颈部区域不足，显式未验证并警告，未冒充通过。面部四侧ICP RMSE分别2.307/3.103/2.219/2.720mm。这些是配准/一致性诊断，不能作为最终重建精度。
+- `tools/check_multiview_registration.py --session output/mv_20261029_152628_711270/prepared/session.json --output output/validation_v091`：退出0。四侧面部配准通过，报告、逐视角外参及叠加位于`output/validation_v091/registration_check_20261029_153134_597128`。检查时为发布前工作树，版本号尚未写入0.9.1。
+- `python -X utf8 -m unittest discover -s tests -v`：34项通过，退出0。新增不同可见范围造成的误报回归、朝向/远离相机25mm变化仍拒绝、缺失和超出视野明确未验证；扩充表情/颈部检查失败后的变换和诊断/叠加保存检查。合成几何仅验证软件行为。
+- `tools/replay_multiview.py --session output/mv_20261029_152628_711270/prepared/session.json --output output/validation_v091_replay --quick --stage2-only`：退出0，真实六视角完成正面初始化、四侧配准、联合拟合及第二阶段网格/指标。结果`output/validation_v091_replay/mv_20261029_153308_864046`；500点及缩短调度只验证流程，不用于精度或收敛评估。
+- `tools/check_multiview_outputs.py --run output/validation_v091_replay/mv_20261029_153308_864046 --output output/validation_v091`：退出0，保存后共享参数、状态正面坐标/外参、指标阶段检查通过。记录`output/validation_v091/mv_output_checks_20261029_153528_697881/checks.json`。此回归关闭第三阶段，没有对新采集数据执行顶点位移及几何保护检查。
+- 编译及差异检查退出0。原始失败会话与采集输出不修改、不提交。未重新执行默认完整调度或六视角细化，缺少独立斜侧留出数据和人工核对轮廓，真实侧面重建精度仍未验收。
+
 ## v0.9.0
 
 - `python -X utf8 -m unittest discover -s tests -v`：30项通过，退出0。覆盖四/六视角实际FLAME资产的数值雅可比、参数共享、有效性/可见性、旋转浮点误差处理、采集时间与内参逐帧快照、旧排队帧隔离和原始短序列保存；额外检查语义有效方程数量不改变视角之间的质量比例、输入次序独立及单视角原有权重。

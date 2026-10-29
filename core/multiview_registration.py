@@ -4,6 +4,93 @@ from scipy.spatial import cKDTree
 from core.multiview_geometry import RigidCamera, project
 
 
+class RegistrationConsistencyError(ValueError):
+    """Keep accepted face alignment when a later consistency check fails."""
+    def __init__(self,message,transform,diagnostics,source,target):
+        super().__init__(message)
+        self.transform=transform;self.diagnostics=diagnostics
+        self.source=source;self.target=target
+
+
+def _neck_surface(o):
+    """Reliable interior pixels and camera-facing normals in this camera."""
+    import cv2
+    depth=np.asarray(o.depth,np.float64)
+    y,x=np.mgrid[:depth.shape[0],:depth.shape[1]];z=depth*.001
+    p=np.stack(((x-o.camera.cx)*z/o.camera.fx,-(y-o.camera.cy)*z/o.camera.fy,-z),axis=-1)
+    normal=np.zeros_like(p)
+    normal[1:-1,1:-1]=np.cross(p[1:-1,2:]-p[1:-1,:-2],p[2:,1:-1]-p[:-2,1:-1])
+    length=np.linalg.norm(normal,axis=-1)
+    normal/=np.maximum(length[...,None],1e-15)
+    facing=(normal*(-p)).sum(-1)
+    normal[facing<0]*=-1
+    cosine=np.abs(facing)/np.maximum(np.linalg.norm(p,axis=-1),1e-15)
+    kernel=np.ones((3,3),np.uint8)
+    mask=cv2.erode((o.parsing==14).astype(np.uint8),kernel).astype(bool)
+    # Do not compare segmentation boundaries, depth holes, or depth jumps.
+    low=cv2.erode(depth,kernel);high=cv2.dilate(depth,kernel)
+    mask&=(low>0)&(high-low<=8.)&(length>1e-12)&(cosine>.2)
+    mask[[0,-1],:]=False;mask[:,[0,-1]]=False
+    return p,normal,mask
+
+
+def _projective_neck_direction(source,target,transform,target_camera):
+    p,n,mask=source;q,m,target_mask=target
+    moved=transform.to_view(p[mask][::2]);normal=n[mask][::2]@transform.R.T
+    uv,z=project(moved,target_camera);pix=np.rint(uv).astype(int)
+    h,w=target_mask.shape
+    inside=(z>0)&(pix[:,0]>=0)&(pix[:,0]<w)&(pix[:,1]>=0)&(pix[:,1]<h)
+    ids=np.flatnonzero(inside);pix=pix[ids]
+    keep=target_mask[pix[:,1],pix[:,0]]
+    ids=ids[keep];pix=pix[keep]
+    normal_target=m[pix[:,1],pix[:,0]]
+    toward_camera=-moved[ids]/np.maximum(np.linalg.norm(moved[ids],axis=1,keepdims=True),1e-15)
+    # A point seen in the side camera need not face the front camera. Require
+    # compatible surfaces rather than deleting rows by their residual size.
+    keep=((normal[ids]*toward_camera).sum(1)>.2)&((normal[ids]*normal_target).sum(1)>.5)
+    delta=moved[ids[keep]]-q[pix[keep,1],pix[keep,0]]
+    signed=(delta*normal_target[keep]).sum(1)
+    # No distance, depth-error, or nearest-neighbour gate: genuine neck motion
+    # must remain in the statistic, including motion away from the camera.
+    error=np.abs(signed)
+    return dict(source_samples=len(moved),overlap_samples=len(error),
+        median_m=float(np.median(error)) if len(error) else None,
+        p90_m=float(np.quantile(error,.9)) if len(error) else None,
+        signed_median_m=float(np.median(signed)) if len(error) else None)
+
+
+def check_neck_consistency(front,side,transform):
+    """Compare only projectively shared neck surfaces, in BOTH cameras.
+
+    transform maps side -> front. Sparse/non-overlapping neck observations
+    are explicitly unverified; they are never counted as a passed check.
+    """
+    a=_neck_surface(front);b=_neck_surface(side)
+    forward=_projective_neck_direction(b,a,transform,front.camera)
+    reverse=_projective_neck_direction(a,b,transform.inverse(),side.camera)
+    reliable=[row['median_m'] for row in (forward,reverse) if row['overlap_samples']>=100]
+    error=max(reliable) if reliable else None
+    status=('inconsistent' if error is not None and error>.010 else
+            'passed' if len(reliable)==2 else 'partial_overlap' if reliable else 'insufficient_overlap')
+    return dict(method='bidirectional_projective_neck_point_to_plane',status=status,
+        threshold_m=.010,minimum_overlap_samples=100,median_m=error,
+        side_to_front=forward,front_to_side=reverse,
+        warning=None if status in ('passed','inconsistent') else '颈部共同可见区域不足，头颈一致性未完整验证；请检查叠加点云及采集姿态')
+
+
+def save_registration_diagnostics(folder,view_id,transform,diagnostics,source,target,*,failed=False):
+    from pathlib import Path
+    import trimesh
+    from core.pipeline import write_json
+    folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
+    suffix='_failed' if failed else ''
+    write_json(folder/f'registration_{view_id}{suffix}.json',dict(view_id=view_id,**diagnostics,
+        R_side_to_front=transform.R,t_side_to_front=transform.t))
+    overlay=trimesh.points.PointCloud(np.vstack((target,transform.to_view(source))),
+        colors=np.vstack((np.tile([60,160,255,255],(len(target),1)),np.tile([255,110,60,255],(len(source),1)))))
+    overlay.export(folder/f'registration_{view_id}{suffix}_front.ply')
+
+
 def rigid_svd(source, target):
     x=np.asarray(source);y=np.asarray(target)
     u,s,vh=np.linalg.svd((x-x.mean(0)).T@(y-y.mean(0)))
@@ -97,16 +184,12 @@ def register_to_front(front, side):
         raise ValueError(f'{side.view_id}: 配准失败，请重采；{diag}')
     # Rigid-invariant lip separation diagnoses expression changes without
     # adding expression DOFs per view. Occluded/invalid measurements are skipped.
-    diag.update(check_expression(front,side,T))
-    # Neck must obey camera motion too: head-turn captures otherwise appear
-    # well registered on the face and corrupt a shared neck pose.
-    neck=[]
-    from core.camera import backproject,coordinate_transform
-    for o in (front,side):
-        yy,xx=np.where(o.parsing==14);p,_=backproject(np.column_stack((xx,yy)),o.depth,o.camera)
-        neck.append(coordinate_transform(p)[::4])
-    if min(map(len,neck))>=100:
-        d=cKDTree(neck[0]).query(T.to_view(neck[1]))[0]
-        neck_error=float(np.median(d));diag['neck_median_m']=neck_error
-        if neck_error>.010:raise ValueError(f'{side.view_id}: 头颈关系变化或颈部配准失败，请移动相机重采；neck={neck_error:.4f}m')
+    try:
+        diag.update(check_expression(front,side,T))
+        neck=check_neck_consistency(front,side,T);diag['neck_check']=neck
+        if neck['status']=='inconsistent':
+            raise ValueError(f"{side.view_id}: 共同可见颈部与面部变换不一致，请保持头颈姿态并移动相机重采；neck={neck['median_m']:.4f}m")
+    except ValueError as exc:
+        diag.update(consistency_error=str(exc))
+        raise RegistrationConsistencyError(str(exc),T,diag,source,target) from exc
     return T,diag,source,target

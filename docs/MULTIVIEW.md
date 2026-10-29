@@ -1,4 +1,4 @@
-# 多视角 RGB-D（v0.9.0）
+# 多视角 RGB-D（v0.9.1）
 
 实际调用链：`MultiCaptureWidget → MultiPipelineWorker → run_multiview → fit_multiview → MultiProblem`。
 原双帧 `CaptureWidget → PipelineWorker → run_pair` 路径保留。
@@ -45,6 +45,9 @@ v0.9默认启用联合细化。`--stage2-only`或界面取消“联合细化网�
 `extrinsics.json`为`p_view=R @ p_state_front+t`；两状态网格各在自己的正面相机系。
 `registration_*_front.ply`蓝色为正面稳定点，橙色为变换到同状态正面的侧面稳定点。
 配准用内部关键点RANSAC候选，再由排除嘴/下颌边缘/颈部的稳定皮肤多尺度ICP验证。
+v0.9.1颈部检查只比较双向投影到共同颈部语义区域的可靠表面，使用点到面误差，保留10mm拒绝阈值；不按误差大小提前删点。分割边界、孔洞/跳变与不相容朝向不参与比较。
+`registration_视角.json.neck_check.status`区分`passed`、`partial_overlap`、`insufficient_overlap`和`inconsistent`。不足重叠只表示头颈一致性未完整验证，会输出警告；不能据此证明采集姿态正确。
+逐视角JSON保留side→front外参、ICP和颈部统计。表情或颈部一致性失败时仍保存`registration_视角_failed.json`及`registration_视角_failed_front.ply`，蓝色/橙色含义相同。
 侧面检测标点须通过模型可见性、深度、重投影及三维一致性检查，不直接信任遮挡侧输出。
 轮廓嵌入使用实际外部相机旋转与颈链乘积；LM内层冻结轮廓和对应，导数采用相同嵌入。
 侧面只启用可靠深度和内部语义，不启用下颌轮廓；正面偏航超过20°记录回退。
@@ -55,7 +58,7 @@ v0.9默认启用联合细化。`--stage2-only`或界面取消“联合细化网�
 
 指标仍基于stage2。`report.json.metric_sources`指明两种状态正面及闭口ArUco来源。
 网格、标点与ArUco在对应正面相机系，侧面标点不混入指标。原指标公式不变。
-合成几何仅验证数学实现；已有真实正面数据仅验证离线可执行性。
+合成几何仅验证数学实现；历史正面完整回归及一组真实六视角缩短调度回归用于验证离线可执行性，不能代替独立精度验收。
 缺少真实侧面及独立斜侧数据，**真实侧面改善尚未验证**。
 真实验收应固定同组数据与stage2调度，比较仅正面和多视角；用未参与拟合的斜侧观测，分别报告正面/侧面表面距离、轮廓法向误差及有效覆盖率。
 总损失下降、合成或正面复制数据不能代替真实验收。
@@ -97,3 +100,15 @@ python tools/evaluate_multiview.py --run output/mv_时间戳 --geometry stage2 -
 报告按`in_fit/held_out`及`front/side`分开，包含未按距离裁剪的点到可见三角面的均值/RMSE/P95、轮廓法向像素误差与双向Chamfer、可靠深度比例及20mm门限下有效覆盖率。
 表面误差使用可靠深度（仍有传感器噪声），不能据此声称解剖真值。可改`--geometry stage3`评估最终几何；先完成同组stage2对照。
 没有独立会话时仅给拟合内诊断，`independent_views_present=false`；没有参考掩码时不填写轮廓数值。
+
+## 配准失败后的缓存诊断
+
+失败目录的`prepared/session.json`已包含分割和标点，可先运行快速配准检查，无需重采或先运行FLAME拟合：
+
+```powershell
+python tools/check_multiview_registration.py --session output/mv_时间戳/prepared/session.json
+python tools/replay_multiview.py --session output/mv_时间戳/prepared/session.json --stage2-only
+```
+
+快速检查另存`output/registration_check_*/`，只验证初始配准及一致性，不代表最终重建精度。完整回放也写新目录，不覆盖失败时的采集数据。
+表情变化或共同区域的颈部误差超限仍需重采；重叠不足时应人工检查叠加及头颈姿态，必要时补采更完整的正面/侧面颈部。
