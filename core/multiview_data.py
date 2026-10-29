@@ -51,7 +51,7 @@ class Observation:
         return self
 
 
-def validate_session(observations, *, allow_open_sides=False):
+def validate_session(observations, *, allow_open_sides=True):
     if not observations:
         raise ValueError('Empty RGB-D session')
     for o in observations:

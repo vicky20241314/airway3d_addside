@@ -128,7 +128,7 @@ def run_pair(rgb_closed, rgb_open, depth_closed, depth_open, camera, *, landmark
 
 def run_multiview(observations, *, output_root=None, options=None, device=None,
                   progress=lambda _:None, front_only=False):
-    """Explicit multi-view entry; stage3 intentionally disabled in v0.7.
+    """Explicit shared-state entry; accepts both states' side observations.
 
     Both returned state meshes are in their respective FRONT camera frames.
     No source capture or historical pair output is ever rewritten.

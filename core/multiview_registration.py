@@ -33,6 +33,24 @@ def _voxel(points, size):
     return points[np.sort(ids)]
 
 
+def check_expression(front,side,T):
+    gaps=[]
+    for o in (front,side):
+        pairs=[(i,j) for i,j in ((50,58),(51,57),(52,56)) if o.valid[i] and o.valid[j]]
+        gaps.append(float(np.median([np.linalg.norm(o.xyz[i]-o.xyz[j]) for i,j in pairs])) if len(pairs)>=2 else None)
+    result=dict(lip_gap_m=gaps)
+    if all(g is not None for g in gaps) and abs(gaps[0]-gaps[1])>max(.003,.15*gaps[0]):
+        raise ValueError(f'{side.view_id}: 张闭口程度变化，请保持同一表情重采；lip_gap_m={gaps}')
+    if side.state=='open':
+        if any(g is None for g in gaps):raise ValueError(f'{side.view_id}: 无足够可靠唇点检查张口保持，请重采')
+        ids=np.array([50,51,52,56,57,58]);ids=ids[front.valid[ids]&side.valid[ids]]
+        error=np.linalg.norm(T.to_view(side.xyz[ids])-front.xyz[ids],axis=1)
+        result['open_lip_consistency_m']=float(np.median(error)) if len(error) else None
+        if len(error)<4 or np.median(error)>.006:
+            raise ValueError(f'{side.view_id}: 张口形态或下颌位置不一致/唇点不可靠，请保持张口后重采')
+    return result
+
+
 def register_to_front(front, side):
     """Initialize from RANSAC internal points, then ICP on stable overlap only.
 
@@ -79,12 +97,7 @@ def register_to_front(front, side):
         raise ValueError(f'{side.view_id}: 配准失败，请重采；{diag}')
     # Rigid-invariant lip separation diagnoses expression changes without
     # adding expression DOFs per view. Occluded/invalid measurements are skipped.
-    gaps=[]
-    for o in (front,side):
-        pairs=[(i,j) for i,j in ((50,58),(51,57),(52,56)) if o.valid[i] and o.valid[j]]
-        gaps.append(float(np.median([np.linalg.norm(o.xyz[i]-o.xyz[j]) for i,j in pairs])) if len(pairs)>=2 else None)
-    if all(g is not None for g in gaps) and abs(gaps[0]-gaps[1])>max(.003,.15*gaps[0]):
-        raise ValueError(f'{side.view_id}: 张闭口程度变化，请保持同一表情重采；lip_gap_m={gaps}')
+    diag.update(check_expression(front,side,T))
     # Neck must obey camera motion too: head-turn captures otherwise appear
     # well registered on the face and corrupt a shared neck pose.
     neck=[]
@@ -96,5 +109,4 @@ def register_to_front(front, side):
         d=cKDTree(neck[0]).query(T.to_view(neck[1]))[0]
         neck_error=float(np.median(d));diag['neck_median_m']=neck_error
         if neck_error>.010:raise ValueError(f'{side.view_id}: 头颈关系变化或颈部配准失败，请移动相机重采；neck={neck_error:.4f}m')
-    diag['lip_gap_m']=gaps
     return T,diag,source,target

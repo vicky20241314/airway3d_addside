@@ -17,6 +17,7 @@ from third_party.tufa.Test import get_lmk_single
 class MultiCaptureWidget(CaptureWidget):
     session_done=Signal(object)
     FOUR=(('closed','front'),('closed','left'),('closed','right'),('open','front'))
+    SIX=FOUR+(('open','left'),('open','right'))
 
     def __init__(self,parent=None):
         self._observations=[];self._mv_frames=[];self._capture_folder=None
@@ -25,13 +26,13 @@ class MultiCaptureWidget(CaptureWidget):
     def _build_ui(self):
         super()._build_ui()
         self.mode=QComboBox()
-        self.mode.addItems(['原双帧模式','闭口三视角 + 张口正面'])
-        self.mode.setCurrentIndex(1)
+        self.mode.addItems(['原双帧模式','闭口三视角 + 张口正面','闭口三视角 + 张口三视角'])
+        self.mode.setCurrentIndex(2)
         self.btn_capture.parent().layout().insertWidget(1,self.mode)
         self.mode.currentIndexChanged.connect(self.reset)
         self._guidance()
 
-    def sequence(self):return self.FOUR
+    def sequence(self):return self.SIX if self.mode.currentIndex()==2 else self.FOUR
 
     def _guidance(self):
         if self.mode.currentIndex()==0:return
