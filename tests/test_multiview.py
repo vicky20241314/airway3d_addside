@@ -41,14 +41,28 @@ class GeometryTests(unittest.TestCase):
         known=RigidCamera(Rotation.from_euler('xyz',[5,40,2],degrees=True).as_matrix(),np.array([.03,.01,-.6]))
         np.testing.assert_allclose(rigid_svd(source,known.to_view(source)).to_view(source),known.to_view(source),atol=1e-12)
 
+    def test_float32_roundoff_does_not_create_camera_scale(self):
+        from scipy.spatial.transform import Rotation
+        r=Rotation.from_euler('xyz',[12,38,7],degrees=True).as_matrix().astype(np.float32)
+        T=RigidCamera(r,np.array([.1,.02,-.6]));identity=T.compose(T.inverse())
+        np.testing.assert_allclose(identity.R,np.eye(3),atol=1e-12)
+        np.testing.assert_allclose(identity.t,0,atol=1e-12)
+        p=np.array([[.1,.2,-.6],[.02,.05,-.65]])
+        self.assertAlmostEqual(np.linalg.norm(T.to_view(p)[0]-T.to_view(p)[1]),np.linalg.norm(p[0]-p[1]),places=12)
+
     def test_occlusion_and_backside(self):
         mesh=trimesh.creation.box(extents=(.2,.2,.1));mesh.apply_translation([0,0,-.6])
         points=np.array([[0,0,-.55],[0,0,-.65],[0,0,.2]])
         self.assertEqual(ray_visible(mesh.vertices,mesh.faces,points).tolist(),[True,False,False])
+        many=np.vstack((np.tile(points[0],(257,1)),np.tile(points[1],(259,1))))
+        np.testing.assert_array_equal(ray_visible(mesh.vertices,mesh.faces,many),np.arange(516)<257)
         vis=visible_faces(mesh.vertices,mesh.faces,Camera(80,80,32,32),np.full((64,64),550,np.uint16))
         self.assertGreater(vis.sum(),0);self.assertTrue((mesh.triangles_center[vis,2]>-.6).all())
         lm=np.tile(points[1],(68,1));uv=np.tile([32,32],(68,1))
         self.assertFalse(visible_landmarks(mesh.vertices,mesh.faces,lm,uv,np.ones(68,bool),Camera(80,80,32,32),np.full((64,64),550)).any())
+        front_lm=np.tile(points[0],(68,1))
+        mask=visible_landmarks(mesh.vertices,mesh.faces,front_lm,uv,np.ones(68,bool),Camera(80,80,32,32),np.full((64,64),550))
+        self.assertFalse(mask[:17].any());self.assertTrue(mask[17:].all())
 
 
 class SessionTests(unittest.TestCase):
@@ -64,6 +78,8 @@ class SessionTests(unittest.TestCase):
         with self.assertRaises(ValueError):o.validate()
         o=fixture();o.quality['motion_mode']='head_turned'
         with self.assertRaises(ValueError):o.validate()
+        o=fixture();o.quality.pop('motion_mode')
+        with self.assertRaises(ValueError):o.validate()
 
     def test_never_fuse_views_or_moving_sequence(self):
         o=fixture();intr=np.array([80,80,32,32])
@@ -73,6 +89,15 @@ class SessionTests(unittest.TestCase):
         with self.assertRaises(ValueError):fuse_sequence(frames,o.camera)
         frames=[('closed','front',o.rgb,o.depth+i*10,1+i*.03,intr) for i in range(5)]
         with self.assertRaises(ValueError):fuse_sequence(frames,o.camera)
+
+    def test_camera_frame_owns_intrinsics_and_acquisition_time(self):
+        from unittest.mock import patch
+        from ui.workers import snapshot_frame_camera
+        camera=Camera(80,90,32,32)
+        with patch('ui.workers.time.monotonic',side_effect=[1.,2.]):
+            first=snapshot_frame_camera(camera);camera.fx=100;second=snapshot_frame_camera(camera)
+        self.assertEqual(first.fx,80);self.assertEqual(second.fx,100)
+        self.assertEqual(first.captured_at_monotonic,1.);self.assertEqual(second.captured_at_monotonic,2.)
 
     def test_parameters_shared_per_state(self):
         l=MultiLayout(100,30,(0,3),('closed','open','closed','closed'))
@@ -120,6 +145,9 @@ class CaptureTests(unittest.TestCase):
             w.session_done.connect(emitted.append)
             count=len(w.sequence())
             for i in range(count):
+                stale=Camera(1,1,1,1);stale.captured_at_monotonic=w._view_started_at-.5
+                w.on_frame(sample.rgb,sample.depth,stale)
+                self.assertEqual(len(w._mv_frames),0)
                 camera=Camera(80+i,90+i,32,32)
                 for _ in range(5):w.on_frame(sample.rgb,sample.depth,camera)
                 w._on_capture()
@@ -128,6 +156,9 @@ class CaptureTests(unittest.TestCase):
             self.assertEqual(marker.call_count,1)
             self.assertEqual(len(emitted),1)
             self.assertEqual([o.camera.fx for o in emitted[0]],list(range(80,80+count)))
+            attempts=list((Path(d)/'capture').glob('attempt_*'))
+            self.assertEqual(len(attempts),count)
+            self.assertTrue(all((p/'raw_sequence.npz').exists() and (p/'attempt.json').exists() for p in attempts))
             w.stop_threads();w.close();app.processEvents()
 
 
@@ -202,7 +233,7 @@ class MetricSourceTests(unittest.TestCase):
                 patch('core.aruco.detect_aruco',return_value=(None,None,adam)) as marker, \
                 patch('core.multiview_fitting.fit_multiview',return_value=({'closed':'c_mesh','open':'o_mesh'},{},{})), \
                 patch('core.pipeline.finish_meshes',return_value=({},(),(),[])) as finish:
-            result=run_multiview(obs,output_root=d)
+            result=run_multiview(obs,output_root=d,refine=False)
             args=finish.call_args.args
             self.assertEqual(args[0],('c_mesh','o_mesh'))
             np.testing.assert_array_equal(args[5],adam)

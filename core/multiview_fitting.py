@@ -134,8 +134,9 @@ class MultiProblem(JointProblem):
                 # Never trust occluded-side detector predictions. Static internal
                 # landmarks must also agree in 3-D with the current surface.
                 valid &= np.linalg.norm(np.nan_to_num(o.xyz)-lm[b].cpu().numpy(),axis=1)<.006
-            ids=np.array([8,21,22,33,50,51,52,56,57,58])
-            if o.view=='front':valid[8]=o.valid[8]  # dynamic chin only for frontal semantic target
+            # Even frontal chin 8 is a view contour, not a fixed 3-D material
+            # landmark. Keep it for observed metrics, use only 2-D jaw normals.
+            ids=np.array([21,22,33,50,51,52,56,57,58])
             ids=ids[valid[ids]]
             jaw=self.jaw[b];jids=jaw['ids']
             if len(jids):
@@ -234,6 +235,9 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
         meshes[s]=mesh
     for b,obs in enumerate(observations):
         i=front_indices[obs.state]
+        if b==i:
+            view_transforms[obs.view_id]=RigidCamera(np.eye(3),np.zeros(3))
+            continue
         T=RigidCamera(rotation[b].cpu().numpy(),translation[b].cpu().numpy()).compose(
             RigidCamera(rotation[i].cpu().numpy(),translation[i].cpu().numpy()).inverse())
         view_transforms[obs.view_id]=T

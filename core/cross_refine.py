@@ -75,3 +75,9 @@ def refine_mesh(mesh,depth,camera,parsing,landmarks_2d,*,profile=DEFAULT_PROFILE
         original_faces=len(mesh.faces),subdivided_faces=len(faces),
         landmark_adapter='barycentric anchors on subdivided child triangles')
     return result,base,info
+
+
+def refine_multiview_mesh(mesh,observations,transforms):
+    """A SINGLE solve for the whole state; never sequential per-view refinement."""
+    from core.multiview_refine import refine_state
+    return refine_state(mesh,observations,transforms)

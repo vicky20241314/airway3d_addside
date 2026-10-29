@@ -40,7 +40,8 @@ def refine_pointcloud(vertices, faces, points, *, active=None, confidence=None,
                       seed=42, semantic_constraints=None, early_stop=STUDENT_EARLY_STOP,
                       shape_guard=None, max_step_m=None, consistency_operator=None,
                       consistency_weight=0., edge_length_scale_m=None,
-                      fairing_strength=0., fairing_max_change_m=.0001):
+                      fairing_strength=0., fairing_max_change_m=.0001,
+                      correspondence_provider=None, point_groups=None, group_quality=None):
     """Return new vertices and diagnostics without modifying the inputs.
 
     Requires an already aligned mesh and face-only cloud. ``active`` fixes
@@ -78,13 +79,24 @@ def refine_pointcloud(vertices, faces, points, *, active=None, confidence=None,
             or (fairing_strength>0 and shape_guard is None)):
         raise ValueError('Invalid bounded displacement fairing settings')
     weights = np.ones(len(points)) if confidence is None else np.asarray(confidence, float)
+    source_indices=np.arange(len(points))
+    groups=None if point_groups is None else np.asarray(point_groups)
+    if groups is not None and groups.shape!=(len(points),):raise ValueError('Invalid view groups')
+    if groups is not None:
+        quality={} if group_quality is None else group_quality
+        if any(not np.isfinite(quality.get(int(g),1.)) or not 0<quality.get(int(g),1.)<=1 for g in np.unique(groups)):
+            raise ValueError('Invalid per-view quality')
     if active.shape != (len(base),) or weights.shape != (len(points),):
         raise ValueError('Mask/confidence shape mismatch')
     good = np.isfinite(points).all(1) & np.isfinite(weights) & (weights > 0)
     points, weights = points[good], np.clip(weights[good], 0, 1)
+    source_indices=source_indices[good]
+    if groups is not None:groups=groups[good]
     if len(points) > max_points:
         selected = np.sort(np.random.default_rng(seed).choice(len(points), max_points, replace=False))
         points, weights = points[selected], weights[selected]
+        source_indices=source_indices[selected]
+        if groups is not None:groups=groups[selected]
     ids = np.flatnonzero(active)
     semantic_C = semantic_t = None
     if semantic_constraints is not None:
@@ -124,13 +136,17 @@ def refine_pointcloud(vertices, faces, points, *, active=None, confidence=None,
                 early_stop.rmse_rel_tol, early_stop.rmse_patience, early_stop.rmse_min_iters)
         stage_done = False
         for iteration in range(iterations_per_stage):
-            closest, distance, triangle_ids, bary = closest_surface_numpy(current, faces, points)
+            provider_valid=np.ones(len(points),bool)
+            if correspondence_provider is None:
+                closest, distance, triangle_ids, bary = closest_surface_numpy(current, faces, points)
+            else:
+                closest,distance,triangle_ids,bary,provider_valid=correspondence_provider(current,faces,points,source_indices)
             triangles = faces[triangle_ids]
             bary = np.clip(bary, 0, 1)
             bary /= np.maximum(bary.sum(1, keepdims=True), 1e-12)
             support = (bary*active[triangles]).sum(1)
             keep = ((distance < max_distance_m) & (support > .5)
-                    & np.isfinite(bary).all(1) & valid_faces[triangle_ids])
+                    & np.isfinite(bary).all(1) & valid_faces[triangle_ids] & provider_valid)
             if semantic_constraints is not None:
                 keep &= semantic_constraints.allowed_correspondences(triangle_ids, points)
             rows = np.flatnonzero(keep)
@@ -145,6 +161,15 @@ def refine_pointcloud(vertices, faces, points, *, active=None, confidence=None,
             # independent of depth resolution / point count.
             density = max(float(np.asarray(A.sum(0)).sum()) / max(np.count_nonzero(A.getnnz(0)), 1), 1e-12)
             w = weights[keep] * np.minimum(1., huber_m/np.maximum(distance[keep], 1e-12)) / density
+            if groups is not None:
+                # Normalize EACH view after all gates, then quality-weight.
+                # Budget ~active support keeps the legacy regularizer scale.
+                w=weights[keep]*np.minimum(1.,huber_m/np.maximum(distance[keep],1e-12))
+                present=np.unique(groups[keep]);qsum=sum(quality.get(int(g),1.) for g in present)
+                budget=max(np.count_nonzero(A.getnnz(0)),1)
+                for g in present:
+                    part=groups[keep]==g
+                    w[part]*=budget*quality.get(int(g),1.)/qsum/max(w[part].sum(),1e-15)
             H = A.T @ sparse.diags(w) @ A + regularizer
             rhs = A.T @ (w[:, None]*target)
             if semantic_C is not None:

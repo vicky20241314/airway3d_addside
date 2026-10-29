@@ -1,7 +1,16 @@
 import os
 import traceback
+import time
 import numpy as np
 from PyQt6.QtCore import QThread, pyqtSignal as Signal
+
+
+def snapshot_frame_camera(camera):
+    """A separate immutable-by-convention intrinsics/time snapshot per frame."""
+    from core.camera import Camera
+    result=Camera(camera.fx,camera.fy,camera.cx,camera.cy)
+    result.captured_at_monotonic=time.monotonic()
+    return result
 
 
 class CameraThread(QThread):
@@ -35,7 +44,7 @@ class CameraThread(QThread):
                 if out is None:
                     continue
                 camera, rgb, depth = out
-                self.frame_ready.emit(rgb.copy(), depth.copy(), camera)
+                self.frame_ready.emit(rgb.copy(), depth.copy(), snapshot_frame_camera(camera))
         finally:
             cap.stop()
 
@@ -97,15 +106,16 @@ class MultiPipelineWorker(QThread):
     finished=Signal(dict,object,object,object)
     error=Signal(str)
 
-    def __init__(self,observations,parent=None):
+    def __init__(self,observations,parent=None,*,refine=True):
         super().__init__(parent)
         self.observations=observations
+        self.refine=refine
 
     def run(self):
         try:
             from core.pipeline import run_multiview
             from core.render import auto_render_mesh
-            result=run_multiview(self.observations,progress=self.progress.emit)
+            result=run_multiview(self.observations,progress=self.progress.emit,refine=self.refine)
             c,o=result['meshes']
             self.finished.emit(result['metrics'],auto_render_mesh(c.vertices,c.faces,800,800),
                 auto_render_mesh(o.vertices,o.faces,800,800),result['aruco_corners'])

@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
         self._rgb_closed=c.rgb;self._rgb_open=o.rgb
         self._process.setup(c.rgb,o.rgb,c.depth,o.depth)
         self._stack.setCurrentIndex(PAGE_PROCESSING)
-        self._pipeline=MultiPipelineWorker(observations)
+        self._pipeline=MultiPipelineWorker(observations,refine=self._capture.refine_check.isChecked())
         self._pipeline.progress.connect(self._process.set_status)
         self._pipeline.finished.connect(self._on_finished)
         self._pipeline.error.connect(self._on_error)

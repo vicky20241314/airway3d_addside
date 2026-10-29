@@ -127,7 +127,7 @@ def run_pair(rgb_closed, rgb_open, depth_closed, depth_open, camera, *, landmark
 
 
 def run_multiview(observations, *, output_root=None, options=None, device=None,
-                  progress=lambda _:None, front_only=False):
+                  progress=lambda _:None, front_only=False, refine=True):
     """Explicit shared-state entry; accepts both states' side observations.
 
     Both returned state meshes are in their respective FRONT camera frames.
@@ -143,7 +143,7 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
     folder.mkdir(parents=True,exist_ok=False)
     started=time.perf_counter()
     report=dict(status='started',algorithm='multiview_shared_state_LM',metric_geometry_stage=2,
-        stage3_enabled=False,mesh_unit='m',depth_unit='mm',real_side_effect_validated=False)
+        stage3_enabled=bool(refine),mesh_unit='m',depth_unit='mm',real_side_effect_validated=False)
     try:
         # Save even failed validation attempts for diagnosis, then work on copies.
         observations=copy.deepcopy(observations)
@@ -169,14 +169,35 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
         write_json(folder/'extrinsics.json',{k:dict(R=v.R,t=v.t,direction='state_front_to_view') for k,v in transforms.items()})
         metrics,snapshots,display,diagnostics=finish_meshes((meshes['closed'],meshes['open']),
             [c.depth,o.depth],c.camera,[c.parsing,o.parsing],[c.uv,o.uv],adam,[c.xyz,o.xyz],folder,progress,refine=False)
-        report.update(status='complete',stage='complete',fitting=fitting,elapsed_s=time.perf_counter()-started)
+        if refine:
+            report['stage']='joint_refinement';write_json(folder/'report.json',report)
+            display,diagnostics=finish_multiview_refinement(snapshots,observations,transforms,folder,progress)
+        report.update(status='complete',stage='complete',fitting=fitting,refinement=diagnostics,elapsed_s=time.perf_counter()-started)
         write_json(folder/'report.json',report)
         version=(Path(__file__).resolve().parents[1]/'VERSION').read_text().strip()
         sources={str(p.relative_to(Path(__file__).resolve().parents[1])):hashlib.sha256(p.read_bytes()).hexdigest()
             for base in ('core','ui','third_party/flame') for p in (Path(__file__).resolve().parents[1]/base).rglob('*.py')}
-        write_json(folder/'provenance.json',dict(version=version,sources=sources,real_side_effect_validated=False))
+        inputs={str(p.relative_to(folder)):hashlib.sha256(p.read_bytes()).hexdigest()
+            for sub in ('capture','prepared') for p in (folder/sub).iterdir() if p.is_file()}
+        write_json(folder/'provenance.json',dict(version=version,sources=sources,inputs=inputs,real_side_effect_validated=False))
         return dict(metrics=metrics,stage2=snapshots,meshes=display,aruco_corners={'closed':corners,'open':None},folder=folder)
     except Exception as exc:
         report.update(status='failed',error=str(exc),elapsed_s=time.perf_counter()-started)
         write_json(folder/'report.json',report)
         raise RuntimeError(f'{exc}\n采集与诊断已保存：{folder}') from exc
+
+
+def finish_multiview_refinement(stage2,observations,transforms,folder,progress=lambda _:None):
+    from core.cross_refine import refine_multiview_mesh
+    display=[];diagnostics=[];folder=Path(folder)
+    for state,mesh in zip(('closed','open'),stage2):
+        views=[o for o in observations if o.state==state]
+        progress(f'联合细化 {state}：{len(views)} 个视角，一份位移场...')
+        result,reference,info=refine_multiview_mesh(copy.deepcopy(mesh),views,transforms)
+        out=folder/state;out.mkdir(parents=True,exist_ok=True)
+        # Preserve small-triangle geometry bounds in the exported mesh too.
+        result.export(out/f'mesh_{state}.obj',digits=16)
+        np.savez_compressed(out/'vertex_offsets.npz',reference_vertices=reference,faces=result.faces,offsets=result.vertices-reference)
+        write_json(out/'stage3_report.json',info)
+        display.append(result);diagnostics.append(info)
+    return tuple(display),diagnostics

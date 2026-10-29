@@ -43,7 +43,7 @@ class Observation:
         self.valid = self.valid.astype(bool) & np.isfinite(self.xyz).all(1) & np.isfinite(self.uv).all(1)
         if self.view == 'front':
             self.valid = validate_landmarks(self.uv, self.xyz, self.valid)
-        if self.quality.get('motion_mode', 'camera_moved') != 'camera_moved':
+        if self.quality.get('motion_mode') != 'camera_moved':
             raise ValueError('请保持头颈不动并移动相机重采；转头数据不能按整头颈刚性模型处理')
         weight = self.quality.get('weight', 1.)
         if not np.isfinite(weight) or not 0 < weight <= 1:

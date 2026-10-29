@@ -53,7 +53,7 @@ def main():
     report=dict(seed=20261025,synthetic_noise_std_mm=.4,n_points=len(points),metrics=metrics,
         all_bounds_passed=True,nonzero_motion=True,spike_rejected=True,
         note='Known synthetic vertex truth only; no claim about real anatomical correspondence.')
-    out=ROOT/'validation/cross_v3_smooth';out.mkdir(parents=True,exist_ok=True)
+    out=ROOT/'output/legacy_v3_contracts';out.mkdir(parents=True,exist_ok=True)
     (out/'synthetic.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     print(json.dumps(report),flush=True)
 if __name__=='__main__':main()

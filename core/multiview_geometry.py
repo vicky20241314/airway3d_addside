@@ -17,6 +17,11 @@ class RigidCamera:
                 or not np.allclose(self.R.T@self.R, np.eye(3), atol=1e-5)
                 or not np.isclose(np.linalg.det(self.R), 1, atol=1e-5)):
             raise ValueError('Expected a finite SE(3) transform, without scale')
+        # Project only already-valid floating-point roundoff back onto SO(3).
+        # Rejecting actual scale/shear above remains mandatory. This prevents
+        # repeated float32 camera compositions from introducing numerical scale.
+        u,_,vh=np.linalg.svd(self.R)
+        self.R=u@vh
 
     def to_view(self, points): return np.asarray(points)@self.R.T+self.t
     def to_common(self, points): return (np.asarray(points)-self.t)@self.R
@@ -38,8 +43,13 @@ def ray_visible(vertices, faces, samples, *, tolerance=.0015):
     ids = np.flatnonzero(good)
     if not len(ids): return result
     mesh = trimesh.Trimesh(vertices, faces, process=False)
-    hits, ray_ids, _ = mesh.ray.intersects_location(np.zeros((len(ids),3)), samples[ids], multiple_hits=False)
-    result[ids[ray_ids]] = np.linalg.norm(hits-samples[ids[ray_ids]],axis=1) <= tolerance
+    # Triangle-ray broad phase can allocate O(rays * candidate triangles).
+    # Batching is essential after subdivision and leaves the visibility test
+    # identical; reuse the same mesh acceleration structure for all chunks.
+    for start in range(0,len(ids),128):
+        subset=ids[start:start+128]
+        hits, ray_ids, _ = mesh.ray.intersects_location(np.zeros((len(subset),3)), samples[subset], multiple_hits=False)
+        result[subset[ray_ids]] = np.linalg.norm(hits-samples[subset[ray_ids]],axis=1) <= tolerance
     return result
 
 
@@ -54,7 +64,7 @@ def visible_faces(vertices, faces, camera, depth, *, depth_tolerance=.020):
     pix = np.rint(uv).astype(int);h,w = depth.shape
     valid = (z>0)&(pix[:,0]>=0)&(pix[:,0]<w)&(pix[:,1]>=0)&(pix[:,1]<h)&((normal*direction).sum(1)>.10)
     ids = np.flatnonzero(valid)
-    if len(ids):
+    if len(ids) and depth_tolerance is not None:
         observed = depth[pix[ids,1],pix[ids,0]]*.001
         valid[ids] &= (observed>0)&(np.abs(observed-z[ids])<depth_tolerance)
     ids = np.flatnonzero(valid)

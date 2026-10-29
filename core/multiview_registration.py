@@ -38,7 +38,7 @@ def check_expression(front,side,T):
     for o in (front,side):
         pairs=[(i,j) for i,j in ((50,58),(51,57),(52,56)) if o.valid[i] and o.valid[j]]
         gaps.append(float(np.median([np.linalg.norm(o.xyz[i]-o.xyz[j]) for i,j in pairs])) if len(pairs)>=2 else None)
-    result=dict(lip_gap_m=gaps)
+    result=dict(lip_gap_m=gaps,expression_check='lip_distances' if all(g is not None for g in gaps) else 'insufficient_lip_observation')
     if all(g is not None for g in gaps) and abs(gaps[0]-gaps[1])>max(.003,.15*gaps[0]):
         raise ValueError(f'{side.view_id}: 张闭口程度变化，请保持同一表情重采；lip_gap_m={gaps}')
     if side.state=='open':

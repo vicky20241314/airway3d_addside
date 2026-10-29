@@ -18,12 +18,14 @@ def main():
     p.add_argument('--front-only',action='store_true')
     p.add_argument('--compare-front',action='store_true',help='run both front-only and all observations, stage2 only')
     p.add_argument('--quick',action='store_true',help='integration smoke settings, NOT quality validation')
+    p.add_argument('--stage2-only',action='store_true',help='disable joint refinement')
     a=p.parse_args()
     observations=load_session(a.session) if a.session else load_legacy_pair(a.legacy_pair)
     options=FitOptions(stage1_outer=1,stage2_outer=1,inner_steps=2,max_points=500) if a.quick else FitOptions()
     choices=[True,False] if a.compare_front else [a.front_only]
     for front_only in choices:
-        result=run_multiview(observations,output_root=a.output,options=options,front_only=front_only,progress=lambda s:print(s,flush=True))
+        result=run_multiview(observations,output_root=a.output,options=options,front_only=front_only,
+            refine=not (a.stage2_only or a.compare_front),progress=lambda s:print(s,flush=True))
         print(('front_only' if front_only else 'all_views'),result['folder'],flush=True)
 
 
