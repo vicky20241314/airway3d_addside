@@ -36,7 +36,14 @@ def project(points, camera):
     return np.column_stack((camera.fx*p[:,0]/safe+camera.cx, -camera.fy*p[:,1]/safe+camera.cy)), z
 
 
-def ray_visible(vertices, faces, samples, *, tolerance=.0015):
+def ray_visible(vertices, faces, samples, *, tolerance=.0015,backend=None):
+    import os
+    backend=backend or os.environ.get('AIRWAY3D_RAY_BACKEND','projected')
+    if backend not in ('projected','reference'):raise ValueError('Unknown visibility backend')
+    if backend=='projected':
+        from core.ray_visibility import projected_visibility
+        result=projected_visibility(vertices,faces,samples,tolerance)
+        if result is not None:return result
     samples = np.asarray(samples)
     good = np.isfinite(samples).all(1) & (samples[:,2] < -1e-5)
     result = np.zeros(len(samples), bool)

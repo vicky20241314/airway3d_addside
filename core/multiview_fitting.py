@@ -2,6 +2,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import math
+import time
 import numpy as np
 import torch
 import trimesh
@@ -200,13 +201,18 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     from core.multiview_registration import select_registered_views
     from core.pipeline import write_json
     options=options or FitOptions();options.schedule();folder=Path(folder)
+    timing={};started=time.perf_counter()
     observations,side_to_front,registration,excluded=select_registered_views(observations,folder,progress)
+    timing['registration_s']=time.perf_counter()-started
     fronts={o.state:o for o in observations if o.view=='front'}
     c=fronts['closed'];o=fronts['open']
     # Real legacy front fit provides metric-scale identity and state initialization.
     progress('使用正面闭口/张口拟合初始化多视角 FLAME...')
+    started=time.perf_counter()
     initial_meshes=train(c.xyz,o.xyz,c.uv,o.uv,c.valid,o.valid,c.points,o.points,c.camera,
-        parsing_closed=c.parsing,parsing_open=o.parsing,options=options,device=device,progress=progress,camera_open=o.camera)
+        parsing_closed=c.parsing,parsing_open=o.parsing,options=options,device=device,
+        progress=lambda s:progress('正面初始化｜'+s),camera_open=o.camera)
+    timing['front_initialization_s']=time.perf_counter()-started
     initial={s:m.metadata['flame_parameters'] for s,m in zip(('closed','open'),initial_meshes)}
     transforms=[]
     for obs in observations:
@@ -217,8 +223,12 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     device=device or ('cuda:0' if torch.cuda.is_available() else 'cpu')
     flame=make_flame(options,device,batch=len(observations))
     problem=MultiProblem(flame,observations,initial,transforms,options)
-    theta,stage1=solve_stage(problem,problem.theta,1,progress)
-    theta,stage2=solve_progressive(problem,theta,progress)
+    started=time.perf_counter()
+    theta,stage1=solve_stage(problem,problem.theta,1,lambda s:progress('多视角相机对齐｜'+s))
+    timing['camera_fit_s']=time.perf_counter()-started
+    started=time.perf_counter()
+    theta,stage2=solve_progressive(problem,theta,lambda s:progress('多视角联合拟合｜'+s))
+    timing['joint_fit_s']=time.perf_counter()-started
     problem.embedding=None;vertices,landmarks=problem.forward(theta)
     shape,expr,pose,rotation,translation=problem.parameters(theta)
     meshes={};view_transforms={};front_indices={s:next(i for i,v in enumerate(observations) if v.state==s and v.view=='front') for s in fronts}
@@ -238,6 +248,7 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
         expression_by_view=expr.cpu().numpy(),pose_by_view=pose.cpu().numpy(),rotation=rotation.cpu().numpy(),translation=translation.cpu().numpy(),
         view_ids=np.array([o.view_id for o in observations]),states=np.array([o.state for o in observations]))
     report=dict(stage1=stage1,stage2=stage2,views=problem.view_diagnostics,registration=registration,
+        timing=timing,
         used_view_ids=[o.view_id for o in observations],excluded_views=excluded,
         sharing='one shape; one expression/neck/jaw per state; SE3 per view; no scale',
         front_initialization_open_intrinsics_equal=bool(np.allclose([c.camera.fx,c.camera.fy,c.camera.cx,c.camera.cy],

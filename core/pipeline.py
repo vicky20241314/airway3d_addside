@@ -138,6 +138,7 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
     from core.aruco import detect_aruco
     from core.multiview_geometry import RigidCamera
     import hashlib
+    import os
     from dataclasses import asdict
     from core.fit_options import FitOptions
     options=options or FitOptions()
@@ -147,7 +148,8 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
     started=time.perf_counter()
     report=dict(status='started',algorithm='multiview_shared_state_LM',metric_geometry_stage=2,
         stage3_enabled=bool(refine),mesh_unit='m',depth_unit='mm',real_side_effect_validated=False,
-        run_purpose='smoke_test' if smoke_test else 'reconstruction',fit_configuration=asdict(options))
+        run_purpose='smoke_test' if smoke_test else 'reconstruction',fit_configuration=asdict(options),
+        visibility_backend=os.environ.get('AIRWAY3D_RAY_BACKEND','projected'))
     if smoke_test:
         (folder/'QUICK_TEST_ONLY.txt').write_text('快速流程检查结果，不能用于判断相似度或重建精度。正式回放请去掉 --quick。\n',encoding='utf-8')
     try:
@@ -176,17 +178,24 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
             metric_sources=dict(closed_front=c.view_id,open_front=o.view_id,aruco=c.view_id,
                 coordinates='each state front camera; never side landmarks'))
         write_json(folder/'report.json',report)
+        timing=dict(preparation_s=time.perf_counter()-started)
+        phase_started=time.perf_counter()
         meshes,transforms,fitting=fit_multiview(observations,folder,options=options,device=device,progress=progress)
+        timing['fitting_s']=time.perf_counter()-phase_started
         used=fitting.get('used_view_ids',[v.view_id for v in observations])
         report.update(captured_view_ids=report['view_ids'],view_ids=used,excluded_views=fitting.get('excluded_views',[]))
         observations=[v for v in observations if v.view_id in used]
         write_json(folder/'extrinsics.json',{k:dict(R=v.R,t=v.t,direction='state_front_to_view') for k,v in transforms.items()})
+        phase_started=time.perf_counter()
         metrics,snapshots,display,diagnostics=finish_meshes((meshes['closed'],meshes['open']),
             [c.depth,o.depth],c.camera,[c.parsing,o.parsing],[c.uv,o.uv],adam,[c.xyz,o.xyz],folder,progress,refine=False)
+        timing['stage2_metrics_s']=time.perf_counter()-phase_started
+        phase_started=time.perf_counter()
         if refine:
             report['stage']='joint_refinement';write_json(folder/'report.json',report)
             display,diagnostics=finish_multiview_refinement(snapshots,observations,transforms,folder,progress)
-        report.update(status='complete',stage='complete',fitting=fitting,refinement=diagnostics,elapsed_s=time.perf_counter()-started)
+        timing['refinement_s']=time.perf_counter()-phase_started if refine else 0.
+        report.update(status='complete',stage='complete',fitting=fitting,refinement=diagnostics,timing=timing,elapsed_s=time.perf_counter()-started)
         write_json(folder/'report.json',report)
         version=(Path(__file__).resolve().parents[1]/'VERSION').read_text().strip()
         sources={str(p.relative_to(Path(__file__).resolve().parents[1])):hashlib.sha256(p.read_bytes()).hexdigest()
@@ -209,7 +218,10 @@ def finish_multiview_refinement(stage2,observations,transforms,folder,progress=l
         views=[o for o in observations if o.state==state and o.view_id in transforms]
         if not any(o.view=='front' for o in views):raise ValueError(f'{state}: missing fitted front camera')
         progress(f'联合细化 {state}：{len(views)} 个视角，一份位移场...')
+        phase_started=time.perf_counter()
         result,reference,info=refine_multiview_mesh(copy.deepcopy(mesh),views,transforms)
+        info['total_elapsed_s']=time.perf_counter()-phase_started
+        progress(f"{'闭口' if state=='closed' else '张口'}联合细化完成：{info['total_elapsed_s']:.1f}秒")
         out=folder/state;out.mkdir(parents=True,exist_ok=True)
         # Preserve small-triangle geometry bounds in the exported mesh too.
         result.export(out/f'mesh_{state}.obj',digits=16)

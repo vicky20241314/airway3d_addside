@@ -1,4 +1,4 @@
-# 多视角 RGB-D（v0.11.0）
+# 多视角 RGB-D（v0.11.1）
 
 实际调用链：`MultiCaptureWidget → MultiPipelineWorker → run_multiview → fit_multiview → MultiProblem`。
 原双帧 `CaptureWidget → PipelineWorker → run_pair` 路径保留。
@@ -92,7 +92,7 @@ v0.9.1颈部检查只比较双向投影到共同颈部语义区域的可靠表�
 不提供放宽这些保护的界面选项。末端只平滑D，不平滑基准坐标；冻结所有语义方程涉及顶点。输出`V=reference_vertices+offsets`一次。
 `FitOptions`可配置LM档位、样本数、迭代及正则；会话`quality.weight`必须在(0,1]，`motion_mode`必须为`camera_moved`。
 配准多尺度体素8/4/2mm、对应门限30/15/8mm，要求双向稳定区域重叠至少25%、RMSE不超过4mm；张口唇距变化超过max(3mm,15%)或配准后唇点中位偏差超过6mm拒绝。
-射线分批128，降低内存峰值；无额外射线加速依赖，细分网格的严格可见性检查可能耗时数分钟。
+默认通过64×64投影空间网格筛选射线候选三角面，再执行精确三维交点和重心包含检查；网格仅用于候选索引，不是渲染分辨率，不对射线/网格做降采样。候选按预算分批处理。跨相机平面或异常投影范围回退原分批128条射线的实现，恰好位于距离容差边界的点也由原实现复核，无新增依赖。
 
 已有stage2可以单独重放细化，不修改源目录或指标：
 
@@ -141,3 +141,18 @@ python tools/compare_multiview_runs.py --reference-run output/六视角完整运
 工具以参考运行的初始面部ICP外参为共同相机，对所有结果使用相同内参、观察区域和光照，生成两状态对照PNG与`comparison.json`。可增加`--run "Refined" output/细化运行 stage3`。
 表面误差不按距离裁剪，报告正面/侧面及有效覆盖率；逐视角标记是否用于该结果的几何拟合。相机外参来自这批观测本身，因此这些仍是共享观测诊断，不是独立精度评估；没有人工核对轮廓时不报告轮廓误差。
 照片包含肤色、眉毛、头发与光照，而当前输出是无纹理几何。应同时检查几何对齐、鼻唇与下颌轮廓和深度误差，不能仅凭裸网格的整体观感或总损失判断精度。
+
+## 性能诊断与回归
+
+v0.6.0主要运行闭口/张口两个正面；当前多视角入口先完整执行正面初始化，再做联合拟合和各视角遮挡/细化，工作量更大。v0.11.1优化最慢的遮挡查询，保持原完整初始化和LM配置。
+进度现在区分“正面初始化”“多视角相机对齐”“多视角联合拟合”，各状态细化结束显示耗时。`report.json.timing`记录各大阶段，`fitting.timing`细分配准/初始化/相机/联合拟合；细化的`total_elapsed_s`包含其准备工作，原`elapsed_s`仍表示求解器时间。
+
+```powershell
+python tools/benchmark_visibility.py --run output/已完成运行
+python tools/check_speed_regression.py --baseline output/加速前运行 --run output/加速后运行
+python tools/compare_refinement_backends.py --run output/已完成运行
+```
+
+第一个工具逐视角比较旧/新射线判断及计时；第二个要求相同原始输入、内参、拟合配置和实际视角，再比较网格与指标。数值回归门限为stage2最大顶点差0.005mm、stage3最大差0.02mm，不代表真实解剖精度。
+第三个工具固定保存的stage2、外参及观测，在同一进程分别运行两种遮挡后端，隔离完整重复拟合的差异；原后端较慢，可能需要十余分钟。v0.11.1已完成这项受控对照，两状态最终顶点差为0。完整重复拟合曾超出上述严格回归门限，报告保留在验证记录中，不能把受控细化一致误写成从头重建完全一致。
+如需复核旧遮挡实现，可在当前终端设置`$env:AIRWAY3D_RAY_BACKEND='reference'`再回放；恢复默认用`Remove-Item Env:AIRWAY3D_RAY_BACKEND`。该设置只改变查询实现，不改变采样与迭代，运行报告记录所选后端。不同机器/数据/并发负载的耗时不同，局部查询倍数不能当作整段重建倍数。
