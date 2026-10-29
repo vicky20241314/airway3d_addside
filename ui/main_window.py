@@ -105,6 +105,9 @@ class MainWindow(QMainWindow):
         self._process.draw_aruco(aruco_corners)
         self._result.setup(metrics, proj_closed, proj_open,
                            self._rgb_closed, self._rgb_open, aruco_corners)
+        summary=getattr(self._pipeline,'capture_summary','')
+        self._result.capture_notice.setText(summary)
+        self._result.capture_notice.setVisible(bool(summary))
         self._stack.setCurrentIndex(PAGE_RESULT)
 
     def _on_error(self, msg: str):

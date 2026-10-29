@@ -86,6 +86,11 @@ class ResultWidget(QWidget):
             "color: #212121; font-size: 16px; font-weight: bold;"
         )
         sb.addWidget(lbl_title)
+        self.capture_notice=QLabel()
+        self.capture_notice.setWordWrap(True)
+        self.capture_notice.setStyleSheet('color: #805500; font-size: 12px;')
+        self.capture_notice.hide()
+        sb.addWidget(self.capture_notice)
         sb.addSpacing(8)
 
         # metric rows

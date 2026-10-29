@@ -140,14 +140,17 @@ class JointRefineTests(unittest.TestCase):
         from core.pipeline import finish_multiview_refinement
         base,faces=plane_fixture();mesh=trimesh.Trimesh(base,faces,process=False)
         observations=[plane_observation(a,s+'_'+str(i))[0] for s in ('closed','open') for i,a in enumerate((0,30,-30))]
-        for o in observations:o.state=o.view_id.split('_')[0]
+        for o in observations:
+            o.state=o.view_id.split('_')[0]
+            o.view='front' if o.view_id.endswith('_0') else 'left'
         def refine(mesh,views,transforms):
             result=mesh.copy();reference=mesh.vertices.copy();result.vertices=reference+np.array([0,0,.0002])
             return result,reference,dict(shared_displacement=True)
         with tempfile.TemporaryDirectory() as d,patch('core.cross_refine.refine_multiview_mesh',side_effect=refine) as solve:
-            outputs,_=finish_multiview_refinement((mesh,mesh),observations,{},d)
+            transforms={o.view_id:RigidCamera(np.eye(3),np.zeros(3)) for o in observations if o.state=='closed' or o.view=='front'}
+            outputs,_=finish_multiview_refinement((mesh,mesh),observations,transforms,d)
             self.assertEqual(solve.call_count,2)
-            self.assertEqual([len(call.args[1]) for call in solve.call_args_list],[3,3])
+            self.assertEqual([len(call.args[1]) for call in solve.call_args_list],[3,1])
             for state,result in zip(('closed','open'),outputs):
                 saved=trimesh.load(Path(d)/state/f'mesh_{state}.obj',process=False,force='mesh')
                 np.testing.assert_allclose(saved.vertices,result.vertices,rtol=0,atol=1e-14)

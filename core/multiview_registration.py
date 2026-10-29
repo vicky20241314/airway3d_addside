@@ -129,13 +129,47 @@ def check_expression(front,side,T):
     if all(g is not None for g in gaps) and abs(gaps[0]-gaps[1])>max(.003,.15*gaps[0]):
         raise ValueError(f'{side.view_id}: 张闭口程度变化，请保持同一表情重采；lip_gap_m={gaps}')
     if side.state=='open':
-        if any(g is None for g in gaps):raise ValueError(f'{side.view_id}: 无足够可靠唇点检查张口保持，请重采')
+        if any(g is None for g in gaps):raise ValueError(f'{side.view_id}: 侧面唇部深度不足，无法验证与正面的张口一致性')
         ids=np.array([50,51,52,56,57,58]);ids=ids[front.valid[ids]&side.valid[ids]]
         error=np.linalg.norm(T.to_view(side.xyz[ids])-front.xyz[ids],axis=1)
         result['open_lip_consistency_m']=float(np.median(error)) if len(error) else None
         if len(error)<4 or np.median(error)>.006:
-            raise ValueError(f'{side.view_id}: 张口形态或下颌位置不一致/唇点不可靠，请保持张口后重采')
+            raise ValueError(f'{side.view_id}: 张口形态或下颌位置与正面不一致，或可见唇点不足')
     return result
+
+
+def select_registered_views(observations,folder,progress=lambda _:None):
+    """Closed sides are required; inconsistent OPEN sides are optional input.
+
+    Omit the whole optional view, never treat unseen lips as measured or let
+    different openings deform a shared open-state mesh. Retain raw observations.
+    """
+    from pathlib import Path
+    from core.pipeline import write_json
+    folder=Path(folder);fronts={o.state:o for o in observations if o.view=='front'}
+    kept=[];transforms={};registration=[];excluded=[]
+    for obs in observations:
+        if obs.view=='front':kept.append(obs);continue
+        progress(f'检查并配准 {obs.view_id} 的稳定面部区域…')
+        try:
+            T,diag,source,target=register_to_front(fronts[obs.state],obs)
+        except ValueError as exc:
+            row=dict(view_id=obs.view_id,reason=str(exc),diagnostics=getattr(exc,'diagnostics',{}))
+            if hasattr(exc,'transform'):
+                save_registration_diagnostics(folder,obs.view_id,exc.transform,exc.diagnostics,exc.source,exc.target,failed=True)
+            if obs.state=='open':
+                excluded.append(row)
+                progress(f'{obs.view_id} 不参与拟合：{exc}。继续使用张口正面；原始数据保留。')
+                continue
+            write_json(folder/'registration_failure.json',row)
+            raise
+        kept.append(obs);transforms[obs.view_id]=T
+        registration.append(dict(view_id=obs.view_id,**diag))
+        save_registration_diagnostics(folder,obs.view_id,T,diag,source,target)
+        if diag['neck_check']['warning']:progress(f"{obs.view_id}：{diag['neck_check']['warning']}")
+    write_json(folder/'view_selection.json',dict(policy='closed_sides_required_open_sides_optional',
+        captured_view_ids=[o.view_id for o in observations],used_view_ids=[o.view_id for o in kept],excluded_views=excluded))
+    return kept,transforms,registration,excluded
 
 
 def register_to_front(front, side):

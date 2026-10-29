@@ -116,6 +116,11 @@ class MultiPipelineWorker(QThread):
             from core.pipeline import run_multiview
             from core.render import auto_render_mesh
             result=run_multiview(self.observations,progress=self.progress.emit,refine=self.refine)
+            used=result['used_view_ids'];excluded=result['excluded_views']
+            self.capture_summary=f'实际采用 {len(used)} 个视角。张口指标使用张口正面。'
+            if excluded:
+                names={'open_left':'张口左侧','open_right':'张口右侧'}
+                self.capture_summary+='\n未采用：'+ '、'.join(names.get(r['view_id'],r['view_id']) for r in excluded)+'。侧面不可见或一致性不足；原始数据已保留。'
             c,o=result['meshes']
             self.finished.emit(result['metrics'],auto_render_mesh(c.vertices,c.faces,800,800),
                 auto_render_mesh(o.vertices,o.faces,800,800),result['aruco_corners'])

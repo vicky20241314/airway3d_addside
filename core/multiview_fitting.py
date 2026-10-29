@@ -197,9 +197,10 @@ class MultiProblem(JointProblem):
 
 def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda _:None):
     from core.integrated_fitting import train,make_flame
-    from core.multiview_registration import register_to_front,save_registration_diagnostics
+    from core.multiview_registration import select_registered_views
     from core.pipeline import write_json
     options=options or FitOptions();options.schedule();folder=Path(folder)
+    observations,side_to_front,registration,excluded=select_registered_views(observations,folder,progress)
     fronts={o.state:o for o in observations if o.view=='front'}
     c=fronts['closed'];o=fronts['open']
     # Real legacy front fit provides metric-scale identity and state initialization.
@@ -207,20 +208,11 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     initial_meshes=train(c.xyz,o.xyz,c.uv,o.uv,c.valid,o.valid,c.points,o.points,c.camera,
         parsing_closed=c.parsing,parsing_open=o.parsing,options=options,device=device,progress=progress,camera_open=o.camera)
     initial={s:m.metadata['flame_parameters'] for s,m in zip(('closed','open'),initial_meshes)}
-    transforms=[];registration=[]
+    transforms=[]
     for obs in observations:
         p=initial[obs.state];front_T=RigidCamera(p['rotation'],p['translation'])
         if obs.view=='front':transforms.append(front_T);continue
-        progress(f'配准 {obs.view_id}：稳定面部重叠区域...')
-        try:T,diag,source,target=register_to_front(fronts[obs.state],obs)
-        except Exception as exc:
-            write_json(folder/'registration_failure.json',dict(view_id=obs.view_id,error=str(exc),diagnostics=getattr(exc,'diagnostics',{})))
-            if hasattr(exc,'transform'):
-                save_registration_diagnostics(folder,obs.view_id,exc.transform,exc.diagnostics,exc.source,exc.target,failed=True)
-            raise
-        transforms.append(T.inverse().compose(front_T));registration.append(dict(view_id=obs.view_id,**diag))
-        save_registration_diagnostics(folder,obs.view_id,T,diag,source,target)
-        if diag['neck_check']['warning']:progress(f"{obs.view_id}：{diag['neck_check']['warning']}")
+        transforms.append(side_to_front[obs.view_id].inverse().compose(front_T))
     write_json(folder/'registration.json',registration)
     device=device or ('cuda:0' if torch.cuda.is_available() else 'cpu')
     flame=make_flame(options,device,batch=len(observations))
@@ -246,6 +238,7 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
         expression_by_view=expr.cpu().numpy(),pose_by_view=pose.cpu().numpy(),rotation=rotation.cpu().numpy(),translation=translation.cpu().numpy(),
         view_ids=np.array([o.view_id for o in observations]),states=np.array([o.state for o in observations]))
     report=dict(stage1=stage1,stage2=stage2,views=problem.view_diagnostics,registration=registration,
+        used_view_ids=[o.view_id for o in observations],excluded_views=excluded,
         sharing='one shape; one expression/neck/jaw per state; SE3 per view; no scale',
         front_initialization_open_intrinsics_equal=bool(np.allclose([c.camera.fx,c.camera.fy,c.camera.cx,c.camera.cy],
             [o.camera.fx,o.camera.fy,o.camera.cx,o.camera.cy])),parameter_count=problem.layout.size)

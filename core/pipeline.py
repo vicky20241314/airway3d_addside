@@ -164,7 +164,12 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
             if obs.parsing is None or obs.points is None:
                 from core.mask_detection import get_face_data_single
                 data=get_face_data_single(obs.camera,obs.rgb,obs.depth)
-                if not data['valid']:raise ValueError(f'{obs.view_id}: 面颈分割失败')
+                if not data['valid']:
+                    if obs.state=='open' and obs.view!='front':
+                        obs.parsing=None;obs.points=None
+                        progress(f'{obs.view_id} 面部区域不足，将记录为未采用的可选观测。')
+                        continue
+                    raise ValueError(f'{obs.view_id}: 面颈分割失败')
                 obs.parsing=data['parsing'];obs.points=data['pts_face_neck']
         save_session(folder/'prepared',observations)
         report.update(stage='fitting',view_ids=[v.view_id for v in observations],
@@ -172,6 +177,9 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
                 coordinates='each state front camera; never side landmarks'))
         write_json(folder/'report.json',report)
         meshes,transforms,fitting=fit_multiview(observations,folder,options=options,device=device,progress=progress)
+        used=fitting.get('used_view_ids',[v.view_id for v in observations])
+        report.update(captured_view_ids=report['view_ids'],view_ids=used,excluded_views=fitting.get('excluded_views',[]))
+        observations=[v for v in observations if v.view_id in used]
         write_json(folder/'extrinsics.json',{k:dict(R=v.R,t=v.t,direction='state_front_to_view') for k,v in transforms.items()})
         metrics,snapshots,display,diagnostics=finish_meshes((meshes['closed'],meshes['open']),
             [c.depth,o.depth],c.camera,[c.parsing,o.parsing],[c.uv,o.uv],adam,[c.xyz,o.xyz],folder,progress,refine=False)
@@ -186,7 +194,8 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
         inputs={str(p.relative_to(folder)):hashlib.sha256(p.read_bytes()).hexdigest()
             for sub in ('capture','prepared') for p in (folder/sub).iterdir() if p.is_file()}
         write_json(folder/'provenance.json',dict(version=version,sources=sources,inputs=inputs,real_side_effect_validated=False))
-        return dict(metrics=metrics,stage2=snapshots,meshes=display,aruco_corners={'closed':corners,'open':None},folder=folder)
+        return dict(metrics=metrics,stage2=snapshots,meshes=display,aruco_corners={'closed':corners,'open':None},folder=folder,
+            used_view_ids=used,excluded_views=report['excluded_views'])
     except Exception as exc:
         report.update(status='failed',error=str(exc),elapsed_s=time.perf_counter()-started)
         write_json(folder/'report.json',report)
@@ -197,7 +206,8 @@ def finish_multiview_refinement(stage2,observations,transforms,folder,progress=l
     from core.cross_refine import refine_multiview_mesh
     display=[];diagnostics=[];folder=Path(folder)
     for state,mesh in zip(('closed','open'),stage2):
-        views=[o for o in observations if o.state==state]
+        views=[o for o in observations if o.state==state and o.view_id in transforms]
+        if not any(o.view=='front' for o in views):raise ValueError(f'{state}: missing fitted front camera')
         progress(f'联合细化 {state}：{len(views)} 个视角，一份位移场...')
         result,reference,info=refine_multiview_mesh(copy.deepcopy(mesh),views,transforms)
         out=folder/state;out.mkdir(parents=True,exist_ok=True)

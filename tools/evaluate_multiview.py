@@ -30,8 +30,11 @@ def main():
     source=Path(report['source']) if 'source' in report else a.run
     training=load_session(source/'prepared/session.json')
     ext=json.loads((source/'extrinsics.json').read_text(encoding='utf-8'))
+    captured=training
+    skipped=[o.view_id for o in captured if o.view_id not in ext]
+    training=[o for o in captured if o.view_id in ext]
     held=load_session(a.held_out) if a.held_out else []
-    assert_held_out(training,held)
+    assert_held_out(captured,held)
     if held:ext.update(json.loads(a.held_out_extrinsics.read_text(encoding='utf-8')))
     if any(t['direction']!='state_front_to_view' for t in ext.values()):raise ValueError('Expected state_front_to_view extrinsics')
     transforms={k:RigidCamera(t['R'],t['t']) for k,t in ext.items()}
@@ -51,6 +54,7 @@ def main():
             print(role,o.view_id,row['surface'],flush=True)
     out=a.output/('mv_evaluation_'+datetime.now().strftime('%Y%m%d_%H%M%S_%f'));out.mkdir(parents=True,exist_ok=False)
     value=dict(source=str(a.run.resolve()),geometry=a.geometry,views=rows,summary=summarize(rows),
+        captured_but_not_fitted=skipped,
         independent_views_present=bool(held),reviewed_masks_complete=all(r['contour']['status']=='reviewed_mask' for r in rows),
         note='In-fit residuals are diagnostics. Independent calibrated oblique views and reviewed masks are required for real acceptance. No loss-based accuracy claim.')
     write_json(out/'evaluation.json',value);print(out,flush=True)

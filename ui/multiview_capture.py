@@ -28,12 +28,12 @@ class MultiCaptureWidget(CaptureWidget):
     def _build_ui(self):
         super()._build_ui()
         self.mode=QComboBox()
-        self.mode.addItems(['原双帧模式','闭口三视角 + 张口正面','闭口三视角 + 张口三视角'])
-        self.mode.setCurrentIndex(2)
+        self.mode.addItems(['原双帧模式','闭口三视角 + 张口正面（推荐）','额外采集张口侧面（可选，不一致时不采用）'])
+        self.mode.setCurrentIndex(1)
         self.btn_capture.parent().layout().insertWidget(1,self.mode)
         self.frame_count_choice=QComboBox()
-        for count in (5,9,15):self.frame_count_choice.addItem(f'每视角 {count} 帧'+('（推荐）' if count==15 else ''),count)
-        self.frame_count_choice.setCurrentIndex(2)
+        for count in (5,9,15):self.frame_count_choice.addItem(f'每视角 {count} 帧'+('（手持推荐）' if count==5 else ''),count)
+        self.frame_count_choice.setCurrentIndex(0)
         self.btn_capture.parent().layout().insertWidget(2,self.frame_count_choice)
         self.burst_status=QLabel();self.burst_status.setWordWrap(True)
         self.burst_status.setStyleSheet('color: #555; font-size: 12px;')
@@ -56,7 +56,7 @@ class MultiCaptureWidget(CaptureWidget):
             self.frame_count_choice.hide();self.burst_status.hide();return
         self.frame_count_choice.show();self.burst_status.show()
         count=int(self.frame_count_choice.currentData())
-        self.burst_status.setText(f'已缓存 {len(self._mv_frames)}/{count} 帧。停稳后采集，将筛选并融合多帧深度和关键点。')
+        self.burst_status.setText(f'已缓存 {len(self._mv_frames)}/{count} 帧。短暂停留后采集；自动补偿小幅手抖，至少使用 {max(3,int(np.ceil(count*.6)))} 帧。')
         self.btn_capture.setEnabled(len(self._mv_frames)>=count and len(self._observations)<len(self.sequence()))
 
     def _guidance(self):
@@ -65,7 +65,7 @@ class MultiCaptureWidget(CaptureWidget):
         state,view=self.sequence()[index]
         name={'front':'正面','left':'左约40°','right':'右约40°'}[view]
         title=('闭口' if state=='closed' else '张口')+name
-        self.lbl_title.setText(f'{index+1}/{len(self.sequence())} 采集{title}\n保持头颈和表情不动，移动相机；停稳后采集。侧面无需 ArUco。')
+        self.lbl_title.setText(f'{index+1}/{len(self.sequence())} 采集{title}\n移动相机，到位后短暂停留；人保持头颈姿态。侧面无需 ArUco。')
         self.btn_capture.setText('采集'+title)
         self._stage=0 if state=='closed' else 1
         self._view_started_at=time.monotonic()

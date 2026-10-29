@@ -42,11 +42,12 @@ def main():
  with patch.object(CameraThread,'start',lambda self:None):
   w=MainWindow();w.show();app.processEvents()
   assert w._stack.currentIndex()==0 and w._capture._stage==0
-  assert w._capture.frame_count_choice.currentData()==15
+  assert w._capture.frame_count_choice.currentData()==5
+  assert w._capture.mode.currentIndex()==1
   w._capture.on_frame(data['rgb_closed'],data['depth_closed'],cameras['closed'])
   app.processEvents();w.grab().save(str(a.output/'capture_page.png'))
   w.close();app.processEvents()
- result.update(gui_capture_page=True,hardware_capture=False,default_burst_frames=15,temporal_quality_effect_validated=False)
+ result.update(gui_capture_page=True,hardware_capture=False,default_burst_frames=5,temporal_quality_effect_validated=False)
  (a.output/'frontend.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
  print(result)
 if __name__=='__main__':main()

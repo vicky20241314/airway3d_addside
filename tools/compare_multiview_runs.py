@@ -34,12 +34,17 @@ def main():
     p.add_argument('--output',type=Path,default=ROOT/'output')
     p.add_argument('--max-points',type=int,default=4000)
     a=p.parse_args();observations=load_session(a.reference_run/'prepared/session.json')
-    transforms={}
+    transforms={};skipped=[]
     for o in observations:
         if o.view=='front':transforms[o.view_id]=RigidCamera(np.eye(3),np.zeros(3))
         else:
-            row=json.loads((a.reference_run/f'registration_{o.view_id}.json').read_text(encoding='utf-8'))
+            path=a.reference_run/f'registration_{o.view_id}.json'
+            if not path.exists():path=a.reference_run/f'registration_{o.view_id}_failed.json'
+            if not path.exists():
+                skipped.append(o.view_id);continue
+            row=json.loads(path.read_text(encoding='utf-8'))
             transforms[o.view_id]=RigidCamera(row['R_side_to_front'],row['t_side_to_front']).inverse()
+    observations=[o for o in observations if o.view_id in transforms]
     models=[]
     for label,folder,geometry in a.run:
         folder=Path(folder)
@@ -53,7 +58,8 @@ def main():
     out=a.output/('comparison_'+datetime.now().strftime('%Y%m%d_%H%M%S_%f'));out.mkdir(parents=True,exist_ok=False)
     report=dict(status='started',reference_session=str((a.reference_run/'prepared/session.json').resolve()),
         camera_policy='same initial face-ICP side-to-front transforms for ALL results; never refit to each mesh',
-        independent_accuracy_validation=False,reviewed_contours_available=False,max_points=a.max_points,runs=[])
+        independent_accuracy_validation=False,reviewed_contours_available=False,max_points=a.max_points,runs=[],
+        missing_registration_view_ids=skipped)
     write_json(out/'comparison.json',report)
     import pyrender
     try:font=ImageFont.truetype('C:/Windows/Fonts/arial.ttf',18)
