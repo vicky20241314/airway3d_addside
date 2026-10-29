@@ -1,0 +1,823 @@
+{
+  "algorithm": "cross-v4-jaw-supported",
+  "mesh_unit": "m",
+  "depth_unit": "mm",
+  "status": "complete",
+  "metric_geometry_stage": 2,
+  "shared_shape": true,
+  "aruco_required": true,
+  "stage": "complete",
+  "fitting": {
+    "stage1": {
+      "solver": "LM",
+      "stopped": "max_outer",
+      "history": [
+        {
+          "outer": 1,
+          "loss": 2.483528262005628e-05,
+          "accepted": 4,
+          "inner_reason": "rejected",
+          "damping": 0.04,
+          "max_move_m": 0.03794821351766586,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 2,
+          "loss": 1.0305954207683131e-05,
+          "accepted": 4,
+          "inner_reason": "max_inner",
+          "damping": 0.64,
+          "max_move_m": 0.0027777913492172956,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 3,
+          "loss": 9.942804056597288e-06,
+          "accepted": 7,
+          "inner_reason": "max_inner",
+          "damping": 0.16,
+          "max_move_m": 0.0012321704998612404,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 4,
+          "loss": 9.774374849405417e-06,
+          "accepted": 2,
+          "inner_reason": "rejected",
+          "damping": 2.56,
+          "max_move_m": 0.0009479699656367302,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 5,
+          "loss": 9.697913740170666e-06,
+          "accepted": 8,
+          "inner_reason": "max_inner",
+          "damping": 0.16,
+          "max_move_m": 0.0006520831375382841,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 6,
+          "loss": 9.666972737014124e-06,
+          "accepted": 3,
+          "inner_reason": "rejected",
+          "damping": 1.28,
+          "max_move_m": 0.0004341851163189858,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 7,
+          "loss": 9.650996489676894e-06,
+          "accepted": 6,
+          "inner_reason": "max_inner",
+          "damping": 1.28,
+          "max_move_m": 0.0003388776385691017,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 8,
+          "loss": 9.642705051313319e-06,
+          "accepted": 4,
+          "inner_reason": "rejected",
+          "damping": 5.12,
+          "max_move_m": 0.0002607489877846092,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 9,
+          "loss": 9.640648292755558e-06,
+          "accepted": 8,
+          "inner_reason": "max_inner",
+          "damping": 0.32,
+          "max_move_m": 0.00016706468886695802,
+          "points": [
+            4000,
+            4000
+          ]
+        },
+        {
+          "outer": 10,
+          "loss": 9.640087621537981e-06,
+          "accepted": 2,
+          "inner_reason": "rejected",
+          "damping": 5.12,
+          "max_move_m": 0.00010944245150312781,
+          "points": [
+            4000,
+            4000
+          ]
+        }
+      ],
+      "basis": null,
+      "active_parameter_count": 16,
+      "elapsed_s": 7.56993280001916
+    },
+    "stage2": {
+      "solver": "progressive_LM",
+      "passes": [
+        {
+          "solver": "LM",
+          "stopped": "vertex_step",
+          "history": [
+            {
+              "outer": 1,
+              "loss": 3.447285002455664e-05,
+              "accepted": 9,
+              "inner_reason": "max_inner",
+              "damping": 0.00015625,
+              "max_move_m": 0.011723603121936321,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 2,
+              "loss": 3.328520835063335e-05,
+              "accepted": 2,
+              "inner_reason": "rejected",
+              "damping": 0.0025,
+              "max_move_m": 0.0041704680770635605,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 3,
+              "loss": 3.321762355719758e-05,
+              "accepted": 4,
+              "inner_reason": "rejected",
+              "damping": 0.04,
+              "max_move_m": 0.0013465696247294545,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 4,
+              "loss": 3.320638152021191e-05,
+              "accepted": 5,
+              "inner_reason": "rejected",
+              "damping": 0.08,
+              "max_move_m": 0.00036884367000311613,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 5,
+              "loss": 3.3204683755635745e-05,
+              "accepted": 2,
+              "inner_reason": "rejected",
+              "damping": 5.12,
+              "max_move_m": 7.03002224327065e-05,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 6,
+              "loss": 3.320435034935875e-05,
+              "accepted": 1,
+              "inner_reason": "rejected",
+              "damping": 163.84,
+              "max_move_m": 3.6034020922670607e-06,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 7,
+              "loss": 3.320432655391645e-05,
+              "accepted": 0,
+              "inner_reason": "rejected",
+              "damping": 10485.76,
+              "max_move_m": 0.0,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 8,
+              "loss": 3.3204326522428076e-05,
+              "accepted": 1,
+              "inner_reason": "step",
+              "damping": 41943.04,
+              "max_move_m": 2.986047320518992e-08,
+              "points": [
+                4000,
+                4000
+              ]
+            }
+          ],
+          "basis": [
+            20,
+            5
+          ],
+          "active_parameter_count": 46
+        },
+        {
+          "solver": "LM",
+          "stopped": "vertex_step",
+          "history": [
+            {
+              "outer": 1,
+              "loss": 3.2207456147557604e-05,
+              "accepted": 8,
+              "inner_reason": "max_inner",
+              "damping": 0.000625,
+              "max_move_m": 0.002011711010709405,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 2,
+              "loss": 3.219891834344614e-05,
+              "accepted": 2,
+              "inner_reason": "rejected",
+              "damping": 0.02,
+              "max_move_m": 0.00033567551872693,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 3,
+              "loss": 3.219803901109005e-05,
+              "accepted": 3,
+              "inner_reason": "rejected",
+              "damping": 0.16,
+              "max_move_m": 0.00010752354864962399,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 4,
+              "loss": 3.2197421404656284e-05,
+              "accepted": 1,
+              "inner_reason": "rejected",
+              "damping": 10.24,
+              "max_move_m": 3.4535263694124296e-05,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 5,
+              "loss": 3.2197367683705955e-05,
+              "accepted": 1,
+              "inner_reason": "rejected",
+              "damping": 1310.72,
+              "max_move_m": 3.399011632154725e-07,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 6,
+              "loss": 3.2197363478452364e-05,
+              "accepted": 1,
+              "inner_reason": "rejected",
+              "damping": 167772.16,
+              "max_move_m": 6.188916756855178e-08,
+              "points": [
+                4000,
+                4000
+              ]
+            }
+          ],
+          "basis": [
+            50,
+            10
+          ],
+          "active_parameter_count": 86
+        },
+        {
+          "solver": "LM",
+          "stopped": "vertex_step",
+          "history": [
+            {
+              "outer": 1,
+              "loss": 3.101659740724453e-05,
+              "accepted": 7,
+              "inner_reason": "max_inner",
+              "damping": 0.0025,
+              "max_move_m": 0.001096712308935821,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 2,
+              "loss": 3.101706048677409e-05,
+              "accepted": 2,
+              "inner_reason": "rejected",
+              "damping": 0.32,
+              "max_move_m": 0.00021757859212812036,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 3,
+              "loss": 3.1016631023688424e-05,
+              "accepted": 4,
+              "inner_reason": "max_inner",
+              "damping": 5.12,
+              "max_move_m": 5.703305942006409e-05,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 4,
+              "loss": 3.101663837967794e-05,
+              "accepted": 0,
+              "inner_reason": "rejected",
+              "damping": 327.68,
+              "max_move_m": 0.0,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 5,
+              "loss": 3.1016604549502726e-05,
+              "accepted": 4,
+              "inner_reason": "max_inner",
+              "damping": 5242.88,
+              "max_move_m": 7.185079908822445e-08,
+              "points": [
+                4000,
+                4000
+              ]
+            },
+            {
+              "outer": 6,
+              "loss": 3.101660160907846e-05,
+              "accepted": 1,
+              "inner_reason": "step",
+              "damping": 83886.08,
+              "max_move_m": 0.0,
+              "points": [
+                4000,
+                4000
+              ]
+            }
+          ],
+          "basis": [
+            100,
+            30
+          ],
+          "active_parameter_count": 176
+        }
+      ],
+      "elapsed_s": 13.058756300015375
+    },
+    "loss_profile": "jaw_supported",
+    "jaw_constraints": [
+      {
+        "ids": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "reason": "ok",
+        "groups": {
+          "jaw": 433,
+          "other_face": 2625,
+          "neck": 942
+        },
+        "group_budgets": [
+          0.3,
+          0.55,
+          0.15
+        ],
+        "pixel_to_m": 0.00045500278154302255,
+        "initial_stage2_yaw_deg": -4.025511471659677,
+        "contour_normal_mean_px": 3.3095338344573975
+      },
+      {
+        "ids": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14
+        ],
+        "reason": "ok",
+        "groups": {
+          "jaw": 485,
+          "other_face": 2827,
+          "neck": 688
+        },
+        "group_budgets": [
+          0.3,
+          0.55,
+          0.15
+        ],
+        "pixel_to_m": 0.00047129319906431426,
+        "initial_stage2_yaw_deg": -2.30730119011032,
+        "contour_normal_mean_px": 2.150355577468872
+      }
+    ],
+    "elapsed_s": 25.1409184000222,
+    "device": "cuda:0",
+    "metric_geometry": "stage2",
+    "identity_parameter_count": 100
+  },
+  "input_hashes": {
+    "capture_pair.npz": "2cd8d6a42759518da3db6d1c8b6c497576ec429ca80cdb18515e3be4a981752c",
+    "prepared.npz": "0d51e23af03203c6e66b936b759625f69dff1c1fb98c5083fc156c41321c3769",
+    "flame_parameters.npz": "307f294049df4e433c4277faf4d7dc24747f307d539ef0f4606db407c02cbdec",
+    "stage2_landmarks.npz": "96a2f62fc9bfde8c15c65bdd374eab67312a2bc1d275a0981aba604346ae1152"
+  },
+  "refinement": [
+    {
+      "method": "student_stage3_semantic",
+      "n_samples": 16000,
+      "n_active": 6949,
+      "max_offset_m": 0.002,
+      "stages": [
+        4.0,
+        1.0,
+        0.25
+      ],
+      "history": [
+        {
+          "stage": 0,
+          "iteration": 0,
+          "smooth_weight": 4.0,
+          "correspondences": 15502,
+          "changed_triangles": 0,
+          "rmse_m": 0.002405693521723151,
+          "step_m": 0.00025000000000000006,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 1,
+          "smooth_weight": 4.0,
+          "correspondences": 15522,
+          "changed_triangles": 738,
+          "rmse_m": 0.00222339597530663,
+          "step_m": 0.00012500000000000008,
+          "step_scale": 0.5,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 2,
+          "smooth_weight": 4.0,
+          "correspondences": 15534,
+          "changed_triangles": 415,
+          "rmse_m": 0.002143372781574726,
+          "step_m": 0.0001250000000000001,
+          "step_scale": 0.5,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 3,
+          "smooth_weight": 4.0,
+          "correspondences": 15543,
+          "changed_triangles": 413,
+          "rmse_m": 0.0020664832554757595,
+          "step_m": 0.0002500000000000001,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 4,
+          "smooth_weight": 4.0,
+          "correspondences": 15557,
+          "changed_triangles": 647,
+          "rmse_m": 0.0019256742671132088,
+          "step_m": 0.0002500000000000001,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 5,
+          "smooth_weight": 4.0,
+          "correspondences": 15565,
+          "changed_triangles": 575,
+          "rmse_m": 0.001811221824027598,
+          "step_m": 0.00025000000000000017,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 6,
+          "smooth_weight": 4.0,
+          "correspondences": 15565,
+          "changed_triangles": 449,
+          "rmse_m": 0.0017201289301738143,
+          "step_m": 0.00012500000000000017,
+          "step_scale": 0.5,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 7,
+          "smooth_weight": 4.0,
+          "correspondences": 15564,
+          "changed_triangles": 235,
+          "rmse_m": 0.0016849276144057512,
+          "step_m": 3.125000000000013e-05,
+          "step_scale": 0.125,
+          "reason": "step_tol"
+        }
+      ],
+      "student_early_stop": {
+        "step_tol_m": 0.0001,
+        "rmse_rel_tol": 0.01,
+        "rmse_patience": 2,
+        "rmse_min_iters": 3,
+        "iters_run": 8,
+        "stopped": "step_tol"
+      },
+      "displacement_fairing": {
+        "strength": 1.0,
+        "max_change_m": 0.0001,
+        "n_free": 6797,
+        "n_protected": 152,
+        "status": "accepted",
+        "correction_max_mm": 0.1000000000000231,
+        "displacement_laplacian_norm_before_m": 0.00814688553719874,
+        "displacement_laplacian_norm_after_m": 0.005834964332272174,
+        "step_scale": 1.0
+      },
+      "status": "ok",
+      "n_constrained": 3538,
+      "mean_move_m": 0.00016897674199043265,
+      "max_move_m": 0.0014547959035123253,
+      "elapsed_s": 24.734252499998547,
+      "quality": {
+        "finite": true,
+        "min_edge_ratio": 0.8000002801342408,
+        "max_edge_ratio": 1.2499975765242353,
+        "min_area_ratio": 0.7000043892550589,
+        "max_area_ratio": 1.3999431306516075,
+        "max_normal_angle_deg": 17.249310282318977,
+        "max_dihedral_change_deg": 9.999326341652557
+      },
+      "semantic": {
+        "n_2d": 51,
+        "n_reliable_depth": 29,
+        "weight": 40.0
+      },
+      "n_observed_vertices": 6093,
+      "n_transition_vertices": 856,
+      "basis": "tools/train.py stage 3; sparse robust surface ICP and displacement Laplacian",
+      "algorithm": "cross-v3-bounded-smooth",
+      "profile": "v3",
+      "subdivision": "one midpoint iteration",
+      "guard_options": {
+        "min_edge_ratio": 0.8,
+        "max_edge_ratio": 1.25,
+        "min_area_ratio": 0.7,
+        "max_area_ratio": 1.4,
+        "max_normal_angle_deg": 20.0,
+        "max_dihedral_change_deg": 10.0
+      },
+      "midpoint_consistency_weight": 16.0,
+      "edge_length_scale_m": 0.002,
+      "midpoint_residual_mm": {
+        "p95": 0.09372868290024966,
+        "max": 0.646889078148324
+      },
+      "parameters": {
+        "stages": [
+          4.0,
+          1.0,
+          0.25
+        ],
+        "iterations_per_stage": 8,
+        "max_offset_m": 0.002,
+        "max_step_m": 0.00025,
+        "edge_weight": 0.05,
+        "anchor_weight": 0.01,
+        "max_distance_m": 0.02,
+        "huber_m": 0.002,
+        "semantic_weight": 40.0,
+        "max_points": 16000
+      },
+      "original_vertices": 5023,
+      "subdivided_vertices": 20018,
+      "original_faces": 9976,
+      "subdivided_faces": 39904,
+      "landmark_adapter": "barycentric anchors on subdivided child triangles"
+    },
+    {
+      "method": "student_stage3_semantic",
+      "n_samples": 16000,
+      "n_active": 7079,
+      "max_offset_m": 0.002,
+      "stages": [
+        4.0,
+        1.0,
+        0.25
+      ],
+      "history": [
+        {
+          "stage": 0,
+          "iteration": 0,
+          "smooth_weight": 4.0,
+          "correspondences": 15691,
+          "changed_triangles": 0,
+          "rmse_m": 0.0022474899888038635,
+          "step_m": 0.00025000000000000006,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 1,
+          "smooth_weight": 4.0,
+          "correspondences": 15697,
+          "changed_triangles": 796,
+          "rmse_m": 0.002103837439790368,
+          "step_m": 0.0002500000000000001,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 2,
+          "smooth_weight": 4.0,
+          "correspondences": 15703,
+          "changed_triangles": 678,
+          "rmse_m": 0.0019721442367881536,
+          "step_m": 0.00025000000000000017,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 3,
+          "smooth_weight": 4.0,
+          "correspondences": 15707,
+          "changed_triangles": 538,
+          "rmse_m": 0.001860615680925548,
+          "step_m": 0.00025000000000000017,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 4,
+          "smooth_weight": 4.0,
+          "correspondences": 15706,
+          "changed_triangles": 431,
+          "rmse_m": 0.0017762070056051016,
+          "step_m": 7.812500000000109e-06,
+          "step_scale": 0.03125,
+          "reason": "step_tol"
+        }
+      ],
+      "student_early_stop": {
+        "step_tol_m": 0.0001,
+        "rmse_rel_tol": 0.01,
+        "rmse_patience": 2,
+        "rmse_min_iters": 3,
+        "iters_run": 5,
+        "stopped": "step_tol"
+      },
+      "displacement_fairing": {
+        "strength": 1.0,
+        "max_change_m": 0.0001,
+        "n_free": 6927,
+        "n_protected": 152,
+        "status": "accepted",
+        "correction_max_mm": 0.10000000000002285,
+        "displacement_laplacian_norm_before_m": 0.007325090968490911,
+        "displacement_laplacian_norm_after_m": 0.005176907057228901,
+        "step_scale": 1.0
+      },
+      "status": "ok",
+      "n_constrained": 3637,
+      "mean_move_m": 0.00014639207374458646,
+      "max_move_m": 0.0010396806677548803,
+      "elapsed_s": 18.20204979996197,
+      "quality": {
+        "finite": true,
+        "min_edge_ratio": 0.8000556949671865,
+        "max_edge_ratio": 1.2499995345317563,
+        "min_area_ratio": 0.7132873329321326,
+        "max_area_ratio": 1.393331024665906,
+        "max_normal_angle_deg": 16.011728749936445,
+        "max_dihedral_change_deg": 9.997276162366031
+      },
+      "semantic": {
+        "n_2d": 51,
+        "n_reliable_depth": 26,
+        "weight": 40.0
+      },
+      "n_observed_vertices": 6244,
+      "n_transition_vertices": 835,
+      "basis": "tools/train.py stage 3; sparse robust surface ICP and displacement Laplacian",
+      "algorithm": "cross-v3-bounded-smooth",
+      "profile": "v3",
+      "subdivision": "one midpoint iteration",
+      "guard_options": {
+        "min_edge_ratio": 0.8,
+        "max_edge_ratio": 1.25,
+        "min_area_ratio": 0.7,
+        "max_area_ratio": 1.4,
+        "max_normal_angle_deg": 20.0,
+        "max_dihedral_change_deg": 10.0
+      },
+      "midpoint_consistency_weight": 16.0,
+      "edge_length_scale_m": 0.002,
+      "midpoint_residual_mm": {
+        "p95": 0.07835175345516503,
+        "max": 0.48875492208462057
+      },
+      "parameters": {
+        "stages": [
+          4.0,
+          1.0,
+          0.25
+        ],
+        "iterations_per_stage": 8,
+        "max_offset_m": 0.002,
+        "max_step_m": 0.00025,
+        "edge_weight": 0.05,
+        "anchor_weight": 0.01,
+        "max_distance_m": 0.02,
+        "huber_m": 0.002,
+        "semantic_weight": 40.0,
+        "max_points": 16000
+      },
+      "original_vertices": 5023,
+      "subdivided_vertices": 20018,
+      "original_faces": 9976,
+      "subdivided_faces": 39904,
+      "landmark_adapter": "barycentric anchors on subdivided child triangles"
+    }
+  ],
+  "elapsed_s": 69.44666270003654
+}

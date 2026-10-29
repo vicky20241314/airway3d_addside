@@ -1,0 +1,150 @@
+{
+  "assets\\adjacency.pt": {
+    "bytes": 128243,
+    "sha256": "b08f13ad5114633df0f3a3270f44b28297d21b66f4a01f039b788c3e35fa8052"
+  },
+  "assets\\camera.json": {
+    "bytes": 150,
+    "sha256": "b57fb3c236786ea7811555355d8bafe91a7b5bddf64b3d403a60eefe7d06013b"
+  },
+  "assets\\face_detection_yunet_2023mar.onnx": {
+    "bytes": 232589,
+    "sha256": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+  },
+  "assets\\flame2023.pkl": {
+    "bytes": 53023716,
+    "sha256": "8fb1af0db1abb51053ead8fd1f2624a63d01c9602f4a4fb4ea23bd2c82017fa0"
+  },
+  "assets\\flame_dynamic_embedding.npy": {
+    "bytes": 42639,
+    "sha256": "fd046a4740f5e6837e65622d0e050273bb71bbcb1ad6ab322474013a2a23de37"
+  },
+  "assets\\flame_static_embedding.pkl": {
+    "bytes": 4380,
+    "sha256": "2881bdad8e61e87aad83a3df2e04655c534694089f68ca7144e7350da9e8ad62"
+  },
+  "assets\\generic_model.pkl": {
+    "bytes": 53023716,
+    "sha256": "b291fcd16870f63f95586331c8f98080f486dd5c4b38e4ad40d5be030c5920a9"
+  },
+  "assets\\verts2face.pt": {
+    "bytes": 403390,
+    "sha256": "ff77ecd463ab5c4fefb86506e05603b0b5d0767c2a5a03f5eb7bfe43b7678013"
+  },
+  "models\\uniface\\parsing_resnet34.onnx": {
+    "bytes": 93632554,
+    "sha256": "5b805bba7b5660ab7070b5a381dcf75e5b3e04199f1e9387232a77a00095102e"
+  },
+  "third_party\\__init__.py": {
+    "bytes": 2,
+    "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6"
+  },
+  "third_party\\flame\\config.py": {
+    "bytes": 479,
+    "sha256": "9a6af6c897b66707db3d23d319c853c1e3b4567562408885209f74c5880ac410"
+  },
+  "third_party\\flame\\flame.py": {
+    "bytes": 9819,
+    "sha256": "4a79b7ba78d1655d35a6ac677b8c13d1c907f57b5467d66f457e9ed17a26a573"
+  },
+  "third_party\\flame\\LICENSE": {
+    "bytes": 1071,
+    "sha256": "5d7a543e9c0e8ed7e50d36dfb1fd40997083f93cfe19715b2f9945dbc70b9477"
+  },
+  "third_party\\flame\\README.md": {
+    "bytes": 4875,
+    "sha256": "c9e33559a4e17d80100a55e1af8de28b2f7200243718e386c06269dba0f039ba"
+  },
+  "third_party\\flame\\__init__.py": {
+    "bytes": 59,
+    "sha256": "2603b2b814a9a8da0295091b87012b02a17debdace4a3b3d73f8fb2d7589dfa5"
+  },
+  "third_party\\tufa\\Camera.py": {
+    "bytes": 6212,
+    "sha256": "05399389d3af2bb7ece1fe1c6df33da3620503e129e6477eddf12d32ccc822fe"
+  },
+  "third_party\\tufa\\LICENSE": {
+    "bytes": 18092,
+    "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+  },
+  "third_party\\tufa\\Prompt.py": {
+    "bytes": 1586,
+    "sha256": "6def221085bd1d848184a256c9655320fba416b7e61212e9fb211e73cdf161a8"
+  },
+  "third_party\\tufa\\README.md": {
+    "bytes": 5156,
+    "sha256": "8777d4c11ec0c4aae84abca07ce57678cd825dd1442df79033098036c48f9210"
+  },
+  "third_party\\tufa\\requirements.txt": {
+    "bytes": 8296,
+    "sha256": "d522da5a9d1bb34c5cdb8ff5ba6563c7d8cedd3b418ff99c8a3fafe567d3f0b7"
+  },
+  "third_party\\tufa\\Test.py": {
+    "bytes": 5780,
+    "sha256": "5e630a58be855956279556016e48b6d6f4ffe07dc7e8444b3c6c491b3cf75d0e"
+  },
+  "third_party\\tufa\\__init__.py": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "third_party\\tufa\\Backbone\\Decoder.py": {
+    "bytes": 7888,
+    "sha256": "24f877e4a6f93760f87acd716b8b07d7bfb635831db0ca3a52e170df1224f443"
+  },
+  "third_party\\tufa\\Backbone\\DINO.py": {
+    "bytes": 13240,
+    "sha256": "dded0b4bee6066595faf45e35fbd09c3353557b5c6e71965ed5abd5a5b582491"
+  },
+  "third_party\\tufa\\Backbone\\Loss.py": {
+    "bytes": 1139,
+    "sha256": "9dd5d435fd7b681091cf6f50a9d9a5d7e680ac44930aeae41f80f99cb44c49b0"
+  },
+  "third_party\\tufa\\Backbone\\pos_embedding.py": {
+    "bytes": 6490,
+    "sha256": "d86b6ebdf2a0ee1583bfffff306fed0a8b241518bfb385a696ed17e2f420d111"
+  },
+  "third_party\\tufa\\Backbone\\__init__.py": {
+    "bytes": 249,
+    "sha256": "7ed62ab54235003ef1559bdf8b7f6f29b9e83e912448bc9b17bb75c705780860"
+  },
+  "third_party\\tufa\\Config\\default.py": {
+    "bytes": 668,
+    "sha256": "1a2d3b8e9509ea3b04e1315ba57ed094629664a69bea8e37ab1f910bc3bc2295"
+  },
+  "third_party\\tufa\\Config\\__init__.py": {
+    "bytes": 31,
+    "sha256": "3ed6facd9fe20d8f7fea5c3bfd5635f544f519224a674337171d2a02ae0b6a51"
+  },
+  "third_party\\tufa\\Prompt\\shape_29.npz": {
+    "bytes": 1434,
+    "sha256": "9561a0849a4ef09ea02c99697f320fa6ac909ed85a23de9ea532471b1175b5cd"
+  },
+  "third_party\\tufa\\Prompt\\shape_314.npz": {
+    "bytes": 5290,
+    "sha256": "61e461e109f13f02628384b7b8d0478ede2dcc279f5e80476e477a0ade6b44c2"
+  },
+  "third_party\\tufa\\Prompt\\shape_68.npz": {
+    "bytes": 2682,
+    "sha256": "c42f58fef5eff4ae44aa1784d7d2cc01827757f4f372eeec4b49862fe21ec53f"
+  },
+  "third_party\\tufa\\Prompt\\shape_98.npz": {
+    "bytes": 3642,
+    "sha256": "014050982e090f1bedf2dd8992ea38c7da938750f3e1d35af4ff8390b28418b8"
+  },
+  "third_party\\tufa\\utils\\Detector.py": {
+    "bytes": 6046,
+    "sha256": "87a89c6c2064712465be61032bd7221bcb32ff1a6adf156e47aabeeed4ff109c"
+  },
+  "third_party\\tufa\\utils\\get_transforms.py": {
+    "bytes": 2153,
+    "sha256": "55d4bbbd11a2de63b9f5615a55bfc53600cd2268774fad6448a567d4ac0ba49d"
+  },
+  "third_party\\tufa\\utils\\__init__.py": {
+    "bytes": 175,
+    "sha256": "b20cac692e087fa53e6cfe431f1bc398bc8fc0bffbd1660e6a20c0bb4fb2169c"
+  },
+  "third_party\\tufa\\weights\\Face_prompt_base.pth": {
+    "bytes": 143969647,
+    "sha256": "3fe7071bef814af320c6e6ec7d724b4b1bb253677500e1a48a5e2a66aaf10899"
+  }
+}

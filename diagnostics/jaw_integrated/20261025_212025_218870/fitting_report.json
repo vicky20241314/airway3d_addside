@@ -1,0 +1,477 @@
+{
+  "stage1": {
+    "solver": "LM",
+    "stopped": "max_outer",
+    "history": [
+      {
+        "outer": 1,
+        "loss": 2.483528262005628e-05,
+        "accepted": 4,
+        "inner_reason": "rejected",
+        "damping": 0.04,
+        "max_move_m": 0.03794821351766586,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 2,
+        "loss": 1.0305954207683131e-05,
+        "accepted": 4,
+        "inner_reason": "max_inner",
+        "damping": 0.64,
+        "max_move_m": 0.0027777913492172956,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 3,
+        "loss": 9.942804056597288e-06,
+        "accepted": 7,
+        "inner_reason": "max_inner",
+        "damping": 0.16,
+        "max_move_m": 0.0012321704998612404,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 4,
+        "loss": 9.774374849405417e-06,
+        "accepted": 2,
+        "inner_reason": "rejected",
+        "damping": 2.56,
+        "max_move_m": 0.0009479699656367302,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 5,
+        "loss": 9.697913740170666e-06,
+        "accepted": 8,
+        "inner_reason": "max_inner",
+        "damping": 0.16,
+        "max_move_m": 0.0006520831375382841,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 6,
+        "loss": 9.666972737014124e-06,
+        "accepted": 3,
+        "inner_reason": "rejected",
+        "damping": 1.28,
+        "max_move_m": 0.0004341851163189858,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 7,
+        "loss": 9.650996489676894e-06,
+        "accepted": 6,
+        "inner_reason": "max_inner",
+        "damping": 1.28,
+        "max_move_m": 0.0003388776385691017,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 8,
+        "loss": 9.642705051313319e-06,
+        "accepted": 4,
+        "inner_reason": "rejected",
+        "damping": 5.12,
+        "max_move_m": 0.0002607489877846092,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 9,
+        "loss": 9.640648292755558e-06,
+        "accepted": 8,
+        "inner_reason": "max_inner",
+        "damping": 0.32,
+        "max_move_m": 0.00016706468886695802,
+        "points": [
+          4000,
+          4000
+        ]
+      },
+      {
+        "outer": 10,
+        "loss": 9.640087621537981e-06,
+        "accepted": 2,
+        "inner_reason": "rejected",
+        "damping": 5.12,
+        "max_move_m": 0.00010944245150312781,
+        "points": [
+          4000,
+          4000
+        ]
+      }
+    ],
+    "basis": null,
+    "active_parameter_count": 16,
+    "elapsed_s": 7.56993280001916
+  },
+  "stage2": {
+    "solver": "progressive_LM",
+    "passes": [
+      {
+        "solver": "LM",
+        "stopped": "vertex_step",
+        "history": [
+          {
+            "outer": 1,
+            "loss": 3.447285002455664e-05,
+            "accepted": 9,
+            "inner_reason": "max_inner",
+            "damping": 0.00015625,
+            "max_move_m": 0.011723603121936321,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 2,
+            "loss": 3.328520835063335e-05,
+            "accepted": 2,
+            "inner_reason": "rejected",
+            "damping": 0.0025,
+            "max_move_m": 0.0041704680770635605,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 3,
+            "loss": 3.321762355719758e-05,
+            "accepted": 4,
+            "inner_reason": "rejected",
+            "damping": 0.04,
+            "max_move_m": 0.0013465696247294545,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 4,
+            "loss": 3.320638152021191e-05,
+            "accepted": 5,
+            "inner_reason": "rejected",
+            "damping": 0.08,
+            "max_move_m": 0.00036884367000311613,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 5,
+            "loss": 3.3204683755635745e-05,
+            "accepted": 2,
+            "inner_reason": "rejected",
+            "damping": 5.12,
+            "max_move_m": 7.03002224327065e-05,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 6,
+            "loss": 3.320435034935875e-05,
+            "accepted": 1,
+            "inner_reason": "rejected",
+            "damping": 163.84,
+            "max_move_m": 3.6034020922670607e-06,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 7,
+            "loss": 3.320432655391645e-05,
+            "accepted": 0,
+            "inner_reason": "rejected",
+            "damping": 10485.76,
+            "max_move_m": 0.0,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 8,
+            "loss": 3.3204326522428076e-05,
+            "accepted": 1,
+            "inner_reason": "step",
+            "damping": 41943.04,
+            "max_move_m": 2.986047320518992e-08,
+            "points": [
+              4000,
+              4000
+            ]
+          }
+        ],
+        "basis": [
+          20,
+          5
+        ],
+        "active_parameter_count": 46
+      },
+      {
+        "solver": "LM",
+        "stopped": "vertex_step",
+        "history": [
+          {
+            "outer": 1,
+            "loss": 3.2207456147557604e-05,
+            "accepted": 8,
+            "inner_reason": "max_inner",
+            "damping": 0.000625,
+            "max_move_m": 0.002011711010709405,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 2,
+            "loss": 3.219891834344614e-05,
+            "accepted": 2,
+            "inner_reason": "rejected",
+            "damping": 0.02,
+            "max_move_m": 0.00033567551872693,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 3,
+            "loss": 3.219803901109005e-05,
+            "accepted": 3,
+            "inner_reason": "rejected",
+            "damping": 0.16,
+            "max_move_m": 0.00010752354864962399,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 4,
+            "loss": 3.2197421404656284e-05,
+            "accepted": 1,
+            "inner_reason": "rejected",
+            "damping": 10.24,
+            "max_move_m": 3.4535263694124296e-05,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 5,
+            "loss": 3.2197367683705955e-05,
+            "accepted": 1,
+            "inner_reason": "rejected",
+            "damping": 1310.72,
+            "max_move_m": 3.399011632154725e-07,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 6,
+            "loss": 3.2197363478452364e-05,
+            "accepted": 1,
+            "inner_reason": "rejected",
+            "damping": 167772.16,
+            "max_move_m": 6.188916756855178e-08,
+            "points": [
+              4000,
+              4000
+            ]
+          }
+        ],
+        "basis": [
+          50,
+          10
+        ],
+        "active_parameter_count": 86
+      },
+      {
+        "solver": "LM",
+        "stopped": "vertex_step",
+        "history": [
+          {
+            "outer": 1,
+            "loss": 3.101659740724453e-05,
+            "accepted": 7,
+            "inner_reason": "max_inner",
+            "damping": 0.0025,
+            "max_move_m": 0.001096712308935821,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 2,
+            "loss": 3.101706048677409e-05,
+            "accepted": 2,
+            "inner_reason": "rejected",
+            "damping": 0.32,
+            "max_move_m": 0.00021757859212812036,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 3,
+            "loss": 3.1016631023688424e-05,
+            "accepted": 4,
+            "inner_reason": "max_inner",
+            "damping": 5.12,
+            "max_move_m": 5.703305942006409e-05,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 4,
+            "loss": 3.101663837967794e-05,
+            "accepted": 0,
+            "inner_reason": "rejected",
+            "damping": 327.68,
+            "max_move_m": 0.0,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 5,
+            "loss": 3.1016604549502726e-05,
+            "accepted": 4,
+            "inner_reason": "max_inner",
+            "damping": 5242.88,
+            "max_move_m": 7.185079908822445e-08,
+            "points": [
+              4000,
+              4000
+            ]
+          },
+          {
+            "outer": 6,
+            "loss": 3.101660160907846e-05,
+            "accepted": 1,
+            "inner_reason": "step",
+            "damping": 83886.08,
+            "max_move_m": 0.0,
+            "points": [
+              4000,
+              4000
+            ]
+          }
+        ],
+        "basis": [
+          100,
+          30
+        ],
+        "active_parameter_count": 176
+      }
+    ],
+    "elapsed_s": 13.058756300015375
+  },
+  "loss_profile": "jaw_supported",
+  "jaw_constraints": [
+    {
+      "ids": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "reason": "ok",
+      "groups": {
+        "jaw": 433,
+        "other_face": 2625,
+        "neck": 942
+      },
+      "group_budgets": [
+        0.3,
+        0.55,
+        0.15
+      ],
+      "pixel_to_m": 0.00045500278154302255,
+      "initial_stage2_yaw_deg": -4.025511471659677,
+      "contour_normal_mean_px": 3.3095338344573975
+    },
+    {
+      "ids": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "reason": "ok",
+      "groups": {
+        "jaw": 485,
+        "other_face": 2827,
+        "neck": 688
+      },
+      "group_budgets": [
+        0.3,
+        0.55,
+        0.15
+      ],
+      "pixel_to_m": 0.00047129319906431426,
+      "initial_stage2_yaw_deg": -2.30730119011032,
+      "contour_normal_mean_px": 2.150355577468872
+    }
+  ],
+  "elapsed_s": 25.1409184000222,
+  "device": "cuda:0",
+  "metric_geometry": "stage2",
+  "identity_parameter_count": 100
+}

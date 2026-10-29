@@ -1,0 +1,97 @@
+{
+  "algorithm": "cross-v4-jaw-supported",
+  "mesh_unit": "m",
+  "depth_unit": "mm",
+  "capture_sha256": "2cd8d6a42759518da3db6d1c8b6c497576ec429ca80cdb18515e3be4a981752c",
+  "fit_options": {
+    "shape_components": 100,
+    "expression_components": 30,
+    "basis_levels": [
+      [
+        20,
+        5
+      ],
+      [
+        50,
+        10
+      ],
+      [
+        100,
+        30
+      ]
+    ],
+    "pose_indices": [
+      0,
+      3
+    ],
+    "stage1_outer": 10,
+    "stage2_outer": 20,
+    "inner_steps": 12,
+    "max_points": 4000,
+    "damping": 0.01,
+    "shape_reg": 1e-06,
+    "expression_reg": 1e-06,
+    "gradient_tol": 1e-10,
+    "parameter_step_tol": 1e-07,
+    "vertex_step_tol_m": 1e-06,
+    "loss_relative_tol": 0.0001,
+    "plateau_vertex_tol_m": 2e-06,
+    "plateau_patience": 4,
+    "min_outer": 6,
+    "max_rejections": 6,
+    "seed": 1234,
+    "jaw_contour_weight": 0.5,
+    "jaw_contour_huber_m": 0.003,
+    "jaw_region_balance": true,
+    "jaw_max_yaw_deg": 20.0
+  },
+  "assets": {
+    "assets\\adjacency.pt": "b08f13ad5114633df0f3a3270f44b28297d21b66f4a01f039b788c3e35fa8052",
+    "assets\\face_detection_yunet_2023mar.onnx": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "assets\\flame2023.pkl": "8fb1af0db1abb51053ead8fd1f2624a63d01c9602f4a4fb4ea23bd2c82017fa0",
+    "assets\\flame_dynamic_embedding.npy": "fd046a4740f5e6837e65622d0e050273bb71bbcb1ad6ab322474013a2a23de37",
+    "assets\\flame_static_embedding.pkl": "2881bdad8e61e87aad83a3df2e04655c534694089f68ca7144e7350da9e8ad62",
+    "assets\\generic_model.pkl": "b291fcd16870f63f95586331c8f98080f486dd5c4b38e4ad40d5be030c5920a9",
+    "assets\\verts2face.pt": "ff77ecd463ab5c4fefb86506e05603b0b5d0767c2a5a03f5eb7bfe43b7678013",
+    "models\\uniface\\parsing_resnet34.onnx": "5b805bba7b5660ab7070b5a381dcf75e5b3e04199f1e9387232a77a00095102e",
+    "third_party\\tufa\\weights\\Face_prompt_base.pth": "3fe7071bef814af320c6e6ec7d724b4b1bb253677500e1a48a5e2a66aaf10899"
+  },
+  "code": {
+    "core\\aruco.py": "36ef5e7d1c080c17c9d74d7f3d4539965e6753b836d5565a04778f52cbc5051a",
+    "core\\boundary_constraints.py": "a7220195d908212265676bb77efdc330bc438177720b02b7b64ff9b67c5378ee",
+    "core\\camera.py": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799",
+    "core\\capture.py": "12f14dcb4443af1eae8d7c07b740c99ebc8ee00c09a74744661b5fea3b2a3f89",
+    "core\\config.py": "a184b72d039a78b456285617dcd74061065b3ec52d20c19a934cc1bae5a7095d",
+    "core\\conservative_refine.py": "0b998d3f6dcaeadba563980175539327b2fc72ae27703e9baf0bebbb06545ce0",
+    "core\\cross_refine.py": "0f67002b096b3905f3c6251612d6d8e1b2c1d4b10258a05211aeeab964c4bef9",
+    "core\\displacement_fairing.py": "01be79c2ff598e1242b8edd7bfdaacc064e5e886a9d5a1d0ff2fadb969f80644",
+    "core\\face_test.py": "af7e6e009b9c1e2d1d9385ba3974f7e2c661277e97eb6add4c0af75823a092f5",
+    "core\\feature_constraints.py": "e140b368a06f9edb113bb77efc10037b24f02d5b61c246f6c3a1f77c8ce9d53c",
+    "core\\fitting.py": "dcc8d09182b91c3d9494573cbdca3dfae1986e68725ddd0de6eb59231739c5fd",
+    "core\\fit_options.py": "9db5a89b1af681cf5210853c6613a4bb9597449701f0c6a48c375b31d85c0b59",
+    "core\\formula.py": "70cfe6cb4037d53fcc85a5a1c8f576883e0f8415b641613bdf095f54e403bcbe",
+    "core\\initial_surface.py": "d57f6c981a816054dc75086ff65e05e23186f867b0b6208ea21573e714e33d75",
+    "core\\integrated_fitting.py": "ff22e531eb07c852fc06434cb97cae2a773519f87307afe66a1e94f746413b83",
+    "core\\jaw_constraints.py": "6ca2cca96ef187ffe03e623ae3b3f2cada12369904469bf5eaf785587f68e093",
+    "core\\joint_lm.py": "c0ac2c2f9074b3f44360b545c5f5565ba51cae71981009093ecff29a6374a42b",
+    "core\\landmark_policy.py": "13eb2d88f07d21aab6fcd1637ea46576d15a10c533e77fcf19a2744d462f8e8b",
+    "core\\lmkdetection.py": "b62f58dd0f4cf5114028e7bcecbf428a7c736867311c94a32b49f38d29f64bb1",
+    "core\\lm_jacobians.py": "b8b4666178042a865e80872b2050b32707a942ef160b308207a1d43bcb5d3527",
+    "core\\mask_detection.py": "601e8a17d0be516c6a872ff3528c8ae0b3fe2171d32b8f95b9a8711bc217302e",
+    "core\\metrics.py": "824fcecf44281dfd0eb6fae30cd06970bda49a5e54f9d096ca58583caa02223a",
+    "core\\pipeline.py": "06389be24a79bc319f75d0c46e2649515d1ac67d8284e0b7e6b8154e74a5b4a0",
+    "core\\provenance.py": "3eedd27d310c4966a3f4d1102feb8f232fc61ee413f28a1c44ece6aa668fb0db",
+    "core\\render.py": "1e28bc28b0806a907156df2d77afdb71bfdf32083bca238d6c2c7c961b6fb24f",
+    "core\\__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core\\student\\arap_refine.py": "a7ca47a0116a63b32de2a4716097cd7a53118193d844927fa5998d1953e9f222",
+    "core\\student\\camera.py": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799",
+    "core\\student\\depth_refine.py": "a5fa28bec50196fe7118bfe6d689f5dcf9deb747c6d6cc493fc4c60f493b1579",
+    "core\\student\\detail_snap.py": "81ea06f91a7f30f217160e8fa8a4ad29b11aa203bb1ef9ccc6fa246c5c98aaa2",
+    "core\\student\\early_stop.py": "373f01b459ac0b99279c832c56b6fbc46adc1ffaa9e2c1830986c1d49267acb5",
+    "core\\student\\initial_surface.py": "ef9de1b4a25119390e56825998130b3541202b34e74fef11fe17e45cbe893b20",
+    "core\\student\\offset_refine.py": "fba2a8115d0a649fc67d1ca704ae41fa853322db2a95ddbba6ab190ee1be78b7",
+    "core\\student\\semantic_refine.py": "e67a8359c8faa87321845a5c3c766b9b050c2c8b7ad90abfbf5460c05ad069c7",
+    "core\\student\\student_refine.py": "6d782f7f2de90bbc6ac6648721059365722ccb9e80c85553d480579ed0c5658f",
+    "core\\student\\__init__.py": "dce5577e597e1b2ebf843284a50eff33638b9131450e5db6ca40c0d55d05de8f"
+  }
+}

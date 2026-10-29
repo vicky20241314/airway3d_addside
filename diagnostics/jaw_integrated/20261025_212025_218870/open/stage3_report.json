@@ -1,0 +1,147 @@
+{
+  "method": "student_stage3_semantic",
+  "n_samples": 16000,
+  "n_active": 7079,
+  "max_offset_m": 0.002,
+  "stages": [
+    4.0,
+    1.0,
+    0.25
+  ],
+  "history": [
+    {
+      "stage": 0,
+      "iteration": 0,
+      "smooth_weight": 4.0,
+      "correspondences": 15691,
+      "changed_triangles": 0,
+      "rmse_m": 0.0022474899888038635,
+      "step_m": 0.00025000000000000006,
+      "step_scale": 1.0,
+      "reason": "max_inner"
+    },
+    {
+      "stage": 0,
+      "iteration": 1,
+      "smooth_weight": 4.0,
+      "correspondences": 15697,
+      "changed_triangles": 796,
+      "rmse_m": 0.002103837439790368,
+      "step_m": 0.0002500000000000001,
+      "step_scale": 1.0,
+      "reason": "max_inner"
+    },
+    {
+      "stage": 0,
+      "iteration": 2,
+      "smooth_weight": 4.0,
+      "correspondences": 15703,
+      "changed_triangles": 678,
+      "rmse_m": 0.0019721442367881536,
+      "step_m": 0.00025000000000000017,
+      "step_scale": 1.0,
+      "reason": "max_inner"
+    },
+    {
+      "stage": 0,
+      "iteration": 3,
+      "smooth_weight": 4.0,
+      "correspondences": 15707,
+      "changed_triangles": 538,
+      "rmse_m": 0.001860615680925548,
+      "step_m": 0.00025000000000000017,
+      "step_scale": 1.0,
+      "reason": "max_inner"
+    },
+    {
+      "stage": 0,
+      "iteration": 4,
+      "smooth_weight": 4.0,
+      "correspondences": 15706,
+      "changed_triangles": 431,
+      "rmse_m": 0.0017762070056051016,
+      "step_m": 7.812500000000109e-06,
+      "step_scale": 0.03125,
+      "reason": "step_tol"
+    }
+  ],
+  "student_early_stop": {
+    "step_tol_m": 0.0001,
+    "rmse_rel_tol": 0.01,
+    "rmse_patience": 2,
+    "rmse_min_iters": 3,
+    "iters_run": 5,
+    "stopped": "step_tol"
+  },
+  "displacement_fairing": {
+    "strength": 1.0,
+    "max_change_m": 0.0001,
+    "n_free": 6927,
+    "n_protected": 152,
+    "status": "accepted",
+    "correction_max_mm": 0.10000000000002285,
+    "displacement_laplacian_norm_before_m": 0.007325090968490911,
+    "displacement_laplacian_norm_after_m": 0.005176907057228901,
+    "step_scale": 1.0
+  },
+  "status": "ok",
+  "n_constrained": 3637,
+  "mean_move_m": 0.00014639207374458646,
+  "max_move_m": 0.0010396806677548803,
+  "elapsed_s": 18.20204979996197,
+  "quality": {
+    "finite": true,
+    "min_edge_ratio": 0.8000556949671865,
+    "max_edge_ratio": 1.2499995345317563,
+    "min_area_ratio": 0.7132873329321326,
+    "max_area_ratio": 1.393331024665906,
+    "max_normal_angle_deg": 16.011728749936445,
+    "max_dihedral_change_deg": 9.997276162366031
+  },
+  "semantic": {
+    "n_2d": 51,
+    "n_reliable_depth": 26,
+    "weight": 40.0
+  },
+  "n_observed_vertices": 6244,
+  "n_transition_vertices": 835,
+  "basis": "tools/train.py stage 3; sparse robust surface ICP and displacement Laplacian",
+  "algorithm": "cross-v3-bounded-smooth",
+  "profile": "v3",
+  "subdivision": "one midpoint iteration",
+  "guard_options": {
+    "min_edge_ratio": 0.8,
+    "max_edge_ratio": 1.25,
+    "min_area_ratio": 0.7,
+    "max_area_ratio": 1.4,
+    "max_normal_angle_deg": 20.0,
+    "max_dihedral_change_deg": 10.0
+  },
+  "midpoint_consistency_weight": 16.0,
+  "edge_length_scale_m": 0.002,
+  "midpoint_residual_mm": {
+    "p95": 0.07835175345516503,
+    "max": 0.48875492208462057
+  },
+  "parameters": {
+    "stages": [
+      4.0,
+      1.0,
+      0.25
+    ],
+    "iterations_per_stage": 8,
+    "max_offset_m": 0.002,
+    "max_step_m": 0.00025,
+    "edge_weight": 0.05,
+    "anchor_weight": 0.01,
+    "max_distance_m": 0.02,
+    "huber_m": 0.002,
+    "semantic_weight": 40.0,
+    "max_points": 16000
+  },
+  "original_vertices": 5023,
+  "subdivided_vertices": 20018,
+  "original_faces": 9976,
+  "subdivided_faces": 39904,
+  "landmark_adapter": "barycentric anchors on subdivided child triangles"
+}

@@ -1,0 +1,20 @@
+# Install a compatible torch/torchvision CUDA pair first; see requirements-tested.txt.
+
+numpy
+opencv-contrib-python
+PyQt6
+trimesh
+rtree
+pyrender
+scipy
+smplx
+uniface
+batch-face
+timm
+yacs
+tqdm
+Pillow
+torch
+torchvision
+onnxruntime
+# Install the camera vendor's matching pyorbbecsdk wheel separately.

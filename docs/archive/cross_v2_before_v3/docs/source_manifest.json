@@ -1,0 +1,360 @@
+{
+  "new_source": "D:\\项目\\subdivide_scan",
+  "old_source": "D:\\项目\\Airway3D_0\\new_version",
+  "cross_manifest": {
+    "label": "交叉 stage3：新 stage2 + 中点细分 + 旧 student 位移",
+    "stage2_path": "D:\\subdivide_scan\\output\\20261023_101953_469487\\closed\\mesh_closed_stage2.obj",
+    "stage2_sha256": "0d4179d1ac9790874035536e4033f8d5fb2fc940736ed19100ada9364942aeda",
+    "capture_path": "D:\\subdivide_scan\\output\\20261023_101953_469487\\capture_pair.npz",
+    "capture_sha256": "a97d87edabf4456251657d32392bd8db52e631f037782e99366ffebc1514d9ad",
+    "prepared_path": "D:\\subdivide_scan\\output\\20261023_101953_469487\\prepared.npz",
+    "prepared_sha256": "99544659cad6bf156b27321dba0851d745481347b0eb1e93a8e0ae53a52513ba",
+    "old_code_root": "D:\\Airway3D_0\\new_version",
+    "old_code_revision": "649a4340ce15bf101475df509244d61d1e803453",
+    "method": "student",
+    "unit": "m",
+    "subdivision": "one midpoint iteration",
+    "landmark_adapter": "original 51 FLAME barycentric anchors padded with zero columns",
+    "original_vertices": 5023,
+    "subdivided_vertices": 20018,
+    "original_faces": 9976,
+    "subdivided_faces": 39904,
+    "mesh_sha256": "96ca344ad9f76117fc5a391927b34f2c7dbe7c43573e478ffbd9e6cb6719aa87",
+    "offsets_sha256": "534ddec9cd1fc2fdea73193d79754456b394b3c41d290506be22f04e376053d5",
+    "refinement": {
+      "method": "student_stage3_semantic",
+      "n_samples": 16000,
+      "n_active": 7700,
+      "max_offset_m": 0.008,
+      "stages": [
+        4.0,
+        1.0,
+        0.25
+      ],
+      "history": [
+        {
+          "stage": 0,
+          "iteration": 0,
+          "smooth_weight": 4.0,
+          "correspondences": 15445,
+          "changed_triangles": 0,
+          "rmse_m": 0.002110422356054187,
+          "step_m": 0.008000000000000002,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 1,
+          "smooth_weight": 4.0,
+          "correspondences": 15561,
+          "changed_triangles": 2461,
+          "rmse_m": 0.0007817636942490935,
+          "step_m": 0.006000007230602157,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 2,
+          "smooth_weight": 4.0,
+          "correspondences": 15669,
+          "changed_triangles": 1374,
+          "rmse_m": 0.0006986932712607086,
+          "step_m": 0.0045000764074445586,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 3,
+          "smooth_weight": 4.0,
+          "correspondences": 15729,
+          "changed_triangles": 1077,
+          "rmse_m": 0.000652901129797101,
+          "step_m": 0.0026256563630080772,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 4,
+          "smooth_weight": 4.0,
+          "correspondences": 15744,
+          "changed_triangles": 818,
+          "rmse_m": 0.000639594451058656,
+          "step_m": 0.0012993590643982746,
+          "step_scale": 1.0,
+          "reason": "max_inner"
+        },
+        {
+          "stage": 0,
+          "iteration": 5,
+          "smooth_weight": 4.0,
+          "correspondences": 15765,
+          "changed_triangles": 697,
+          "rmse_m": 0.0006312676123343408,
+          "step_m": 2.4172916557570843e-05,
+          "step_scale": 0.015625,
+          "reason": "step_tol"
+        }
+      ],
+      "student_early_stop": {
+        "step_tol_m": 0.0001,
+        "rmse_rel_tol": 0.01,
+        "rmse_patience": 2,
+        "rmse_min_iters": 3,
+        "iters_run": 6,
+        "stopped": "step_tol"
+      },
+      "status": "ok",
+      "n_constrained": 3400,
+      "mean_move_m": 0.00045675549802904697,
+      "max_move_m": 0.00799999999925559,
+      "elapsed_s": 21.87378191947937,
+      "semantic": {
+        "n_2d": 51,
+        "n_reliable_depth": 24,
+        "weight": 40.0
+      },
+      "n_observed_vertices": 6525,
+      "n_transition_vertices": 1175,
+      "basis": "tools/train.py stage 3; sparse robust surface ICP and displacement Laplacian"
+    }
+  },
+  "files": {
+    "core/aruco.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\aruco.py",
+      "sha256": "36ef5e7d1c080c17c9d74d7f3d4539965e6753b836d5565a04778f52cbc5051a",
+      "integrated_sha256": "36ef5e7d1c080c17c9d74d7f3d4539965e6753b836d5565a04778f52cbc5051a",
+      "initial_integrated_sha256": "36ef5e7d1c080c17c9d74d7f3d4539965e6753b836d5565a04778f52cbc5051a"
+    },
+    "core/boundary_constraints.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\boundary_constraints.py",
+      "sha256": "a7220195d908212265676bb77efdc330bc438177720b02b7b64ff9b67c5378ee",
+      "integrated_sha256": "a7220195d908212265676bb77efdc330bc438177720b02b7b64ff9b67c5378ee",
+      "initial_integrated_sha256": "a7220195d908212265676bb77efdc330bc438177720b02b7b64ff9b67c5378ee"
+    },
+    "core/camera.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\camera.py",
+      "sha256": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799",
+      "integrated_sha256": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799",
+      "initial_integrated_sha256": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799"
+    },
+    "core/capture.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\capture.py",
+      "sha256": "12f14dcb4443af1eae8d7c07b740c99ebc8ee00c09a74744661b5fea3b2a3f89",
+      "integrated_sha256": "12f14dcb4443af1eae8d7c07b740c99ebc8ee00c09a74744661b5fea3b2a3f89",
+      "initial_integrated_sha256": "12f14dcb4443af1eae8d7c07b740c99ebc8ee00c09a74744661b5fea3b2a3f89"
+    },
+    "core/config.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\config.py",
+      "sha256": "a184b72d039a78b456285617dcd74061065b3ec52d20c19a934cc1bae5a7095d",
+      "integrated_sha256": "a184b72d039a78b456285617dcd74061065b3ec52d20c19a934cc1bae5a7095d",
+      "initial_integrated_sha256": "a184b72d039a78b456285617dcd74061065b3ec52d20c19a934cc1bae5a7095d"
+    },
+    "core/conservative_refine.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\conservative_refine.py",
+      "sha256": "0b998d3f6dcaeadba563980175539327b2fc72ae27703e9baf0bebbb06545ce0",
+      "integrated_sha256": "0b998d3f6dcaeadba563980175539327b2fc72ae27703e9baf0bebbb06545ce0",
+      "initial_integrated_sha256": "0b998d3f6dcaeadba563980175539327b2fc72ae27703e9baf0bebbb06545ce0"
+    },
+    "core/face_test.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\face_test.py",
+      "sha256": "a293d385ff4b457acba9f72ada3c3c19832dd75e27f55571ccb7418ddc8c9078",
+      "integrated_sha256": "af7e6e009b9c1e2d1d9385ba3974f7e2c661277e97eb6add4c0af75823a092f5",
+      "initial_integrated_sha256": "af7e6e009b9c1e2d1d9385ba3974f7e2c661277e97eb6add4c0af75823a092f5"
+    },
+    "core/feature_constraints.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\feature_constraints.py",
+      "sha256": "e140b368a06f9edb113bb77efc10037b24f02d5b61c246f6c3a1f77c8ce9d53c",
+      "integrated_sha256": "e140b368a06f9edb113bb77efc10037b24f02d5b61c246f6c3a1f77c8ce9d53c",
+      "initial_integrated_sha256": "e140b368a06f9edb113bb77efc10037b24f02d5b61c246f6c3a1f77c8ce9d53c"
+    },
+    "core/fitting.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\fitting.py",
+      "sha256": "dcc8d09182b91c3d9494573cbdca3dfae1986e68725ddd0de6eb59231739c5fd",
+      "integrated_sha256": "dcc8d09182b91c3d9494573cbdca3dfae1986e68725ddd0de6eb59231739c5fd",
+      "initial_integrated_sha256": "dcc8d09182b91c3d9494573cbdca3dfae1986e68725ddd0de6eb59231739c5fd"
+    },
+    "core/fit_options.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\fit_options.py",
+      "sha256": "4dd9f4c890458440c92c38e0d24184382fe27c4f2f4c932569cd5838b2493b83",
+      "integrated_sha256": "4dd9f4c890458440c92c38e0d24184382fe27c4f2f4c932569cd5838b2493b83",
+      "initial_integrated_sha256": "4dd9f4c890458440c92c38e0d24184382fe27c4f2f4c932569cd5838b2493b83"
+    },
+    "core/formula.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\formula.py",
+      "sha256": "70cfe6cb4037d53fcc85a5a1c8f576883e0f8415b641613bdf095f54e403bcbe",
+      "integrated_sha256": "70cfe6cb4037d53fcc85a5a1c8f576883e0f8415b641613bdf095f54e403bcbe",
+      "initial_integrated_sha256": "70cfe6cb4037d53fcc85a5a1c8f576883e0f8415b641613bdf095f54e403bcbe"
+    },
+    "core/initial_surface.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\initial_surface.py",
+      "sha256": "d57f6c981a816054dc75086ff65e05e23186f867b0b6208ea21573e714e33d75",
+      "integrated_sha256": "d57f6c981a816054dc75086ff65e05e23186f867b0b6208ea21573e714e33d75",
+      "initial_integrated_sha256": "d57f6c981a816054dc75086ff65e05e23186f867b0b6208ea21573e714e33d75"
+    },
+    "core/integrated_fitting.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\integrated_fitting.py",
+      "sha256": "126ec170d7e0e24d48eb21263f5d056e7494f3bac55059532430d2cab5510a90",
+      "integrated_sha256": "126ec170d7e0e24d48eb21263f5d056e7494f3bac55059532430d2cab5510a90",
+      "initial_integrated_sha256": "126ec170d7e0e24d48eb21263f5d056e7494f3bac55059532430d2cab5510a90"
+    },
+    "core/joint_lm.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\joint_lm.py",
+      "sha256": "e50dc97e8a088bc21bb03aea3082269b08021ca11e0c28e2ae650524ac87acba",
+      "integrated_sha256": "e50dc97e8a088bc21bb03aea3082269b08021ca11e0c28e2ae650524ac87acba",
+      "initial_integrated_sha256": "e50dc97e8a088bc21bb03aea3082269b08021ca11e0c28e2ae650524ac87acba"
+    },
+    "core/landmark_policy.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\landmark_policy.py",
+      "sha256": "13eb2d88f07d21aab6fcd1637ea46576d15a10c533e77fcf19a2744d462f8e8b",
+      "integrated_sha256": "13eb2d88f07d21aab6fcd1637ea46576d15a10c533e77fcf19a2744d462f8e8b",
+      "initial_integrated_sha256": "13eb2d88f07d21aab6fcd1637ea46576d15a10c533e77fcf19a2744d462f8e8b"
+    },
+    "core/lmkdetection.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\lmkdetection.py",
+      "sha256": "b62f58dd0f4cf5114028e7bcecbf428a7c736867311c94a32b49f38d29f64bb1",
+      "integrated_sha256": "b62f58dd0f4cf5114028e7bcecbf428a7c736867311c94a32b49f38d29f64bb1",
+      "initial_integrated_sha256": "b62f58dd0f4cf5114028e7bcecbf428a7c736867311c94a32b49f38d29f64bb1"
+    },
+    "core/lm_jacobians.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\lm_jacobians.py",
+      "sha256": "b8b4666178042a865e80872b2050b32707a942ef160b308207a1d43bcb5d3527",
+      "integrated_sha256": "b8b4666178042a865e80872b2050b32707a942ef160b308207a1d43bcb5d3527",
+      "initial_integrated_sha256": "b8b4666178042a865e80872b2050b32707a942ef160b308207a1d43bcb5d3527"
+    },
+    "core/mask_detection.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\mask_detection.py",
+      "sha256": "601e8a17d0be516c6a872ff3528c8ae0b3fe2171d32b8f95b9a8711bc217302e",
+      "integrated_sha256": "601e8a17d0be516c6a872ff3528c8ae0b3fe2171d32b8f95b9a8711bc217302e",
+      "initial_integrated_sha256": "601e8a17d0be516c6a872ff3528c8ae0b3fe2171d32b8f95b9a8711bc217302e"
+    },
+    "core/metrics.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\metrics.py",
+      "sha256": "824fcecf44281dfd0eb6fae30cd06970bda49a5e54f9d096ca58583caa02223a",
+      "integrated_sha256": "824fcecf44281dfd0eb6fae30cd06970bda49a5e54f9d096ca58583caa02223a",
+      "initial_integrated_sha256": "824fcecf44281dfd0eb6fae30cd06970bda49a5e54f9d096ca58583caa02223a"
+    },
+    "core/pipeline.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\pipeline.py",
+      "sha256": "7d17c738e57138f981d254ac5785e36cd6059aedf28a27327e8b070f4a4252f8",
+      "integrated_sha256": "d4f99e622ac2491c2865e81e8062f8df5425842adc79ffb83902f7e22c21442e",
+      "initial_integrated_sha256": "0900182d303b6e2c4da342b245a1d25133f3247d6d404e78cd06682f54f70d43"
+    },
+    "core/render.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\render.py",
+      "sha256": "fe96ad9206b32aa4f38bfc543541b2d44e36af7d8289fb2f3b5eed5e7386636f",
+      "integrated_sha256": "fe96ad9206b32aa4f38bfc543541b2d44e36af7d8289fb2f3b5eed5e7386636f",
+      "initial_integrated_sha256": "fe96ad9206b32aa4f38bfc543541b2d44e36af7d8289fb2f3b5eed5e7386636f"
+    },
+    "core/__init__.py": {
+      "source": "D:\\项目\\subdivide_scan\\core\\__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "integrated_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "initial_integrated_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "core/student/student_refine.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\student_refine.py",
+      "sha256": "59b4b29b1998b21ab7d01adc2a0a29619a4e7a700f81ad7daa1dc5da60c4c9d4",
+      "integrated_sha256": "6d782f7f2de90bbc6ac6648721059365722ccb9e80c85553d480579ed0c5658f",
+      "initial_integrated_sha256": "6d782f7f2de90bbc6ac6648721059365722ccb9e80c85553d480579ed0c5658f"
+    },
+    "core/student/semantic_refine.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\semantic_refine.py",
+      "sha256": "237782c427b7f38b63a50ad730f8a947bf3920e2544de75a70207fc54114f073",
+      "integrated_sha256": "e67a8359c8faa87321845a5c3c766b9b050c2c8b7ad90abfbf5460c05ad069c7",
+      "initial_integrated_sha256": "e67a8359c8faa87321845a5c3c766b9b050c2c8b7ad90abfbf5460c05ad069c7"
+    },
+    "core/student/offset_refine.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\offset_refine.py",
+      "sha256": "92fe33b518a448d78e95b35b437df47b1b53be66d8ab1f33b814fbc14de9606a",
+      "integrated_sha256": "f3bbdf6ff5ad1629945bdc99068d3b408f7645c5653d35482fc8402c37f4e801",
+      "initial_integrated_sha256": "6009970fd39a1bc8b8aec6f1066751db6420d1b05e25575fef7beafbf500644f"
+    },
+    "core/student/detail_snap.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\detail_snap.py",
+      "sha256": "5946b1915e220c803b74993da202bd1baf72f0e665a5aec369e5375474e8d7d0",
+      "integrated_sha256": "81ea06f91a7f30f217160e8fa8a4ad29b11aa203bb1ef9ccc6fa246c5c98aaa2",
+      "initial_integrated_sha256": "81ea06f91a7f30f217160e8fa8a4ad29b11aa203bb1ef9ccc6fa246c5c98aaa2"
+    },
+    "core/student/depth_refine.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\depth_refine.py",
+      "sha256": "4f1f85544d2e0847fff514084245ca5bbc158fb8469efdd4dc85e3ec4890cd01",
+      "integrated_sha256": "a5fa28bec50196fe7118bfe6d689f5dcf9deb747c6d6cc493fc4c60f493b1579",
+      "initial_integrated_sha256": "a5fa28bec50196fe7118bfe6d689f5dcf9deb747c6d6cc493fc4c60f493b1579"
+    },
+    "core/student/arap_refine.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\arap_refine.py",
+      "sha256": "0c1f00e9bd1e3ff29c87f6a95f5e71d12399db826989193bc5ec0428d0d531f3",
+      "integrated_sha256": "a7ca47a0116a63b32de2a4716097cd7a53118193d844927fa5998d1953e9f222",
+      "initial_integrated_sha256": "a7ca47a0116a63b32de2a4716097cd7a53118193d844927fa5998d1953e9f222"
+    },
+    "core/student/early_stop.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\early_stop.py",
+      "sha256": "346e3b06d2bfac232d3afccef5478bdafa2c895a219308d59f3b87dbfccca2dc",
+      "integrated_sha256": "373f01b459ac0b99279c832c56b6fbc46adc1ffaa9e2c1830986c1d49267acb5",
+      "initial_integrated_sha256": "373f01b459ac0b99279c832c56b6fbc46adc1ffaa9e2c1830986c1d49267acb5"
+    },
+    "core/student/initial_surface.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\initial_surface.py",
+      "sha256": "ef9de1b4a25119390e56825998130b3541202b34e74fef11fe17e45cbe893b20",
+      "integrated_sha256": "ef9de1b4a25119390e56825998130b3541202b34e74fef11fe17e45cbe893b20",
+      "initial_integrated_sha256": "ef9de1b4a25119390e56825998130b3541202b34e74fef11fe17e45cbe893b20"
+    },
+    "core/student/camera.py": {
+      "source": "D:\\项目\\Airway3D_0\\new_version\\core\\camera.py",
+      "sha256": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799",
+      "integrated_sha256": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799",
+      "initial_integrated_sha256": "66dd2f0febd6083c34812c6e666e06726a03fca1fd8e31fca028320de8124799"
+    }
+  },
+  "zip_comparison": {
+    "core/joint_lm.py": {
+      "zip_sha256": "18f732eaf86fb8be8def37fdff143a42b2df24e331807f3d3c5d3bbd0c9d89d8",
+      "same_as_new": false,
+      "same_as_old": false
+    },
+    "core/fit_options.py": {
+      "zip_sha256": "5b3e45a1157801e7e49057ce0ea04786f39d0c60c6e6b000bdc88a62e1b54f2d",
+      "same_as_new": false,
+      "same_as_old": true
+    },
+    "core/integrated_fitting.py": {
+      "zip_sha256": "d2b65339820c3b756a835f41ba797d4bed496ab04256763cfb4290df20c98a81",
+      "same_as_new": false,
+      "same_as_old": false
+    },
+    "core/student_refine.py": {
+      "zip_sha256": "59b4b29b1998b21ab7d01adc2a0a29619a4e7a700f81ad7daa1dc5da60c4c9d4",
+      "same_as_new": false,
+      "same_as_old": true
+    },
+    "core/offset_refine.py": {
+      "zip_sha256": "92fe33b518a448d78e95b35b437df47b1b53be66d8ab1f33b814fbc14de9606a",
+      "same_as_new": false,
+      "same_as_old": true
+    },
+    "ui/workers.py": {
+      "zip_sha256": "0763b3b66e92f0a56b90ed29a8184dde47138b4bf316744f09498c975149ae27",
+      "same_as_new": false,
+      "same_as_old": false
+    },
+    "ui/capture_widget.py": {
+      "zip_sha256": "1e2a0a25df525511d98c31e4bad91d1dbfdbc24353b456668f784dfe09ce7fe6",
+      "same_as_new": false,
+      "same_as_old": true
+    }
+  },
+  "current_algorithm": "cross-v2-guarded",
+  "current_changes": "docs/CROSS_V2_VALIDATION.md",
+  "cross_manifest_role": "Historical v1 provenance; not a v2 equality reference",
+  "local_files": {
+    "core/cross_refine.py": "05b6fddcb531aa28dd5aac83c530e936c301c0efd8ba72b317a796f37b57b55a",
+    "core/provenance.py": "befc51716228d06f8c01aca2291b63dfcb85a064ae2698e0d2605a2fa17db630",
+    "tools/regression.py": "89b925a270fc115ca18d2083f77b98e6166fbeadbe88b4833dc9954b185ef8a3",
+    "tools/validate_cross_v2.py": "1575c9023c381b7a74baa51dd7c4965ab0565179d1e56b9354851a252f4c4f9d",
+    "tools/check_v2_contracts.py": "def24289d717187ef302ebb4862a5f57fdfaeaffced6e0614fdb7ccce12f57da"
+  }
+}

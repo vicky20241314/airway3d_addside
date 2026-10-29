@@ -1,0 +1,9 @@
+{
+  "gui_worker_passed": true,
+  "real_aruco_and_stage1_stage2_stage3": true,
+  "default_jaw_constraints_enabled": true,
+  "paired_inputs_separate": true,
+  "hardware_tested": false,
+  "mocked": "cached segmentation/landmarks and renderer",
+  "run": "D:\\\u9879\u76ee\\sub_oldstage3\\diagnostics\\jaw_integrated\\20261025_212025_218870"
+}

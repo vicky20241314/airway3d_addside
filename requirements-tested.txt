@@ -1,0 +1,16 @@
+numpy==1.26.4
+scipy==1.11.4
+torch==2.0.1
+torchvision==0.15.2
+PyQt6==6.6.1
+trimesh==4.4.9
+rtree==1.4.1
+pyrender==0.1.45
+smplx==0.1.28
+uniface==3.5.2
+batch-face==1.5.4
+timm==0.9.16
+yacs==0.1.8
+tqdm==4.70.1
+Pillow==11.1.0
+onnxruntime==1.18.1
