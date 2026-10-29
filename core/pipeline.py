@@ -127,7 +127,7 @@ def run_pair(rgb_closed, rgb_open, depth_closed, depth_open, camera, *, landmark
 
 
 def run_multiview(observations, *, output_root=None, options=None, device=None,
-                  progress=lambda _:None, front_only=False, refine=True):
+                  progress=lambda _:None, front_only=False, refine=True,smoke_test=False):
     """Explicit shared-state entry; accepts both states' side observations.
 
     Both returned state meshes are in their respective FRONT camera frames.
@@ -138,12 +138,18 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
     from core.aruco import detect_aruco
     from core.multiview_geometry import RigidCamera
     import hashlib
+    from dataclasses import asdict
+    from core.fit_options import FitOptions
+    options=options or FitOptions()
     root=Path(output_root) if output_root else Path(__file__).resolve().parents[1]/'output'
     folder=root/('mv_'+datetime.now().strftime('%Y%m%d_%H%M%S_%f'))
     folder.mkdir(parents=True,exist_ok=False)
     started=time.perf_counter()
     report=dict(status='started',algorithm='multiview_shared_state_LM',metric_geometry_stage=2,
-        stage3_enabled=bool(refine),mesh_unit='m',depth_unit='mm',real_side_effect_validated=False)
+        stage3_enabled=bool(refine),mesh_unit='m',depth_unit='mm',real_side_effect_validated=False,
+        run_purpose='smoke_test' if smoke_test else 'reconstruction',fit_configuration=asdict(options))
+    if smoke_test:
+        (folder/'QUICK_TEST_ONLY.txt').write_text('快速流程检查结果，不能用于判断相似度或重建精度。正式回放请去掉 --quick。\n',encoding='utf-8')
     try:
         # Save even failed validation attempts for diagnosis, then work on copies.
         observations=copy.deepcopy(observations)

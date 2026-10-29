@@ -127,6 +127,16 @@ class SessionTests(unittest.TestCase):
 
 
 class CaptureTests(unittest.TestCase):
+    def test_preview_never_paints_into_raw_rgb(self):
+        from types import SimpleNamespace
+        from ui.capture_widget import CaptureWidget
+        rgb=np.zeros((64,64,3),np.uint8);original=rgb.copy()
+        fake=SimpleNamespace(_overlay_aruco=lambda image:image,_preview_bbox=np.array([8,8,48,48]),
+                             _draw_face_bbox=CaptureWidget._draw_face_bbox)
+        rendered=CaptureWidget._overlay_preview(fake,rgb,with_aruco=True)
+        np.testing.assert_array_equal(rgb,original)
+        self.assertFalse(np.array_equal(rendered,original))
+
     def test_guided_capture_state_machine_and_intrinsics(self):
         from unittest.mock import patch
         import itertools
@@ -149,13 +159,15 @@ class CaptureTests(unittest.TestCase):
                 w.on_frame(sample.rgb,sample.depth,stale)
                 self.assertEqual(len(w._mv_frames),0)
                 camera=Camera(80+i,90+i,32,32)
-                for _ in range(5):w.on_frame(sample.rgb,sample.depth,camera)
+                self.assertEqual(w.frame_count_choice.currentData(),15)
+                for _ in range(15):w.on_frame(sample.rgb,sample.depth,camera)
                 w._on_capture()
                 self.assertEqual(len(w._observations),i+1)
                 self.assertEqual(len(w._mv_frames),0)
             self.assertEqual(marker.call_count,1)
             self.assertEqual(len(emitted),1)
             self.assertEqual([o.camera.fx for o in emitted[0]],list(range(80,80+count)))
+            self.assertTrue(all(o.quality['frames']==15 and o.temporal['accepted'].all() for o in emitted[0]))
             attempts=list((Path(d)/'capture').glob('attempt_*'))
             self.assertEqual(len(attempts),count)
             self.assertTrue(all((p/'raw_sequence.npz').exists() and (p/'attempt.json').exists() for p in attempts))
@@ -233,7 +245,7 @@ class MetricSourceTests(unittest.TestCase):
                 patch('core.aruco.detect_aruco',return_value=(None,None,adam)) as marker, \
                 patch('core.multiview_fitting.fit_multiview',return_value=({'closed':'c_mesh','open':'o_mesh'},{},{})), \
                 patch('core.pipeline.finish_meshes',return_value=({},(),(),[])) as finish:
-            result=run_multiview(obs,output_root=d,refine=False)
+            result=run_multiview(obs,output_root=d,refine=False,smoke_test=True)
             args=finish.call_args.args
             self.assertEqual(args[0],('c_mesh','o_mesh'))
             np.testing.assert_array_equal(args[5],adam)
@@ -243,6 +255,9 @@ class MetricSourceTests(unittest.TestCase):
             report=json.loads((result['folder']/'report.json').read_text(encoding='utf-8'))
             self.assertEqual(report['metric_sources']['closed_front'],'closed_front')
             self.assertEqual(report['metric_sources']['open_front'],'open_front')
+            self.assertEqual(report['run_purpose'],'smoke_test')
+            self.assertEqual(report['fit_configuration']['stage2_outer'],20)
+            self.assertTrue((result['folder']/'QUICK_TEST_ONLY.txt').exists())
 
 
 if __name__=='__main__':unittest.main()

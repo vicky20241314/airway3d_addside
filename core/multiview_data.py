@@ -25,6 +25,7 @@ class Observation:
     quality: dict = field(default_factory=dict)
     parsing: np.ndarray | None = None
     points: np.ndarray | None = None
+    temporal: dict | None = None
 
     def validate(self):
         if self.state not in ('closed', 'open') or self.view not in ('front', 'left', 'right'):
@@ -109,6 +110,10 @@ def save_session(folder, observations):
                           intrinsics=np.array([o.camera.fx, o.camera.fy, o.camera.cx, o.camera.cy]))
             if o.parsing is not None: arrays['parsing'] = o.parsing
             if o.points is not None: arrays['points'] = o.points
+            if o.temporal is not None:
+                for key,value in o.temporal.items():
+                    if not key.isidentifier() or np.asarray(value).dtype.hasobject:raise ValueError('Invalid temporal array')
+                    arrays['temporal_'+key]=value
             np.savez_compressed(stream, **arrays)
         entries.append(dict(file=name, view_id=o.view_id, state=o.state, view=o.view, quality=o.quality))
     manifest.write_text(json.dumps(dict(schema='airway3d.rgbd.multiview.v1', depth_unit='mm',
@@ -130,7 +135,8 @@ def load_session(path):
         with np.load(file, allow_pickle=False) as a:
             result.append(Observation(row['view_id'], row['state'], row['view'], a['rgb'], a['depth'],
                 Camera(*a['intrinsics']), a['uv'], a['xyz'], a['valid'], row['quality'],
-                a['parsing'] if 'parsing' in a else None, a['points'] if 'points' in a else None))
+                a['parsing'] if 'parsing' in a else None, a['points'] if 'points' in a else None,
+                {k[len('temporal_'):]:a[k] for k in a.files if k.startswith('temporal_')} or None))
     return result
 
 

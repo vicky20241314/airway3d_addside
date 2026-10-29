@@ -228,7 +228,9 @@ class CaptureWidget(QWidget):
 
     def _overlay_preview(self, rgb: np.ndarray, with_aruco: bool = False) -> np.ndarray:
         """在实时 RGB 预览中叠加 YuNet 人脸框，可选叠加 ArUco 框。"""
-        vis = self._overlay_aruco(rgb) if with_aruco else rgb.copy()
+        # _overlay_aruco may return its input unchanged when no marker exists.
+        # Always own the preview buffer before painting the detector box.
+        vis = self._overlay_aruco(rgb.copy()) if with_aruco else rgb.copy()
         return self._draw_face_bbox(vis, self._preview_bbox)
 
     @staticmethod

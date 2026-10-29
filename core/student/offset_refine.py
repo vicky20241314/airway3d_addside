@@ -310,10 +310,8 @@ def depth_inputs(vertices, faces, depth, camera, parsing, landmarks_2d=None, pix
               & ((normals*view).sum(1) > .25))
     ids = np.flatnonzero(active)
     if len(ids):
-        mesh = trimesh.Trimesh(vertices, faces, process=False)
-        locations, ray_ids, _ = mesh.ray.intersects_location(np.zeros((len(ids), 3)), -view[ids], multiple_hits=False)
-        visible = np.zeros(len(ids), bool)
-        visible[ray_ids] = np.linalg.norm(locations-vertices[ids[ray_ids]], axis=1) < .001
+        from core.multiview_geometry import ray_visible
+        visible = ray_visible(vertices,faces,vertices[ids],tolerance=.001)
         active[ids[~visible]] = False
     return points[good], confidence[good], active
 
