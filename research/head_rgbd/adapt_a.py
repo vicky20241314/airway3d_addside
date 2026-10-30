@@ -12,6 +12,7 @@ from audit import dump,sha
 
 
 def encode_depth(depth_mm):
+    if not np.isfinite(depth_mm).all():raise ValueError('nonfinite depth')
     d=np.rint(np.asarray(depth_mm)*10).astype(np.int64)
     if (d<0).any() or (d>65279).any():raise ValueError('depth exceeds packed RGB encoding range')
     r=np.minimum(d//255,255);g=d-r*255
@@ -27,18 +28,25 @@ def main():
     p.add_argument('--sequence',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True)
     p.add_argument('--state',choices=['closed','open'],default='closed')
+    p.add_argument('--pixel-stride',type=int,default=1,help='Keep actual RGB/depth pixels at this stride; no interpolation')
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
+    if a.pixel_stride<1:raise ValueError('pixel-stride must be positive')
     info=json.loads(a.sequence.read_text(encoding='utf-8'));rows=[]
     for r in info['frames']:
         if r['status']!='candidate' or r['state']!=a.state:continue
         with np.load(a.sequence.parent/r['file'],allow_pickle=False) as d:
-            depth=d['depth'];encoded=encode_depth(depth)
+            stride=a.pixel_stride;depth=d['depth'][::stride,::stride];rgb=d['rgb'][::stride,::stride]
+            encoded=encode_depth(depth)
             if not np.allclose(decode_depth(encoded),depth):raise ValueError('depth round trip failed')
-            cv2.imwrite(str(a.output/(r['id']+'.JPG')),cv2.cvtColor(d['rgb'],cv2.COLOR_RGB2BGR))
+            cv2.imwrite(str(a.output/(r['id']+'.JPG')),cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR))
             cv2.imwrite(str(a.output/(r['id']+'.PNG')),encoded)
-            fx,fy,cx,cy=d['intrinsics']
+            fx,fy,cx,cy=d['intrinsics']/stride
             rows.append(dict(id=r['id'],intrinsics_before_transpose=[fx,fy,cx,cy],
-                intrinsics_after_author_transpose=[fy,fx,cy,cx],shape=list(depth.shape),source=r['file']))
+                intrinsics_after_author_transpose=[fy,fx,cy,cx],shape=list(depth.shape),source=r['file'],
+                source_intrinsics=d['intrinsics'].tolist(),pixel_stride=stride))
+    if rows and all(np.allclose(r['intrinsics_before_transpose'],rows[0]['intrinsics_before_transpose'],rtol=0,atol=1e-6) and r['shape']==rows[0]['shape'] for r in rows):
+        fx,fy,cx,cy=rows[0]['intrinsics_before_transpose'];height,width=rows[0]['shape']
+        dump(a.output/'camera.json',dict(fx=fx,fy=fy,cx=cx,cy=cy,width=width,height=height))
     dump(a.output/'calibration.json',dict(sequence_sha256=sha(a.sequence),frames=rows,
         depth_encoding='BGR: (R*255+G)/10 millimetres',aligned=True,
         coordinates_input='X_right_Y_up_Z_backward metres',author_depth_points='X_right_Y_down_Z_forward millimetres',

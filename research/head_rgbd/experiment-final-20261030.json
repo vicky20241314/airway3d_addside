@@ -1,0 +1,1747 @@
+{
+  "date": "2026-10-30 Asia/Shanghai",
+  "hardware": {
+    "cpu": "AMD Ryzen 7 5800H",
+    "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+    "gpu_memory_mib": 6144,
+    "driver": "517.00",
+    "camera": "Orbbec Gemini 215",
+    "ram_bytes": 16540307456
+  },
+  "comparison": {
+    "baseline": {
+      "baseline_commit": "3e409af77a4686b0cf435fff2230b90a8d26e11d",
+      "baseline_version": "v0.12.0",
+      "stage": "stage2_only",
+      "device": "cuda",
+      "front_only": false,
+      "elapsed_s": 109.79236559988931,
+      "result_folder": "D:\\proiect\\rgbd-head-research-runtime-20261030\\baseline-v0120\\mv_20261030_102201_309846",
+      "cuda_peak_allocated_mib": 341.724609375,
+      "cuda_peak_reserved_mib": 654.0,
+      "session_sha256": "e931e09c42da67a6cd3efcb37601202f0ae6721cf635de3f707edf8f39420266",
+      "used_view_ids": [
+        "closed_front",
+        "open_front",
+        "closed_left",
+        "closed_right"
+      ],
+      "excluded_views": [],
+      "real_side_effect_validated": false
+    },
+    "B": {
+      "elapsed_s": 35.78940650005825,
+      "cuda_peak_allocated_mib": 63.5771484375,
+      "cuda_peak_reserved_mib": 86.0,
+      "device": "cuda",
+      "steps": 240
+    },
+    "frames": [
+      {
+        "frame_id": "closed_front_1",
+        "view": "front",
+        "state": "closed",
+        "role": "training observation",
+        "independent_extrinsics": false,
+        "baseline": {
+          "valid_face_pixels": 6032,
+          "rendered_face_pixels": 6010,
+          "ray_coverage_fraction": 0.9963527851458885,
+          "depth_residual_median_mm": 1.7435723040540863,
+          "depth_residual_p95_mm": 8.093107261091339,
+          "supported_within_5mm_fraction": 0.8824602122015915,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "B": {
+          "valid_face_pixels": 6032,
+          "rendered_face_pixels": 6027,
+          "ray_coverage_fraction": 0.9991710875331565,
+          "depth_residual_median_mm": 1.1281051414181453,
+          "depth_residual_p95_mm": 6.036668616403898,
+          "supported_within_5mm_fraction": 0.9283819628647215,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "A": null,
+        "A_status": "real input preprocessing and calibrated step0 passed; original find_chin IndexError, no real mesh",
+        "b_initial_yaw_deg": -4.622124404688021,
+        "B_front_only": {
+          "valid_face_pixels": 6032,
+          "rendered_face_pixels": 6016,
+          "ray_coverage_fraction": 0.9973474801061007,
+          "depth_residual_median_mm": 1.138227921571866,
+          "depth_residual_p95_mm": 6.020168302085252,
+          "supported_within_5mm_fraction": 0.9272214854111406,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "B_front_change_median_mm": -0.0101227801537207
+      },
+      {
+        "frame_id": "closed_left_0",
+        "view": "left",
+        "state": "closed",
+        "role": "training observation",
+        "independent_extrinsics": false,
+        "baseline": {
+          "valid_face_pixels": 5737,
+          "rendered_face_pixels": 5634,
+          "ray_coverage_fraction": 0.982046365696357,
+          "depth_residual_median_mm": 1.7166848390645362,
+          "depth_residual_p95_mm": 8.16778690239019,
+          "supported_within_5mm_fraction": 0.8833885305909012,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "B": {
+          "valid_face_pixels": 5737,
+          "rendered_face_pixels": 5645,
+          "ray_coverage_fraction": 0.9839637441171344,
+          "depth_residual_median_mm": 0.5319151089569485,
+          "depth_residual_p95_mm": 2.829454522589126,
+          "supported_within_5mm_fraction": 0.9562489105804427,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "A": null,
+        "A_status": "real input preprocessing and calibrated step0 passed; original find_chin IndexError, no real mesh",
+        "b_initial_yaw_deg": -28.570501417977468
+      },
+      {
+        "frame_id": "closed_right_3",
+        "view": "right",
+        "state": "closed",
+        "role": "training observation",
+        "independent_extrinsics": false,
+        "baseline": {
+          "valid_face_pixels": 7318,
+          "rendered_face_pixels": 7167,
+          "ray_coverage_fraction": 0.9793659469800492,
+          "depth_residual_median_mm": 1.8818870161061985,
+          "depth_residual_p95_mm": 6.423916288669621,
+          "supported_within_5mm_fraction": 0.8935501503142935,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "B": {
+          "valid_face_pixels": 7318,
+          "rendered_face_pixels": 7178,
+          "ray_coverage_fraction": 0.9808690899152774,
+          "depth_residual_median_mm": 0.5330834496302117,
+          "depth_residual_p95_mm": 2.7729176450407667,
+          "supported_within_5mm_fraction": 0.9532659196501776,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "A": null,
+        "A_status": "real input preprocessing and calibrated step0 passed; original find_chin IndexError, no real mesh",
+        "b_initial_yaw_deg": 29.675322183860093
+      },
+      {
+        "frame_id": "open_front_2",
+        "view": "front",
+        "state": "open",
+        "role": "training observation",
+        "independent_extrinsics": false,
+        "baseline": {
+          "valid_face_pixels": 5576,
+          "rendered_face_pixels": 5570,
+          "ray_coverage_fraction": 0.9989239598278336,
+          "depth_residual_median_mm": 1.9369946226160395,
+          "depth_residual_p95_mm": 8.487907775512014,
+          "supported_within_5mm_fraction": 0.8192252510760402,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "B": {
+          "valid_face_pixels": 5576,
+          "rendered_face_pixels": 5576,
+          "ray_coverage_fraction": 1.0,
+          "depth_residual_median_mm": 1.0508503306038142,
+          "depth_residual_p95_mm": 4.312311613777666,
+          "supported_within_5mm_fraction": 0.96987087517934,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "A": null,
+        "A_status": "real input preprocessing and calibrated step0 passed; original find_chin IndexError, no real mesh",
+        "b_initial_yaw_deg": -2.748911289206617,
+        "B_front_only": {
+          "valid_face_pixels": 5576,
+          "rendered_face_pixels": 5575,
+          "ray_coverage_fraction": 0.9998206599713056,
+          "depth_residual_median_mm": 1.1558526979553174,
+          "depth_residual_p95_mm": 3.8951015814083125,
+          "supported_within_5mm_fraction": 0.973816355810617,
+          "surface_error_mm": null,
+          "contour_error_px": null,
+          "surface_error_status": "unverified: no independent reference surface/extrinsics",
+          "contour_error_status": "unverified: no human face silhouette",
+          "metric_type": "in-sample camera-axis depth residual, not Euclidean surface error"
+        },
+        "B_front_change_median_mm": -0.10500236735150326
+      }
+    ],
+    "elapsed_s": 11.362184900091961,
+    "acceptance": {
+      "front_surface_error": "unverified",
+      "side_surface_error": "unverified",
+      "silhouette_error": "unverified",
+      "independent_effective_coverage": "unverified",
+      "front_degradation": "unverified"
+    },
+    "conclusion": "No claim of real-side accuracy improvement is supported by this in-sample diagnostic.",
+    "missing": [
+      "held-out oblique observations with independently calibrated external poses",
+      "human face silhouettes",
+      "independent head scan"
+    ],
+    "frame_policy": "same four raw representative frames from one real capture; baseline fit uses fused depths from those bursts",
+    "independence_warning": "Both methods estimate poses using fitting data. B and baseline use different expression models. Residuals cannot establish scan accuracy."
+  },
+  "preparation_s": 8.857183299958706,
+  "input_hashes": [
+    {
+      "path": "D:\\proiect\\newstage2_oldstage3\\output\\capture_mv_20261030_095649_134226\\attempt_095649_134743\\raw_sequence.npz",
+      "sha256": "99268b1f1f40617af72f912e7e4d5f35af127bbb0212e071e1806606cb306752",
+      "observation_sha256": "822a2f5906b2dbc70c006d1f5a6e5360ee6babac05be8db31c3e0d26e35baf85",
+      "manifest_sha256": "a7328d74450e2688793ff2681950f5d2b6e95ca996889aa258e5ca99253f1abc"
+    },
+    {
+      "path": "D:\\proiect\\newstage2_oldstage3\\output\\capture_mv_20261030_095649_134226\\attempt_095706_273524\\raw_sequence.npz",
+      "sha256": "70f380354468a43cf17a847abf2af71139f5e64b8b8387cd04c9f2385a15cdba",
+      "observation_sha256": "b9141c0ab650fb7541477188799af283f3680744bf5003e3785e60333dd216de",
+      "manifest_sha256": "d9a70b168f013c21904ee56226467221e269b413180c4fdcafbff44cbdc5e13e"
+    },
+    {
+      "path": "D:\\proiect\\newstage2_oldstage3\\output\\capture_mv_20261030_095649_134226\\attempt_095712_883057\\raw_sequence.npz",
+      "sha256": "48b37c0b404e99df47c777b6e03880577f8b783f1015507f901c78c026c6c68e",
+      "observation_sha256": "8347682363c3ce9bd8342e4e82942e32326b4480768231440e960a2ff6c7b0ca",
+      "manifest_sha256": "2d893e535ef0771362a00ad4c34d661edec58f4a53fa4eac8feff4993f450e12"
+    },
+    {
+      "path": "D:\\proiect\\newstage2_oldstage3\\output\\capture_mv_20261030_095649_134226\\attempt_095718_468773\\raw_sequence.npz",
+      "sha256": "ecbc02de9e0d14a17e30d76c6de0d42ac0f99ca2b01e4973887d57ebd4b450ee",
+      "observation_sha256": "aea0011be968adcf91ddcbdee8a4d1e61ad14277b485df822d9abe2ebded9854",
+      "manifest_sha256": "17be5a8ce2052afd131149e15b33699fadcf34485f6cc4bfbefc154da0594942"
+    }
+  ],
+  "selected_frames": [
+    {
+      "id": "closed_front_0",
+      "yaw_deg": -4.830009797878313,
+      "state": "closed",
+      "view": "front",
+      "timestamp_s": 1205287.578,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_front_2",
+      "yaw_deg": -4.68813427513924,
+      "state": "closed",
+      "view": "front",
+      "timestamp_s": 1205287.64,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_front_4",
+      "yaw_deg": -5.167080572692332,
+      "state": "closed",
+      "view": "front",
+      "timestamp_s": 1205287.718,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_left_0",
+      "yaw_deg": -28.570501417977468,
+      "state": "closed",
+      "view": "left",
+      "timestamp_s": 1205304.718,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_left_2",
+      "yaw_deg": -28.773164100641946,
+      "state": "closed",
+      "view": "left",
+      "timestamp_s": 1205304.781,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_left_4",
+      "yaw_deg": -28.578589495976814,
+      "state": "closed",
+      "view": "left",
+      "timestamp_s": 1205304.843,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_right_0",
+      "yaw_deg": 30.55399867557754,
+      "state": "closed",
+      "view": "right",
+      "timestamp_s": 1205311.328,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_right_2",
+      "yaw_deg": 29.925425940004384,
+      "state": "closed",
+      "view": "right",
+      "timestamp_s": 1205311.39,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "closed_right_3",
+      "yaw_deg": 29.675322183860093,
+      "state": "closed",
+      "view": "right",
+      "timestamp_s": 1205311.421,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "open_front_1",
+      "yaw_deg": -1.9350430681263477,
+      "state": "open",
+      "view": "front",
+      "timestamp_s": 1205316.937,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "open_front_3",
+      "yaw_deg": -2.9136742332785928,
+      "state": "open",
+      "view": "front",
+      "timestamp_s": 1205317.0,
+      "selection_reason": "quality_angle_time_keyframe"
+    },
+    {
+      "id": "open_front_4",
+      "yaw_deg": -2.435599277500308,
+      "state": "open",
+      "view": "front",
+      "timestamp_s": 1205317.046,
+      "selection_reason": "quality_angle_time_keyframe"
+    }
+  ],
+  "not_selected": [
+    {
+      "id": "closed_front_1",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "closed_front_3",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "closed_left_1",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "closed_left_3",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "closed_right_1",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "closed_right_4",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "open_front_0",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    },
+    {
+      "id": "open_front_2",
+      "status": "candidate",
+      "reason": "redundant_within_segment"
+    }
+  ],
+  "head_tracks": [
+    {
+      "id": "closed_front_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "closed_front_1",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_front_2",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_front_3",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_front_4",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "closed_left_1",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_2",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_3",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_4",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "closed_right_1",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_2",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_3",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_4",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "open_front_1",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_2",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_3",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_4",
+      "status": "tracked"
+    }
+  ],
+  "neck_tracks": [
+    {
+      "id": "closed_front_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "closed_front_1",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_front_2",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_front_3",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_front_4",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "closed_left_1",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_2",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_3",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_left_4",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "closed_right_1",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_2",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_3",
+      "status": "tracked"
+    },
+    {
+      "id": "closed_right_4",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_0",
+      "status": "segment_start"
+    },
+    {
+      "id": "open_front_1",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_2",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_3",
+      "status": "tracked"
+    },
+    {
+      "id": "open_front_4",
+      "status": "tracked"
+    }
+  ],
+  "b_output_references": {
+    "closed": {
+      "frame_id": "closed_front_2",
+      "timestamp_s": 1205287.64,
+      "source_frame": 2,
+      "coordinate_system": "reference frame camera: X right, Y up, Z backward; metres"
+    },
+    "open": {
+      "frame_id": "open_front_1",
+      "timestamp_s": 1205316.937,
+      "source_frame": 1,
+      "coordinate_system": "reference frame camera: X right, Y up, Z backward; metres"
+    }
+  },
+  "observed_refinement_vertices": 2445,
+  "total_vertices": 5023,
+  "author_source_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+  "asset_archives": {
+    "sample": {
+      "status": "downloaded",
+      "bytes": 82226603,
+      "sha256": "b5f9ec86a876e1c047f06a588b27254e76657b64f001716b838a058e4c58e4fd",
+      "elapsed_s": 9.155888100154698
+    },
+    "resources": {
+      "status": "downloaded",
+      "bytes": 2116463814,
+      "sha256": "b7b70dc2b02ad2a2947a74aa3926c702b0279546c6473dbaf85fe9ce07819109",
+      "elapsed_s": 220.52796279988252
+    },
+    "model": {
+      "status": "complete",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\author-downloads\\model.zip",
+      "bytes": 5790013160,
+      "sha256": "f95800d1d4ea3853f8b87f7bf80736e8f54f8583352067d9c0a158773b8e6e6f"
+    }
+  },
+  "a_runs": [
+    {
+      "run": "a-author-sample",
+      "route": "A author geometry path",
+      "author_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+      "command": [
+        "bash",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample/geometry_only.sh"
+      ],
+      "exit_code": 1,
+      "error": null,
+      "elapsed_s": 73.75113393900001,
+      "device": "CPU TensorFlow 1.15.5 under WSL",
+      "frontend_only": false,
+      "status": "blocked",
+      "geometry_files": [],
+      "real_data_adapted": false,
+      "real_side_effect_validated": false,
+      "log_sha256": "47248abf4c67be4f3237d6b360655ed129e2dae2241724f77df6716728b424db",
+      "last_log_lines": [
+        "  File \"run_data_preparation.py\", line 70, in detect_2Dlmk_all_imgs",
+        "    tf.import_graph_def(graph_def, name=\"\")",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/util/deprecation.py\", line 507, in new_func",
+        "    return func(*args, **kwargs)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/importer.py\", line 405, in import_graph_def",
+        "    producer_op_list=producer_op_list)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/importer.py\", line 517, in _import_graph_def_internal",
+        "    _ProcessNewOps(graph)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/importer.py\", line 243, in _ProcessNewOps",
+        "    for new_op in graph._add_new_tf_operations(compute_devices=False):  # pylint: disable=protected-access",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 3561, in _add_new_tf_operations",
+        "    for c_op in c_api_util.new_tf_operations(self)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 3561, in <listcomp>",
+        "    for c_op in c_api_util.new_tf_operations(self)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 3451, in _create_op_from_tf_operation",
+        "    ret = Operation(c_op, self)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 1748, in __init__",
+        "    self._traceback = tf_stack.extract_stack()",
+        "",
+        "data prepare failed"
+      ]
+    },
+    {
+      "run": "a-author-sample-v2",
+      "route": "A author geometry path",
+      "author_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+      "command": [
+        "bash",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v2/geometry_only.sh"
+      ],
+      "exit_code": 1,
+      "error": null,
+      "elapsed_s": 330.65818862699996,
+      "device": "CPU TensorFlow 1.15.5 under WSL",
+      "frontend_only": false,
+      "status": "blocked",
+      "geometry_files": [],
+      "real_data_adapted": false,
+      "real_side_effect_validated": false,
+      "log_sha256": "40c6f0e420b0e5567bfb813852a646ddef40ad5506d7670e3e56abe9322d2f68",
+      "last_log_lines": [
+        "step 0: load datas",
+        "---- step0 start -----",
+        "capture_dir: /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v2/input/",
+        "prepare_dir: /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v2/input//prepare",
+        "load lm: /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v2/input//prepare/lmk_3D_86pts_ori.txt",
+        "---- step0 succeed -----",
+        "step 1: choose frames : mid-left-right-up",
+        "---- step1A start -----",
+        "prepare_dir: /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v2/input//prepare/",
+        "   min left is :  10     max left  is :  50",
+        "   min right is :  -10     max right is :  -50",
+        "---- step1A succeed -----",
+        "step 2: sparse fusion ",
+        "Traceback (most recent call last):",
+        "  File \"step2_sparse_fusion.py\", line 45, in <module>",
+        "    from third_party.ply import write_ply, write_obj",
+        "  File \"../../third_party/ply.py\", line 6, in <module>",
+        "    import pandas as pd",
+        "ModuleNotFoundError: No module named 'pandas'",
+        "(step 2) sparse fusion failed"
+      ]
+    },
+    {
+      "run": "a-author-sample-v3",
+      "route": "A author geometry path",
+      "author_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+      "command": [
+        "bash",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v3/geometry_only.sh"
+      ],
+      "exit_code": 1,
+      "author_exit_code": 1,
+      "error": null,
+      "elapsed_s": 79.48180574700001,
+      "device": "CPU TensorFlow 1.15.5 under WSL",
+      "frontend_only": false,
+      "status": "blocked",
+      "geometry_files": [],
+      "cuda_peak_allocated_mib": 0,
+      "resumed_from": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v2/input",
+      "real_data_adapted": false,
+      "real_side_effect_validated": false,
+      "log_sha256": "dd1b8aa7710d2a2b026e9f2e2e87e4d68530f642360937dbd5075031de7f8ad4",
+      "last_log_lines": [
+        "  File \"../../utils/unwrap_utils.py\", line 68, in warp_img_to_uv",
+        "    uv_map = tf.gather_nd(img_attrs, batch_uv_pos)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/util/dispatch.py\", line 180, in wrapper",
+        "    return target(*args, **kwargs)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/ops/array_ops.py\", line 4277, in gather_nd",
+        "    return gen_array_ops.gather_nd(params, indices, name=name)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/ops/gen_array_ops.py\", line 3976, in gather_nd",
+        "    \"GatherNd\", params=params, indices=indices, name=name)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/op_def_library.py\", line 794, in _apply_op_helper",
+        "    op_def=op_def)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/util/deprecation.py\", line 507, in new_func",
+        "    return func(*args, **kwargs)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 3357, in create_op",
+        "    attrs, op_def, compute_device)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 3426, in _create_op_internal",
+        "    op_def=op_def)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/python/framework/ops.py\", line 1748, in __init__",
+        "    self._traceback = tf_stack.extract_stack()",
+        "",
+        "(step 4) prefit uv failed"
+      ]
+    },
+    {
+      "run": "a-author-sample-v4",
+      "route": "A author geometry path",
+      "author_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+      "command": [
+        "bash",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v4/geometry_only.sh"
+      ],
+      "exit_code": -15,
+      "author_exit_code": -15,
+      "error": null,
+      "elapsed_s": 595.93670226,
+      "device": "CPU TensorFlow 1.15.5 under WSL",
+      "frontend_only": false,
+      "status": "blocked",
+      "geometry_files": [],
+      "cuda_peak_allocated_mib": 0,
+      "resumed_from": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v3/input",
+      "real_data_adapted": false,
+      "real_side_effect_validated": false,
+      "log_sha256": "45dce30f03cba7fd46fbd68b4bc07a1a7547716fc02450c89dba5774bc6ec2a2",
+      "last_log_lines": [
+        "2026-10-30 11:03:28.944276: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x5d69cd148c00 initialized for platform Host (this does not guarantee that XLA will be used). Devices:",
+        "2026-10-30 11:03:28.945407: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version",
+        "WARNING:tensorflow:From step5_run_RGBD_opt.py:291: The name tf.global_variables_initializer is deprecated. Please use tf.compat.v1.global_variables_initializer instead.",
+        "",
+        "W1030 11:03:28.949630 137366116190016 module_wrapper.py:139] From step5_run_RGBD_opt.py:291: The name tf.global_variables_initializer is deprecated. Please use tf.compat.v1.global_variables_initializer instead.",
+        "",
+        "2026-10-30 11:03:45.425010: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 0, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:03:45.436098: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 1, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:03:45.468461: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] model_pruner failed: Invalid argument: MutableGraphView::MutableGraphView error: node 'concat' has self cycle fanin 'concat'.",
+        "2026-10-30 11:03:45.547651: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] remapper failed: Invalid argument: MutableGraphView::MutableGraphView error: node 'concat' has self cycle fanin 'concat'.",
+        "2026-10-30 11:03:45.559426: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] arithmetic_optimizer failed: Invalid argument: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:03:45.569919: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 0, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:03:45.579923: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 1, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:04:07.698010: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 0, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:04:07.730538: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 1, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:04:07.776641: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] model_pruner failed: Invalid argument: MutableGraphView::MutableGraphView error: node 'concat' has self cycle fanin 'concat'.",
+        "2026-10-30 11:04:07.922117: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] remapper failed: Invalid argument: MutableGraphView::MutableGraphView error: node 'concat' has self cycle fanin 'concat'.",
+        "2026-10-30 11:04:07.940783: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] arithmetic_optimizer failed: Invalid argument: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:04:07.958377: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 0, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:04:07.976463: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 1, topological sort failed with message: The graph couldn't be sorted in topological order."
+      ]
+    },
+    {
+      "run": "a-author-sample-v5",
+      "route": "A author geometry path",
+      "author_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+      "command": [
+        "bash",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v5/geometry_only.sh"
+      ],
+      "exit_code": 0,
+      "author_exit_code": 0,
+      "error": null,
+      "elapsed_s": 277.97447975800003,
+      "device": "CPU TensorFlow 1.15.5 under WSL",
+      "frontend_only": false,
+      "status": "geometry_script_complete",
+      "geometry_files": [
+        "input/our_opt_RGBD/face.obj",
+        "input/our_opt_RGBD/head.obj"
+      ],
+      "cuda_peak_allocated_mib": 0,
+      "resumed_from": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-author-sample-v4/input",
+      "step5_train_steps": 10,
+      "run_purpose": "flow_check_only",
+      "real_data_adapted": false,
+      "real_side_effect_validated": false,
+      "log_sha256": "b78b63f041e11bccaafda51dc67d2ecf35cadba7a108468529179cf2dd372e59",
+      "last_log_lines": [
+        "-------------------start add head-------------------",
+        "../../third_party/NRICPTool.py:165: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.",
+        "  i = i[I]",
+        "../../third_party/NRICPTool.py:166: FutureWarning: Using a non-tuple sequence for multidimensional indexing is deprecated; use `arr[tuple(seq)]` instead of `arr[seq]`. In the future this will be interpreted as an array index, `arr[np.array(seq)]`, which will result either in an error or a different result.",
+        "  j = j[I]",
+        "* Performing non-rigid ICP...",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:318: SparseEfficiencyWarning: splu requires CSC matrix format",
+        "  warn('splu requires CSC matrix format', SparseEfficiencyWarning)",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/scipy/sparse/linalg/dsolve/linsolve.py:216: SparseEfficiencyWarning: spsolve is more efficient when sparse b is in the CSC matrix format",
+        "  'is in the CSC matrix format', SparseEfficiencyWarning)",
+        "alpha:  10000   loss_up:  0.09014917241702634 ,loss_down:  0.0010736000910997467",
+        "-------------------add head successfully-------------------",
+        "2026-10-30 11:16:19.108023: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 0, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:16:19.110076: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 1, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:16:19.115245: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] model_pruner failed: Invalid argument: MutableGraphView::MutableGraphView error: node 'concat' has self cycle fanin 'concat'.",
+        "2026-10-30 11:16:19.120679: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] remapper failed: Invalid argument: MutableGraphView::MutableGraphView error: node 'concat' has self cycle fanin 'concat'.",
+        "2026-10-30 11:16:19.122710: E tensorflow/core/grappler/optimizers/meta_optimizer.cc:533] arithmetic_optimizer failed: Invalid argument: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:16:19.124884: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 0, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "2026-10-30 11:16:19.126726: E tensorflow/core/grappler/optimizers/dependency_optimizer.cc:697] Iteration = 1, topological sort failed with message: The graph couldn't be sorted in topological order.",
+        "GEOMETRY_STAGES_COMPLETE"
+      ]
+    },
+    {
+      "run": "a-build",
+      "tensorflow": "1.15.5",
+      "python": "3.6.15 | packaged by conda-forge | (default, Dec  3 2021, 18:49:41) \n[GCC 9.4.0]",
+      "command": [
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/bin/x86_64-conda-linux-gnu-c++",
+        "-std=c++11",
+        "-shared",
+        "-fPIC",
+        "-O2",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/third_party/kernels/rasterize_triangles_grad.cc",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/third_party/kernels/rasterize_triangles_op.cc",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/third_party/kernels/rasterize_triangles_impl.cc",
+        "-o",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/third_party/kernels/rasterize_triangles_kernel.so",
+        "-I/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core/include",
+        "-D_GLIBCXX_USE_CXX11_ABI=0",
+        "-L/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/tensorflow_core",
+        "-l:libtensorflow_framework.so.1"
+      ],
+      "exit_code": 0,
+      "elapsed_s": 49.275070297999996,
+      "source": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface",
+      "renderer_loaded": true,
+      "platform": "WSL Linux CPU; author GPU timing not reproduced",
+      "sha256": "6d7cb1a3ea1bc1995ce9e1abe3910168ec90cd811c9c6e27c40bf064e4b24eca"
+    },
+    {
+      "run": "a-real-trial",
+      "route": "A author geometry path",
+      "author_commit": "d5accd138359ad534662805cd710f58de4ee4c74",
+      "command": [
+        "bash",
+        "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-trial/geometry_only.sh"
+      ],
+      "exit_code": 1,
+      "author_exit_code": 1,
+      "error": null,
+      "elapsed_s": 48.585525675,
+      "device": "CPU TensorFlow 1.15.5 under WSL",
+      "frontend_only": false,
+      "status": "blocked",
+      "geometry_files": [],
+      "cuda_peak_allocated_mib": 0,
+      "resumed_from": null,
+      "step5_train_steps": 10,
+      "run_purpose": "flow_check_only",
+      "real_data_inputs": true,
+      "real_data_adapted": false,
+      "real_side_effect_validated": false,
+      "camera_json": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-inputs-v2/camera.json",
+      "preserve_upright": true,
+      "log_sha256": "541f09f27242cde8b9b1cee7a51f6d7baa03fc7f2e66354058e9c68a84f7de39",
+      "last_log_lines": [
+        "load lm: /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-trial/input//prepare/lmk_3D_86pts_ori.txt",
+        "---- step0 succeed -----",
+        "step 1: choose frames : mid-left-right-up",
+        "---- step1A start -----",
+        "prepare_dir: /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-trial/input//prepare/",
+        "Traceback (most recent call last):",
+        "  File \"step1A_choose_frames.py\", line 173, in <module>",
+        "    app.run(main)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/absl/app.py\", line 308, in run",
+        "    _run_main(main, args)",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib/python3.6/site-packages/absl/app.py\", line 254, in _run_main",
+        "    sys.exit(main(argv))",
+        "  File \"step1A_choose_frames.py\", line 164, in main",
+        "    run(prepare_dir, prefit_dir)",
+        "  File \"step1A_choose_frames.py\", line 97, in run",
+        "    pt3d_all, up_down_all, left_right_all, ref_id, img_all",
+        "  File \"/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/optimization/rgbd/RGBD_utils/chooseFrame.py\", line 530, in find_chin",
+        "    idx_begin = chin_cadidate[-2]",
+        "IndexError: list index out of range",
+        "(step 1) choose frames failed"
+      ]
+    }
+  ],
+  "source_hashes": {
+    "adapt_a.py": "5a4b8730a9c7f534326c9815388c6f942bad1299593f283a0080d44c12f02d14",
+    "audit.py": "b825910ac7b2c25fc650c0f9ca1d532233b98a5a6abf9845bfaffb90a60b513c",
+    "build_a.py": "ad39c991a35ff70b7f633b970d50345e42b83ca09cb32f743a5d88af3360c108",
+    "evaluate.py": "73b3013b99db5f0960f6782cdf9e8d80e3a563fbb986c1976137b803e17cbc3b",
+    "fetch_assets.py": "7da915761bdfff3b81df36df6825dbdbe2fe3c78eb5bf1334203139dfd3847a0",
+    "fit_b.py": "775dbb4f5ac99c2aa91a9e2efd28f62170f5ef9b27e79ab36e56cc3557ca5ded",
+    "inspect_tf_events.py": "905628f5343704b787f6033852690e390c5b4b92ab7c0f77e47f03f07286ccda",
+    "make_frame_manifest.py": "1a2b3d727a68671e17b842d20dba9a696940588fcbe5947117233a32761df8fb",
+    "patch_a_camera.py": "876f363f826c941dd4a4c91b4178bd55d0dd30424cfef6dd0f98fa6a043c091b",
+    "patch_a_compat.py": "dce8b727efc3bd006ca0566d5b5e2bcd9be59c1b27efa0cd0fd0724f3eab8edb",
+    "patch_a_cpu_graphs.py": "8e640081cd90e7a8338623a0808ca6266859e73f5010fc24b23e4ed33832801e",
+    "patch_a_uv_bounds.py": "ddcc7dc8c5e84d7c26d3e3cbdb2dc3ce63f90ec5f87a22177f03e0bd44cd78ca",
+    "prepare.py": "13049b7faf10d2eb8328c3eee0e0d8da9b141e6b5b65d1ee474b31a15ddd711e",
+    "record_results.py": "cef71f1f3edd9475df1725361c022223140eaf1ec98634383afcb519a4082cb5",
+    "reference_metrics.py": "214c4d76656944465f252c6f07b8aa49e4daa17e8e398c659fec9b3d4df5cace",
+    "resume_asset.py": "5db6389331419a785cf96cab92a2e1235fff8cba056945efe516e2e3547959b5",
+    "run_a.py": "ae2cc9fad975d4befcbd4bcd2f9db486e8c875e64aa158a241de7b4ef51500b6",
+    "run_baseline.py": "f5689c1a935969cffc494bca84cff4a38a3ffcc8b59e4b7529d2e9e8e645d8ca",
+    "test_geometry.py": "e841acbb44849ac373927c7e9442e5fc9f55bbb275ab94fe32c51ff01b1510f8",
+    "__init__.py": "95c45c248e767eeb174f7ade3fce46e895119d4371819363a7d0f47a072cb957"
+  },
+  "a_compatibility_patches": {
+    "a-layout-conversion.json": {
+      "contract_max_absolute_error": 0.0,
+      "models": [
+        {
+          "path": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/resources/PB/faceseg_model.pb",
+          "changes": [
+            {
+              "name": "convolution",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_1",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_2",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_3",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_1",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_4",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_5",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_2",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_6",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_7",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_3",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_8",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_9",
+              "op": "Conv2D"
+            },
+            {
+              "name": "conv2d_transpose",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "convolution_10",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_11",
+              "op": "Conv2D"
+            },
+            {
+              "name": "conv2d_transpose_1",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "convolution_12",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_13",
+              "op": "Conv2D"
+            },
+            {
+              "name": "conv2d_transpose_2",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "convolution_14",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_15",
+              "op": "Conv2D"
+            },
+            {
+              "name": "conv2d_transpose_3",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "convolution_16",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_17",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_18",
+              "op": "Conv2D"
+            }
+          ],
+          "original_sha256": "4acc511a39c17f671784883a88699189675be8aa30639853b1cca6943e9234de",
+          "converted_sha256": "d48b7b6f0ea2326c915af02fb28e3e14043bc484202d25683d7ad6e02257f935"
+        },
+        {
+          "path": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/resources/PB/lmk2D_68_model.pb",
+          "changes": [
+            {
+              "name": "convolution_32",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_33",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_34",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_35",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_1",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_36",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_37",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_38",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_2",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_39",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_40",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_41",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_42",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_43",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_44",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_45",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_46",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_47",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_48",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_49",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_16",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_17",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_18",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_19",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_20",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_21",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_22",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_23",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_24",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_25",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_26",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_27",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_28",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_29",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_30",
+              "op": "Conv2D"
+            },
+            {
+              "name": "conv2d_transpose_2",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "conv2d_transpose_3",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "convolution_31",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_1",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_2",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_3",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_4",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_5",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_6",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_7",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_8",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_9",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_10",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_11",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_12",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_13",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_14",
+              "op": "Conv2D"
+            },
+            {
+              "name": "conv2d_transpose",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "conv2d_transpose_1",
+              "op": "Conv2DBackpropInput"
+            },
+            {
+              "name": "convolution_15",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_50",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_51",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_3",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_52",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_53",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_4",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_54",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_55",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_56",
+              "op": "Conv2D"
+            },
+            {
+              "name": "max_pool_5",
+              "op": "MaxPool"
+            },
+            {
+              "name": "convolution_57",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_58",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_59",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_60",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_61",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_62",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_63",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_64",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_65",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_66",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_67",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_68",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_69",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_70",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_71",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_72",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_73",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_74",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_75",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_76",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_77",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_78",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_79",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_80",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_81",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_82",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_83",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_84",
+              "op": "Conv2D"
+            },
+            {
+              "name": "convolution_85",
+              "op": "Conv2D"
+            }
+          ],
+          "original_sha256": "167f5b709c14d43c18f78fb55bd2d456a84973eacfb508efebd506a20857bd60",
+          "converted_sha256": "896e3df70bdd3c4d3a61a3565cebaa09791369b0281b6c749393bd55392d91ff"
+        },
+        {
+          "path": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/resources/PB/lmk3D_86_model.pb",
+          "changes": [],
+          "original_sha256": "a851ecdab25ec585a5ffc6524a09643c52ff220fca2382fd028a1b35d6220f31",
+          "converted_sha256": "a851ecdab25ec585a5ffc6524a09643c52ff220fca2382fd028a1b35d6220f31"
+        },
+        {
+          "path": "/mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface/resources/PB/mtcnn_model.pb",
+          "changes": [],
+          "original_sha256": "29e663433af8d3021ee0c655175eb77fde7732b06c346c8f4c7ffcaf3b70b4c0",
+          "converted_sha256": "29e663433af8d3021ee0c655175eb77fde7732b06c346c8f4c7ffcaf3b70b4c0"
+        }
+      ]
+    },
+    "a-legacy-loader-patch.json": {
+      "scope": "only explicit Latin-1 np.load calls in author model loaders",
+      "step5_note": "author already explicitly enables pickle for head completion; unchanged",
+      "changes": [
+        {
+          "file": "utils/basis.py",
+          "calls": 2,
+          "before_sha256": "1dfcc65b089c66441e7a9879f481b10d170465937c79bc60ffd21cfcbc9330b4",
+          "after_sha256": "30b3dda9c9745c4779eedc9ed41fa4d124ddf0fe3edaaf87915ecc71afbaeb21"
+        }
+      ]
+    },
+    "a-uv-bounds-patch.json": {
+      "source": "utils/unwrap_utils.py",
+      "before_sha256": "9206b0710cb942d9bc5ddc97d55ee997fc5334595c7383b6b7719ec3e8b18a89",
+      "after_sha256": "17d3e6fbce33aeaf9f030e9d948bbda5b39c66aee66b514481eb7b7c21f659d7",
+      "contract_values": [
+        [
+          [
+            5.0
+          ],
+          [
+            0.0
+          ],
+          [
+            0.0
+          ]
+        ]
+      ],
+      "contract_gradient": [
+        [
+          [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ],
+            [
+              0.0
+            ]
+          ],
+          [
+            [
+              0.0
+            ],
+            [
+              0.0
+            ],
+            [
+              1.0
+            ]
+          ]
+        ]
+      ],
+      "scope": "invalid UVs zeroed, valid samples and gradients preserved"
+    },
+    "a-camera-patch.json": {
+      "scope": "opt-in real camera intrinsics and upright image preservation",
+      "changes": [
+        {
+          "file": "data_prepare/run_data_preparation.py",
+          "before_sha256": "b4acbd371ab0f17c814647f3f78fc0b920b1253779f30cac5fdecd34ba3db55c",
+          "after_sha256": "6ac097fb23cb7efae9e54aa70bab5342f6ee39672cf295df688cc905f27448b7"
+        },
+        {
+          "file": "optimization/rgbd/step0_prepare_frontend_data.py",
+          "before_sha256": "9e6bc75b6abff37dc467529651ccc9fb6db5a0a5dd5252d8fb6a8b94390258f5",
+          "after_sha256": "1041b096058d625239eb4b2301b6285bc04bd4ffa235a5acb3da06d783c2845b"
+        }
+      ]
+    }
+  },
+  "input_preservation": {
+    "raw_files_unchanged": 4,
+    "complete_manifest_unchanged": true,
+    "generic_entry_20_frame_array_equality": "passed in actual prior check"
+  },
+  "a_real_adapter_checks": {
+    "real_camera_matrix": [
+      [
+        424.611083984375,
+        0.0,
+        320.06280517578125
+      ],
+      [
+        0.0,
+        424.5595397949219,
+        180.50607299804688
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "real_image_shape": [
+      15,
+      360,
+      640,
+      3
+    ],
+    "orientation_preserved": true,
+    "author_sample_selection": {
+      "rgb_name_select": [
+        "IMG_5500.JPG",
+        "IMG_5774.JPG",
+        "IMG_5676.JPG",
+        "IMG_5930.JPG"
+      ],
+      "new_list": [
+        0,
+        137,
+        88,
+        204
+      ]
+    },
+    "real_geometry_status": "blocked at original find_chin; no real mesh"
+  },
+  "reference_geometry_proxies": {
+    "closed": {
+      "frame_id": "closed_front_2",
+      "coarse_inner_lip_gap_mm": 3.9387033320963383,
+      "refined_inner_lip_gap_mm": 3.871471699567447,
+      "observed_inner_lip_gap_mm": 1.0359628358855844
+    },
+    "open": {
+      "frame_id": "open_front_1",
+      "coarse_inner_lip_gap_mm": 30.07129579782486,
+      "refined_inner_lip_gap_mm": 30.010458008366072,
+      "observed_inner_lip_gap_mm": null
+    }
+  },
+  "environment_freeze_sha256": {
+    "environment-a-freeze.txt": "4aef1afeb2f7e407daf0fa030cfc0f23f86d26276cc073a0d6fe32a4ffda2baa",
+    "environment-b-freeze.txt": "916c01012457ec7e2ac28007fc262e05b96bc4410083cf203047eec4c5d4e14c"
+  },
+  "a_real_frame_decisions": [
+    {
+      "frame_id": "closed_front_0",
+      "state": "closed",
+      "view": "front",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_front_1",
+      "state": "closed",
+      "view": "front",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_front_2",
+      "state": "closed",
+      "view": "front",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_front_3",
+      "state": "closed",
+      "view": "front",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_front_4",
+      "state": "closed",
+      "view": "front",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_left_0",
+      "state": "closed",
+      "view": "left",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_left_1",
+      "state": "closed",
+      "view": "left",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_left_2",
+      "state": "closed",
+      "view": "left",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_left_3",
+      "state": "closed",
+      "view": "left",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_left_4",
+      "state": "closed",
+      "view": "left",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_right_0",
+      "state": "closed",
+      "view": "right",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_right_1",
+      "state": "closed",
+      "view": "right",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_right_2",
+      "state": "closed",
+      "view": "right",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_right_3",
+      "state": "closed",
+      "view": "right",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "closed_right_4",
+      "state": "closed",
+      "view": "right",
+      "preprocessed": true,
+      "used_for_final_geometry": false,
+      "reason": "original find_chin candidate shortage; selector failed"
+    },
+    {
+      "frame_id": "open_front_0",
+      "state": "open",
+      "view": "front",
+      "preprocessed": false,
+      "used_for_final_geometry": false,
+      "reason": "open state excluded from first closed-identity A trial"
+    },
+    {
+      "frame_id": "open_front_1",
+      "state": "open",
+      "view": "front",
+      "preprocessed": false,
+      "used_for_final_geometry": false,
+      "reason": "open state excluded from first closed-identity A trial"
+    },
+    {
+      "frame_id": "open_front_2",
+      "state": "open",
+      "view": "front",
+      "preprocessed": false,
+      "used_for_final_geometry": false,
+      "reason": "open state excluded from first closed-identity A trial"
+    },
+    {
+      "frame_id": "open_front_3",
+      "state": "open",
+      "view": "front",
+      "preprocessed": false,
+      "used_for_final_geometry": false,
+      "reason": "open state excluded from first closed-identity A trial"
+    },
+    {
+      "frame_id": "open_front_4",
+      "state": "open",
+      "view": "front",
+      "preprocessed": false,
+      "used_for_final_geometry": false,
+      "reason": "open state excluded from first closed-identity A trial"
+    }
+  ],
+  "a_default_budget_stop": {
+    "agent_stopped": true,
+    "reason": "bound CPU feasibility check; retain logs, run explicit 10-step export check",
+    "default_100_step_quality_reproduction_complete": false,
+    "confirmed_event_step_at_least": 20
+  },
+  "b_fitted_algorithm_source_matches_current": true
+}

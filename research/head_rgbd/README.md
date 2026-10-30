@@ -3,7 +3,7 @@
 本目录不改变 GUI、默认算法、VERSION 或共享标签。基线固定为
 `3e409af77a4686b0cf435fff2230b90a8d26e11d`（v0.12.0）。
 运行时资产、环境及结果放在仓库外；所有入口拒绝覆盖既有结果目录。
-最终实测结果见 `RESULTS.md`（完成实验后生成）。
+最终实测结果见 `RESULTS.md`，机器记录见 `experiment-final-20261030.json`。
 
 ## 方法边界
 
@@ -101,3 +101,65 @@ evaluate.py 比较相同四个真实原始参考帧，报告相机轴向深度�
 原论文：[腾讯项目](https://tencent-ailab.github.io/hifi3dface_projpage/)、
 [CVPR 2016](https://openaccess.thecvf.com/content_cvpr_2016/papers/Thomas_Augmented_Blendshapes_for_CVPR_2016_paper.pdf)、
 [2020 FaceCap](https://arxiv.org/html/2004.10557)。
+
+## 通用连续数据入口与标点侧车
+
+`prepare.py --frame-manifest raw_manifest.json` 支持按块保存的连续输入。
+清单 schema 为 `head_rgbd.raw.v1`，必须声明 `depth_unit: mm` 和
+`rgb_depth_aligned: true`；`chunks` 中每项含 file、segment、view_id、state、view。
+每块 NPZ 含 rgb[N,H,W,3]、depth[N,H,W]、intrinsics[N,4]（或固定 [4]）、
+timestamps_s[N]、uv[N,68,2]，可选 landmark_valid[N,68]。uv 是逐帧检测，
+不能复制正面标点。相同 segment 且间隔小于 0.3 秒时跨块跟踪。
+state/view 标签用于选参考帧，不锁定每帧表情或下颌。`make_frame_manifest.py`
+可把已有真实短序列无插值地转为此格式以验证入口。长视频当前仍批量拟合，
+内存和长时漂移尚未验证，不能声称已有实时长视频系统。
+
+`reference_metrics.py` 使用同一动态重心标点定义，输出粗/细网格各自的标点、
+米制坐标和内唇距离侧车，避免混用几何阶段；观测深度无效时保留空值。
+这些距离不是已验证的气道或临床指标。
+
+A 的 CPU 兼容修改：`patch_a_cpu_graphs.py` 为冻结图的 NCHW 卷积/池化/反卷积
+插入 NHWC 转置包装，先与标准 NHWC 算子进行数值契约测试；原 PB 以
+`.pb.original` 保留。`patch_a_compat.py` 仅为 basis.py 中两处旧模型加载显式
+开启 pickle，保留 `.research-original`。仅对已核验作者归档使用。
+这两项属于运行兼容改造，必须与原版复现结果区分。
+
+`patch_a_uv_bounds.py` 用零值和零梯度屏蔽原作者 UV 采样的越界项，保留有效
+索引值和梯度，附有实际 TensorFlow 契约测试；未放宽几何保护。
+`patch_a_camera.py` 提供显式内参和保留正确横幅方向的开关，默认仍按作者
+样例行为。适配命令例：
+
+```powershell
+& $py "$wt\research\head_rgbd\adapt_a.py" --sequence "$run\sequence-v2\sequence.json" --output "$run\a-real-new" --state closed --pixel-stride 2
+wsl -d Ubuntu-24.04 -- bash -lc 'export LD_LIBRARY_PATH=/mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/lib; /mnt/d/proiect/rgbd-head-research-runtime-20261030/env-a/bin/python /mnt/d/proiect/rgbd-head-research-20261030/research/head_rgbd/run_a.py --source /mnt/d/proiect/rgbd-head-research-runtime-20261030/hifi3dface --output /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-new-run --input-dir /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-new --camera-json /mnt/d/proiect/rgbd-head-research-runtime-20261030/a-real-new/camera.json --preserve-upright --train-steps 10'
+```
+
+`--pixel-stride 2` 保留 RGB/depth 的真实 [::2,::2] 像素，内参同时除以 2，
+没有深度插值。仅在各帧内参和分辨率一致时写出单相机 camera.json；否则
+不可悄悄套用平均内参。`--train-steps 10` 明确是流程检查，不能用于质量结论；
+不传则保持作者 100 步默认值。本次真实试验在 find_chin 因候选不足失败，
+入口不通过伪造抬头帧绕过它。
+
+## 建立独立环境
+
+本次 B 实际使用以下方式复制现有可用环境，随后核对实际 import 版本：
+
+```powershell
+& 'D:\softwares\miniconda\Scripts\conda.exe' create --prefix "$run\env-b" --clone 'D:\softwares\miniconda\envs\airway3d' --offline --yes
+& "$run\env-b\python.exe" -m pip install --force-reinstall --no-deps numpy==1.26.4 scipy==1.11.4
+```
+
+A 使用下载到任务 bootstrap 目录的 micromamba，独立 root/prefix，命令如下：
+
+```bash
+./bootstrap/bin/micromamba create -y -r ./mamba -p ./env-a -c conda-forge python=3.6 pip=21.3.1 gxx_linux-64
+./env-a/bin/python -m pip install -r /mnt/d/proiect/rgbd-head-research-20261030/research/head_rgbd/requirements-a-cpu.txt
+```
+
+WSL 中执行编译/运行时设置 `LD_LIBRARY_PATH` 为 env-a/lib。本次依赖完整
+清单保存在运行目录的 environment-a-freeze.txt / environment-b-freeze.txt，
+提交的 JSON 记录其 SHA，不提交虚拟环境。作者 model.zip 的 files/ 解压到
+hifi3dface/3DMM/，resources.zip 的 resources/ 和 sample.zip 的 test_data/
+解压到作者源码根目录；所有包都先验证 ZIP 和记录的 SHA。几何阶段不需要
+解压区域纹理基及 pix2pix 模型。按顺序应用 CPU 图布局、旧模型加载、UV
+边界补丁，构建渲染器；真实相机另应用显式校准补丁。

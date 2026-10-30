@@ -32,9 +32,27 @@ def main():
     for name,row in downloads.items():
         if row['status']=='downloaded':data['asset_archives'][name]=row
     data['asset_archives']['model']=load(root/'model-resume.json')
-    for name in ['a-build','a-build-v2','a-author-sample','a-author-sample-v2','a-author-sample-v3','a-author-sample-v4']:
+    names=sorted(p.name for p in root.glob('a-*') if p.is_dir())
+    for name in names:
         for file in ['build.json','report.json']:
-            if (root/name/file).exists():data['a_runs'].append(dict(run=name,**load(root/name/file)))
+            if (root/name/file).exists():
+                row=dict(run=name,**load(root/name/file))
+                if (root/name/'author.log').exists():row['last_log_lines']=(root/name/'author.log').read_text(encoding='utf-8',errors='replace').splitlines()[-20:]
+                data['a_runs'].append(row)
+    data['a_compatibility_patches']={name:load(root/name) for name in ['a-layout-conversion.json','a-legacy-loader-patch.json','a-uv-bounds-patch.json','a-camera-patch.json'] if (root/name).exists()}
+    data['input_preservation']=load(root/'input-preservation-check.json')
+    if (root/'a-real-adaptation-check.json').exists():data['a_real_adapter_checks']=load(root/'a-real-adaptation-check.json')
+    reference=load(root/'b-final/reference_geometry.json')
+    data['reference_geometry_proxies']={s:{k:v for k,v in row.items() if k.endswith('gap_mm') or k=='frame_id'} for s,row in reference['references'].items()}
+    data['environment_freeze_sha256']={name:sha(root/name) for name in ['environment-a-freeze.txt','environment-b-freeze.txt']}
+    data['a_real_frame_decisions']=[dict(frame_id=r['id'],state=r['state'],view=r['view'],
+        preprocessed=r['state']=='closed',used_for_final_geometry=False,
+        reason='original find_chin candidate shortage; selector failed' if r['state']=='closed' else 'open state excluded from first closed-identity A trial') for r in sequence['frames']]
+    data['a_default_budget_stop']=dict(agent_stopped=True,reason='bound CPU feasibility check; retain logs, run explicit 10-step export check',
+        default_100_step_quality_reproduction_complete=False,confirmed_event_step_at_least=20)
+    data['b_fitted_algorithm_source_matches_current']=b['source_hashes']['fit_b.py']==sha(Path(__file__).parent/'fit_b.py')
+    for row in data['comparison']['frames']:
+        row['A_status']='real input preprocessing and calibrated step0 passed; original find_chin IndexError, no real mesh'
     dump(a.output,data)
     print('Saved reviewable metrics: '+str(a.output))
 
