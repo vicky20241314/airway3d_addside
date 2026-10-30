@@ -139,7 +139,7 @@ def check_expression(front,side,T):
 
 
 def select_registered_views(observations,folder,progress=lambda _:None):
-    """Closed sides are required; inconsistent OPEN sides are optional input.
+    """Use each reliable side independently; fall back to state fronts.
 
     Omit the whole optional view, never treat unseen lips as measured or let
     different openings deform a shared open-state mesh. Retain raw observations.
@@ -153,21 +153,21 @@ def select_registered_views(observations,folder,progress=lambda _:None):
         progress(f'检查并配准 {obs.view_id} 的稳定面部区域…')
         try:
             T,diag,source,target=register_to_front(fronts[obs.state],obs)
+            from core.side_constraints import constraint_observation
+            if len(constraint_observation(obs).points)<20:
+                raise ValueError(f'{obs.view_id}: 有效头面部深度不足，跳过此侧面')
         except ValueError as exc:
             row=dict(view_id=obs.view_id,reason=str(exc),diagnostics=getattr(exc,'diagnostics',{}))
             if hasattr(exc,'transform'):
                 save_registration_diagnostics(folder,obs.view_id,exc.transform,exc.diagnostics,exc.source,exc.target,failed=True)
-            if obs.state=='open':
-                excluded.append(row)
-                progress(f'{obs.view_id} 不参与拟合：{exc}。继续使用张口正面；原始数据保留。')
-                continue
-            write_json(folder/'registration_failure.json',row)
-            raise
+            excluded.append(row)
+            progress(f'{obs.view_id} 不参与拟合：{exc}。继续使用其余有效视角；原始数据保留。')
+            continue
         kept.append(obs);transforms[obs.view_id]=T
         registration.append(dict(view_id=obs.view_id,**diag))
         save_registration_diagnostics(folder,obs.view_id,T,diag,source,target)
         if diag['neck_check']['warning']:progress(f"{obs.view_id}：{diag['neck_check']['warning']}")
-    write_json(folder/'view_selection.json',dict(policy='closed_sides_required_open_sides_optional',
+    write_json(folder/'view_selection.json',dict(policy='independent_head_sides_front_fallback',
         captured_view_ids=[o.view_id for o in observations],used_view_ids=[o.view_id for o in kept],excluded_views=excluded))
     return kept,transforms,registration,excluded
 
@@ -221,8 +221,12 @@ def register_to_front(front, side):
     try:
         diag.update(check_expression(front,side,T))
         neck=check_neck_consistency(front,side,T);diag['neck_check']=neck
-        if neck['status']=='inconsistent':
-            raise ValueError(f"{side.view_id}: 共同可见颈部与面部变换不一致，请保持头颈姿态并移动相机重采；neck={neck['median_m']:.4f}m")
+        # Head motion relative to torso is allowed. This transform describes the
+        # head, never the neck. Side neck data are excluded in BOTH optimizers.
+        neck['used_for_acceptance']=False
+        neck['warning']=('面部配准已通过；侧面颈部不参与拟合，允许头颈相对运动'
+            if neck['status']=='inconsistent' else neck.get('warning'))
+        diag['constraint_region']='head_only';diag['neck_used']=False
     except ValueError as exc:
         diag.update(consistency_error=str(exc))
         raise RegistrationConsistencyError(str(exc),T,diag,source,target) from exc

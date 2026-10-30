@@ -49,6 +49,8 @@ def contour_errors(predicted,reference):
 
 
 def evaluate_view(mesh,o,transform,reference_mask=None,max_points=16000):
+    from core.side_constraints import constraint_observation
+    o=constraint_observation(o)
     from core.student.offset_refine import depth_inputs
     from core.student.detail_snap import SNAP_LABELS
     v=transform.to_view(mesh.vertices);faces=np.asarray(mesh.faces)
@@ -65,7 +67,7 @@ def evaluate_view(mesh,o,transform,reference_mask=None,max_points=16000):
         surface=trimesh.Trimesh(v,faces[visible],process=False)
         chunks=[trimesh.proximity.closest_point(surface,p[start:start+256])[1] for start in range(0,len(p),256)]
         distance=np.concatenate(chunks)
-    result=dict(view_id=o.view_id,state=o.state,view=o.view,n_candidate_pixels=candidates,
+    result=dict(view_id=o.view_id,state=o.state,view=o.view,constraint_region='front_face_neck' if o.view=='front' else 'head_only',n_candidate_pixels=candidates,
         n_reliable_depth=reliable_count,n_surface_samples=len(distance),visible_faces=int(visible.sum()),
         reliable_depth_fraction=float(reliable_count/max(candidates,1)),
         correspondence_threshold_m=.020,effective_coverage=0.,surface=None,

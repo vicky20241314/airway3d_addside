@@ -203,6 +203,8 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     options=options or FitOptions();options.schedule();folder=Path(folder)
     timing={};started=time.perf_counter()
     observations,side_to_front,registration,excluded=select_registered_views(observations,folder,progress)
+    from core.side_constraints import constraint_observation
+    observations=[constraint_observation(o) for o in observations]
     timing['registration_s']=time.perf_counter()-started
     fronts={o.state:o for o in observations if o.view=='front'}
     c=fronts['closed'];o=fronts['open']
@@ -248,7 +250,7 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
         expression_by_view=expr.cpu().numpy(),pose_by_view=pose.cpu().numpy(),rotation=rotation.cpu().numpy(),translation=translation.cpu().numpy(),
         view_ids=np.array([o.view_id for o in observations]),states=np.array([o.state for o in observations]))
     report=dict(stage1=stage1,stage2=stage2,views=problem.view_diagnostics,registration=registration,
-        timing=timing,
+        timing=timing,side_constraint_region='head_only',side_neck_used=False,
         used_view_ids=[o.view_id for o in observations],excluded_views=excluded,
         sharing='one shape; one expression/neck/jaw per state; SE3 per view; no scale',
         front_initialization_open_intrinsics_equal=bool(np.allclose([c.camera.fx,c.camera.fy,c.camera.cx,c.camera.cy],

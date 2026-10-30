@@ -77,7 +77,7 @@ class SessionTests(unittest.TestCase):
         o=fixture('left');o.valid[:]=False;o.xyz[:]=np.nan;o.validate();o.view='front'
         with self.assertRaises(ValueError):o.validate()
         o=fixture();o.quality['motion_mode']='head_turned'
-        with self.assertRaises(ValueError):o.validate()
+        o.validate()
         o=fixture();o.quality.pop('motion_mode')
         with self.assertRaises(ValueError):o.validate()
 

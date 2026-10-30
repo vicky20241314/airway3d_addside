@@ -72,7 +72,7 @@ class HandheldTests(unittest.TestCase):
         result=warp_depth(source,c,RigidCamera(np.eye(3),np.zeros(3)),ref)
         self.assertEqual(result[0,0],0);self.assertEqual(result[1,1],0)
 
-    def test_optional_open_view_exclusion_is_explicit_and_closed_failure_stops(self):
+    def test_each_side_failure_falls_back_but_implementation_errors_propagate(self):
         from core.multiview_registration import select_registered_views
         obs=[fixture('front','closed'),fixture('front','open'),fixture('left','open')]
         with tempfile.TemporaryDirectory() as d,patch('core.multiview_registration.register_to_front',side_effect=ValueError('missing lips')):
@@ -83,7 +83,9 @@ class HandheldTests(unittest.TestCase):
             report=json.loads((Path(d)/'view_selection.json').read_text(encoding='utf-8'))
             self.assertIn('open_left',report['captured_view_ids'])
             obs[-1]=fixture('left','closed')
-            with self.assertRaises(ValueError):select_registered_views(obs,d)
+            kept,transforms,_,excluded=select_registered_views(obs,d)
+            self.assertEqual(len(kept),2)
+            self.assertEqual(excluded[0]['view_id'],'closed_left')
         obs[-1]=fixture('left','open')
         with tempfile.TemporaryDirectory() as d,patch('core.multiview_registration.register_to_front',side_effect=RuntimeError('implementation error')):
             with self.assertRaises(RuntimeError):select_registered_views(obs,d)

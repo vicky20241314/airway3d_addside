@@ -65,7 +65,7 @@ class MultiCaptureWidget(CaptureWidget):
         state,view=self.sequence()[index]
         name={'front':'正面','left':'左约40°','right':'右约40°'}[view]
         title=('闭口' if state=='closed' else '张口')+name
-        self.lbl_title.setText(f'{index+1}/{len(self.sequence())} 采集{title}\n移动相机，到位后短暂停留；人保持头颈姿态。侧面无需 ArUco。')
+        self.lbl_title.setText(f'{index+1}/{len(self.sequence())} 采集{title}\n移动相机或自然小幅转头，到位后短暂停留；尽量保持表情。侧面只补充头面部，无需 ArUco。')
         self.btn_capture.setText('采集'+title)
         self._stage=0 if state=='closed' else 1
         self._view_started_at=time.monotonic()

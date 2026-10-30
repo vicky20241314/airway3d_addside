@@ -73,6 +73,8 @@ class ViewCorrespondences:
 
 
 def prepare_state(base,faces,J,observations,transforms,max_points=16000):
+    from core.side_constraints import constraint_observation
+    observations=[constraint_observation(o) for o in observations]
     from core.student.offset_refine import depth_inputs
     from core.student.student_refine import transition_mask
     from core.student.semantic_refine import SemanticConstraints

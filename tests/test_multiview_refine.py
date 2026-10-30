@@ -71,15 +71,15 @@ class JointRefineTests(unittest.TestCase):
         self.assertGreater(info['source_overlap'],.25);self.assertLess(info['rmse_m'],.004)
         from core.multiview_registration import RegistrationConsistencyError,save_registration_diagnostics
         with patch('core.multiview_registration.check_neck_consistency',return_value=dict(status='inconsistent',median_m=.025)):
-            with self.assertRaises(RegistrationConsistencyError) as failure:
-                register_to_front(front,side)
-        exc=failure.exception
-        self.assertIn('neck_check',exc.diagnostics)
-        np.testing.assert_allclose(exc.transform.to_view(side.xyz),front.xyz,atol=.002,rtol=0)
+            moved,diag,source,target=register_to_front(front,side)
+        self.assertEqual(diag['neck_check']['status'],'inconsistent')
+        self.assertFalse(diag['neck_check']['used_for_acceptance'])
+        self.assertFalse(diag['neck_used'])
+        np.testing.assert_allclose(moved.to_view(side.xyz),front.xyz,atol=.002,rtol=0)
         with tempfile.TemporaryDirectory() as folder:
-            save_registration_diagnostics(folder,side.view_id,exc.transform,exc.diagnostics,exc.source,exc.target,failed=True)
-            self.assertTrue((Path(folder)/f'registration_{side.view_id}_failed.json').exists())
-            self.assertTrue((Path(folder)/f'registration_{side.view_id}_failed_front.ply').exists())
+            save_registration_diagnostics(folder,side.view_id,moved,diag,source,target)
+            self.assertTrue((Path(folder)/f'registration_{side.view_id}.json').exists())
+            self.assertTrue((Path(folder)/f'registration_{side.view_id}_front.ply').exists())
         side.valid[27:48]=False
         with self.assertRaises(ValueError):register_to_front(front,side)
 

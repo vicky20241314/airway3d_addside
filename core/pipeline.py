@@ -167,7 +167,7 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
                 from core.mask_detection import get_face_data_single
                 data=get_face_data_single(obs.camera,obs.rgb,obs.depth)
                 if not data['valid']:
-                    if obs.state=='open' and obs.view!='front':
+                    if obs.view!='front':
                         obs.parsing=None;obs.points=None
                         progress(f'{obs.view_id} 面部区域不足，将记录为未采用的可选观测。')
                         continue
