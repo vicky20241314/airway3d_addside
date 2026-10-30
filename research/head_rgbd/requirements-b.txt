@@ -1,0 +1,8 @@
+# Install into a NEW environment. Tested runtime is recorded with each experiment.
+numpy==1.26.4
+scipy==1.11.4
+torch==2.0.1
+opencv-python==4.8.1.78
+trimesh==4.4.9
+smplx==0.1.28
+chumpy==0.70

@@ -1,0 +1,14 @@
+# Geometry path only. Deliberate compatibility changes from author lockfile.
+# Python 3.6.15, Linux; TensorFlow CPU avoids CUDA 9/10 vs Ampere mismatch.
+tensorflow==1.15.5
+numpy==1.18.5
+scipy==1.5.4
+protobuf==3.19.6
+h5py==2.10.0
+opencv-python-headless==4.5.5.64
+Pillow==8.4.0
+scikit-image==0.17.2
+scikit-learn==0.24.2
+mat73==0.41
+imageio==2.4.1
+progressbar2==3.38.0

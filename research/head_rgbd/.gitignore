@@ -1,0 +1,6 @@
+runs/
+models/
+downloads/
+env-*/
+.venv/
+*.partial
