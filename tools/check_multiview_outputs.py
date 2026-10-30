@@ -42,17 +42,31 @@ def main():
                 reference=offsets['reference_vertices'];faces=offsets['faces'];D=offsets['offsets']
             mesh=trimesh.load(path/f'mesh_{state}.obj',process=False,force='mesh')
             np.testing.assert_allclose(mesh.vertices,reference+D,rtol=0,atol=1e-8)
-            v,f=trimesh.remesh.subdivide(stage2.vertices,stage2.faces)
+            info=json.loads((path/'stage3_report.json').read_text(encoding='utf-8'))
+            refinement_base=stage2
+            if info.get('input_geometry','stage2')=='shape_corrected':
+                refinement_base=trimesh.load(path/f'mesh_{state}_shape_corrected.obj',process=False,force='mesh')
+            v,f=trimesh.remesh.subdivide(refinement_base.vertices,refinement_base.faces)
             np.testing.assert_allclose(v,reference,rtol=0,atol=1e-8);np.testing.assert_array_equal(f,faces)
             assert np.linalg.norm(D,axis=1).max()<=.002+1e-12
             bad,quality=ShapeGuard(reference,faces,RefineOptions()).inspect(reference+D);assert not len(bad)
-            info=json.loads((path/'stage3_report.json').read_text(encoding='utf-8'))
             assert info['shared_displacement'] and info['state']==state
             assert all(row['step_m']<=.00025+1e-12 for row in info['history'])
             fair=info.get('displacement_fairing',{})
             assert fair.get('correction_max_mm',0)<=.1+1e-10
             details.append(dict(state=state,max_offset_mm=float(np.linalg.norm(D,axis=1).max()*1000),
                 stage2_vertices=len(stage2.vertices),stage3_vertices=len(reference),quality=quality))
+    if report.get('fit_configuration',{}).get('canonical_shape_enabled'):
+        shape_report=json.loads((source/'canonical_shape_report.json').read_text(encoding='utf-8'))
+        with np.load(source/'canonical_shape.npz') as shape_arrays:
+            np.testing.assert_allclose(np.einsum('vck,k->vc',shape_arrays['basis'],shape_arrays['alpha']),shape_arrays['canonical_offset'],atol=1e-12)
+            assert np.linalg.norm(shape_arrays['canonical_offset'],axis=1).max()<=.003+1e-12
+            assert not np.any(shape_arrays['canonical_offset'][~shape_arrays['active']])
+        assert shape_report['shared_alpha'] and shape_report['max_state_change_m']<=.003+1e-8
+        assert shape_report['exact_lbs_reconstruction_error_m']<=1e-6
+        if 'joint_moment_max_m' in shape_report:
+            assert shape_report['joint_moment_max_m']<=1e-8
+            assert shape_report['protected_posed_change_m']<=1e-6
     out=a.output/('mv_output_checks_'+datetime.now().strftime('%Y%m%d_%H%M%S_%f'));out.mkdir(parents=True,exist_ok=False)
     write_json(out/'checks.json',dict(source=str(a.run.resolve()),passed=True,states=details,
         parameter_sharing=True,metric_geometry_stage=2,geometry_checks_performed=bool(report['stage3_enabled']),

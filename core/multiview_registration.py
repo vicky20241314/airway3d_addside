@@ -4,10 +4,16 @@ from scipy.spatial import cKDTree
 from core.multiview_geometry import RigidCamera, project
 
 
-class RegistrationConsistencyError(ValueError):
+class RegistrationError(ValueError):
+    """Expected unusable observations; programming errors must propagate."""
+
+
+class RegistrationConsistencyError(RegistrationError):
     """Keep accepted face alignment when a later consistency check fails."""
     def __init__(self,message,transform,diagnostics,source,target):
         super().__init__(message)
+        diagnostics=dict(diagnostics)
+        if diagnostics.get('rmse_m') is not None and not np.isfinite(diagnostics['rmse_m']):diagnostics['rmse_m']=None
         self.transform=transform;self.diagnostics=diagnostics
         self.source=source;self.target=target
 
@@ -84,6 +90,9 @@ def save_registration_diagnostics(folder,view_id,transform,diagnostics,source,ta
     from core.pipeline import write_json
     folder=Path(folder);folder.mkdir(parents=True,exist_ok=True)
     suffix='_failed' if failed else ''
+    diagnostics=dict(diagnostics)
+    if diagnostics.get('rmse_m') is not None and not np.isfinite(diagnostics['rmse_m']):
+        diagnostics['rmse_m']=None
     write_json(folder/f'registration_{view_id}{suffix}.json',dict(view_id=view_id,**diagnostics,
         R_side_to_front=transform.R,t_side_to_front=transform.t))
     overlay=trimesh.points.PointCloud(np.vstack((target,transform.to_view(source))),
@@ -120,25 +129,34 @@ def _voxel(points, size):
     return points[np.sort(ids)]
 
 
-def check_expression(front,side,T):
+def check_expression(front,side,T,policy='strict'):
     gaps=[]
     for o in (front,side):
         pairs=[(i,j) for i,j in ((50,58),(51,57),(52,56)) if o.valid[i] and o.valid[j]]
         gaps.append(float(np.median([np.linalg.norm(o.xyz[i]-o.xyz[j]) for i,j in pairs])) if len(pairs)>=2 else None)
     result=dict(lip_gap_m=gaps,expression_check='lip_distances' if all(g is not None for g in gaps) else 'insufficient_lip_observation')
-    if all(g is not None for g in gaps) and abs(gaps[0]-gaps[1])>max(.003,.15*gaps[0]):
+    inconsistent=all(g is not None for g in gaps) and abs(gaps[0]-gaps[1])>max(.003,.15*gaps[0])
+    if inconsistent and policy=='strict':
         raise ValueError(f'{side.view_id}: 张闭口程度变化，请保持同一表情重采；lip_gap_m={gaps}')
+    result.update(expression_status='inconsistent' if inconsistent else 'passed' if all(g is not None for g in gaps) else 'unverified',
+        lower_face_used=all(g is not None for g in gaps) and not inconsistent)
     if side.state=='open':
-        if any(g is None for g in gaps):raise ValueError(f'{side.view_id}: 侧面唇部深度不足，无法验证与正面的张口一致性')
+        if any(g is None for g in gaps) and policy=='strict':raise ValueError(f'{side.view_id}: 侧面唇部深度不足，无法验证与正面的张口一致性')
         ids=np.array([50,51,52,56,57,58]);ids=ids[front.valid[ids]&side.valid[ids]]
         error=np.linalg.norm(T.to_view(side.xyz[ids])-front.xyz[ids],axis=1)
         result['open_lip_consistency_m']=float(np.median(error)) if len(error) else None
-        if len(error)<4 or np.median(error)>.006:
+        if (len(error)<4 or np.median(error)>.006) and policy=='strict':
             raise ValueError(f'{side.view_id}: 张口形态或下颌位置与正面不一致，或可见唇点不足')
+        if len(error)<4:
+            result.update(expression_status='unverified',lower_face_used=False)
+        elif np.median(error)>.006:
+            result.update(expression_status='inconsistent',lower_face_used=False)
+    if not result['lower_face_used']:
+        result['warning']='侧面张口/下颌一致性未通过验证，仅使用可靠上半脸；不会增加独立表情自由度'
     return result
 
 
-def select_registered_views(observations,folder,progress=lambda _:None):
+def select_registered_views(observations,folder,progress=lambda _:None,options=None):
     """Use each reliable side independently; fall back to state fronts.
 
     Omit the whole optional view, never treat unseen lips as measured or let
@@ -152,38 +170,50 @@ def select_registered_views(observations,folder,progress=lambda _:None):
         if obs.view=='front':kept.append(obs);continue
         progress(f'检查并配准 {obs.view_id} 的稳定面部区域…')
         try:
-            T,diag,source,target=register_to_front(fronts[obs.state],obs)
+            T,diag,source,target=register_to_front(fronts[obs.state],obs,options=options)
             from core.side_constraints import constraint_observation
             if len(constraint_observation(obs).points)<20:
-                raise ValueError(f'{obs.view_id}: 有效头面部深度不足，跳过此侧面')
-        except ValueError as exc:
-            row=dict(view_id=obs.view_id,reason=str(exc),diagnostics=getattr(exc,'diagnostics',{}))
+                raise RegistrationError(f'{obs.view_id}: 有效头面部深度不足，跳过此侧面')
+        except RegistrationError as exc:
+            row=dict(view_id=obs.view_id,stage='registration',reason_code='unreliable_rigid_head_alignment',reason=str(exc),diagnostics=getattr(exc,'diagnostics',{}))
             if hasattr(exc,'transform'):
                 save_registration_diagnostics(folder,obs.view_id,exc.transform,exc.diagnostics,exc.source,exc.target,failed=True)
             excluded.append(row)
             progress(f'{obs.view_id} 不参与拟合：{exc}。继续使用其余有效视角；原始数据保留。')
             continue
+        if not diag.get('lower_face_used',True):
+            from dataclasses import replace
+            obs=replace(obs,quality={**obs.quality,'upper_face_only':True,'expression_status':diag['expression_status']})
+            progress(f"{obs.view_id}：{diag['warning']}")
         kept.append(obs);transforms[obs.view_id]=T
         registration.append(dict(view_id=obs.view_id,**diag))
         save_registration_diagnostics(folder,obs.view_id,T,diag,source,target)
         if diag['neck_check']['warning']:progress(f"{obs.view_id}：{diag['neck_check']['warning']}")
     write_json(folder/'view_selection.json',dict(policy='independent_head_sides_front_fallback',
-        captured_view_ids=[o.view_id for o in observations],used_view_ids=[o.view_id for o in kept],excluded_views=excluded))
+        captured_view_ids=[o.view_id for o in observations],used_view_ids=[o.view_id for o in kept],excluded_views=excluded,
+        degraded_to_front_only=not any(o.view!='front' for o in kept)))
     return kept,transforms,registration,excluded
 
 
-def register_to_front(front, side):
+def register_to_front(front, side,options=None):
     """Initialize from RANSAC internal points, then ICP on stable overlap only.
 
     Internal detector points are provisional SE(3) seeds, never direct side
     fitting targets. Require independent dense overlap to accept a seed.
     """
     import itertools
-    source=stable_points(side);target=stable_points(front)
-    if min(len(source),len(target))<100: raise ValueError(f'{side.view_id}: stable face overlap too small; 请重采')
+    fallback=getattr(options,'registration_fallback',False)
+    roi={};sn=tn=None
+    try:
+        if fallback:
+            from core.registration_fallback import stable_surface
+            source,sn,sm,sd=stable_surface(side);target,tn,fm,fd=stable_surface(front)
+            roi=dict(source_roi=sd,target_roi=fd)
+        else:source=stable_points(side);target=stable_points(front)
+    except ValueError as exc:raise RegistrationError(f'{side.view_id}: {exc}') from exc
+    if min(len(source),len(target))<100: raise RegistrationError(f'{side.view_id}: stable face overlap too small; 请重采')
     ids=np.arange(27,48)
     ids=ids[front.valid[ids]&side.valid[ids]]
-    if len(ids)<6: raise ValueError(f'{side.view_id}: stable internal depth seeds不足6个，请重采')
     x=side.xyz[ids];y=front.xyz[ids]
     rng=np.random.default_rng(42)
     triples=list(itertools.combinations(range(len(ids)),3))
@@ -195,31 +225,54 @@ def register_to_front(front, side):
         error=np.linalg.norm(T.to_view(x)-y,axis=1);inside=error<.006
         score=(int(inside.sum()),-float(np.minimum(error,.02).sum()))
         if best is None or score>best[0]:best=(score,T,inside)
-    if best is None or best[0][0]<6: raise ValueError(f'{side.view_id}: landmark seed rejected; 请重采')
-    T=rigid_svd(x[best[2]],y[best[2]])
+    seed=dict(seed_method='internal_landmark_ransac',seed_matches=len(ids))
+    if best is None or best[0][0]<6:
+        if not fallback:raise RegistrationError(f'{side.view_id}: landmark seed rejected; 请重采')
+        from core.registration_fallback import rgbd_feature_seed,geometric_feature_seed
+        try:T,seed=rgbd_feature_seed(front,side,fm,sm,rigid_svd)
+        except ValueError as rgb_error:
+            try:T,seed=geometric_feature_seed(source,sn,target,tn,rigid_svd)
+            except ValueError as geometry_error:
+                exc=RegistrationError(f'{side.view_id}: no trustworthy seed: RGB-D {rgb_error}; geometric {geometry_error}')
+                exc.diagnostics=dict(**roi,seed_failures=[str(rgb_error),str(geometry_error)])
+                raise exc from geometry_error
+            seed['rgbd_seed_failure']=str(rgb_error)
+    else:
+        T=rigid_svd(x[best[2]],y[best[2]]);seed['seed_inliers']=int(best[0][0])
     history=[]
     for voxel,gate in ((.008,.030),(.004,.015),(.002,.008)):
         a=_voxel(source,voxel);b=_voxel(target,voxel);tree=cKDTree(b)
+        if sn is not None:na0=sn[cKDTree(source).query(a)[1]];nb0=tn[cKDTree(target).query(b)[1]]
         for iteration in range(30):
             moved=T.to_view(a);distance,nn=tree.query(moved)
-            keep=distance<min(gate,float(np.quantile(distance,.8)))
-            if keep.sum()<30: raise ValueError(f'{side.view_id}: ICP overlap lost; 请重采')
+            keep=(distance<gate)&(distance<=float(np.quantile(distance,.8))+1e-12)
+            if sn is not None:
+                na=na0@T.R.T;nb=nb0[nn]
+                keep&=(na*nb).sum(1)>.5
+            if keep.sum()<30: raise RegistrationError(f'{side.view_id}: ICP overlap lost; 请重采')
             update=rigid_svd(moved[keep],b[nn[keep]])
             T=update.compose(T)
             if np.linalg.norm(update.t)<1e-6 and np.linalg.norm(update.R-np.eye(3))<1e-5:break
         history.append(dict(voxel_m=voxel,gate_m=gate,iterations=iteration+1))
     moved=T.to_view(source);distance,_=cKDTree(target).query(moved)
-    good=distance<.008;coverage=float(good.mean())
-    rmse=float(np.sqrt(np.mean(distance[good]**2))) if good.any() else float('inf')
-    reverse=cKDTree(moved).query(target)[0];reverse_coverage=float((reverse<.008).mean())
+    good=distance<.008
+    if sn is not None:
+        nn=cKDTree(target).query(moved)[1];good&=((sn@T.R.T)*tn[nn]).sum(1)>.5
+    coverage=float(good.mean())
+    rmse=float(np.sqrt(np.mean(distance[good]**2))) if good.any() else None
+    reverse,rnn=cKDTree(moved).query(target);rgood=reverse<.008
+    if sn is not None:rgood&=((sn[rnn]@T.R.T)*tn).sum(1)>.5
+    reverse_coverage=float(rgood.mean())
     diag=dict(direction='front = R_side_to_front @ side + t_side_to_front',rmse_m=rmse,
-        source_overlap=coverage,target_overlap=reverse_coverage,seed_inliers=int(best[0][0]),history=history)
-    if min(coverage,reverse_coverage)<.25 or rmse>.004:
-        raise ValueError(f'{side.view_id}: 配准失败，请重采；{diag}')
+        source_overlap=coverage,target_overlap=reverse_coverage,history=history,**seed,**roi)
+    if min(coverage,reverse_coverage)<.25 or rmse is None or rmse>.004:
+        raise RegistrationConsistencyError(f'{side.view_id}: 配准失败，请重采；{diag}',T,diag,source,target)
+    spread=np.linalg.svd(moved[good]-moved[good].mean(0),compute_uv=False)/np.sqrt(good.sum())
+    if spread[1]<.003:raise RegistrationConsistencyError('Rigid overlap spatially degenerate',T,diag,source,target)
     # Rigid-invariant lip separation diagnoses expression changes without
     # adding expression DOFs per view. Occluded/invalid measurements are skipped.
     try:
-        diag.update(check_expression(front,side,T))
+        diag.update(check_expression(front,side,T,getattr(options,'side_expression_policy','strict')))
         neck=check_neck_consistency(front,side,T);diag['neck_check']=neck
         # Head motion relative to torso is allowed. This transform describes the
         # head, never the neck. Side neck data are excluded in BOTH optimizers.

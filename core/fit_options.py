@@ -31,11 +31,47 @@ class FitOptions:
     jaw_contour_huber_m: float = .003
     jaw_region_balance: bool = True
     jaw_max_yaw_deg: float = 20.
+    # Explicit multiview ablations. joint/legacy reproduce the previous losses.
+    registration_fallback: bool = True
+    side_expression_policy: str = 'upper_face'
+    side_landmark_mode: str = 'legacy'
+    side_landmark_huber_m: float = .004
+    side_landmark_gross_m: float = .020
+    pose_strategy: str = 'prior'
+    pose_prior_rotation_std_deg: float = 6.
+    pose_prior_translation_std_m: float = .015
+    pose_prior_weight: float = 1e-6
+    side_contour_weight: float = 0.
+    side_contour_noise_px: float = 2.
+    side_contour_huber_px: float = 3.
+    canonical_shape_enabled: bool = False
+    canonical_shape_modes: int = 12
+    canonical_shape_max_m: float = .003
+    canonical_shape_reg: float = .05
+    refinement_source: str = 'stage2'
+    front_initialization_cache: str | None = None
 
     def algorithm_version(self, stage3_algorithm):
         return 'cross-v4-jaw-supported' if (self.jaw_contour_weight>0 or self.jaw_region_balance) else stage3_algorithm
 
     def schedule(self):
+        if self.pose_strategy not in ('joint','prior','fixed'):
+            raise ValueError('pose_strategy must be joint, prior or fixed')
+        if self.side_landmark_mode not in ('legacy','soft') or self.side_expression_policy not in ('strict','upper_face'):
+            raise ValueError('Invalid side landmark/expression policy')
+        import math
+        positive=(self.pose_prior_rotation_std_deg,self.pose_prior_translation_std_m,
+            self.side_landmark_huber_m,self.side_landmark_gross_m,self.side_contour_noise_px,
+            self.side_contour_huber_px,self.canonical_shape_max_m,self.canonical_shape_reg)
+        if any(not math.isfinite(x) or x<=0 for x in positive):raise ValueError('Invalid multiview noise/guard scale')
+        if any(not math.isfinite(x) or x<0 for x in (self.pose_prior_weight,self.side_contour_weight)):
+            raise ValueError('Invalid multiview constraint weight')
+        if not 1<=self.canonical_shape_modes<=40 or self.canonical_shape_max_m>.003:
+            raise ValueError('Canonical correction supports 1..40 modes and at most 3 mm')
+        if self.refinement_source not in ('stage2','shape_corrected'):
+            raise ValueError('Unknown refinement source')
+        if self.refinement_source=='shape_corrected' and not self.canonical_shape_enabled:
+            raise ValueError('shape_corrected refinement requires canonical_shape_enabled')
         levels = []
         for shape, expr in (*self.basis_levels, (self.shape_components, self.expression_components)):
             pair = (min(shape, self.shape_components), min(expr, self.expression_components))

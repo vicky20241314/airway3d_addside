@@ -9,6 +9,9 @@ def constraint_observation(o):
     if o.parsing is None:raise ValueError(f'{o.view_id}: missing face segmentation')
     # BiSeNet head labels, excluding neck (14), clothing and hair/background.
     head=np.isin(o.parsing,np.arange(1,14))
+    if o.quality.get('upper_face_only'):
+        from core.registration_fallback import stable_surface
+        _,_,head,_=stable_surface(o)
     depth=o.depth.copy();depth[~head]=0
     parsing=o.parsing.copy();parsing[~head]=255  # not transition-mask background
     points=np.asarray(o.points) if o.points is not None else np.empty((0,3))

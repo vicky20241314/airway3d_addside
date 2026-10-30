@@ -157,7 +157,10 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
         observations=copy.deepcopy(observations)
         save_session(folder/'capture',observations)
         observations=validate_session(observations)
+        captured_view_ids=[v.view_id for v in observations]
+        captured_side_count=sum(v.view!='front' for v in observations)
         if front_only:observations=[o for o in observations if o.view=='front']
+        requested_view_ids=[v.view_id for v in observations]
         fronts={o.state:o for o in observations if o.view=='front'}
         c=fronts['closed'];o=fronts['open']
         corners,_,adam=detect_aruco(c.rgb,c.depth,c.camera)
@@ -183,8 +186,16 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
         meshes,transforms,fitting=fit_multiview(observations,folder,options=options,device=device,progress=progress)
         timing['fitting_s']=time.perf_counter()-phase_started
         used=fitting.get('used_view_ids',[v.view_id for v in observations])
-        report.update(captured_view_ids=report['view_ids'],view_ids=used,excluded_views=fitting.get('excluded_views',[]))
+        report.update(captured_view_ids=captured_view_ids,requested_view_ids=requested_view_ids,front_only_requested=bool(front_only),
+            view_ids=used,excluded_views=fitting.get('excluded_views',[]))
         observations=[v for v in observations if v.view_id in used]
+        for obs in observations:
+            obs.quality.update(fitting.get('constraint_policies',{}).get(obs.view_id,{}))
+        report['view_participation']=[dict(view_id=v,captured=True,requested_for_fitting=v in requested_view_ids,
+            registration_accepted=v in used if v in requested_view_ids else None,
+            reason_code='front_only_requested' if v not in requested_view_ids else None,
+            stage2_used=v in used,stage3_used=bool(refine and v in used)) for v in report['captured_view_ids']]
+        report['degraded_to_front_only']=bool(captured_side_count and not front_only and fitting.get('degraded_to_front_only',False))
         write_json(folder/'extrinsics.json',{k:dict(R=v.R,t=v.t,direction='state_front_to_view') for k,v in transforms.items()})
         phase_started=time.perf_counter()
         metrics,snapshots,display,diagnostics=finish_meshes((meshes['closed'],meshes['open']),
@@ -193,7 +204,17 @@ def run_multiview(observations, *, output_root=None, options=None, device=None,
         phase_started=time.perf_counter()
         if refine:
             report['stage']='joint_refinement';write_json(folder/'report.json',report)
-            display,diagnostics=finish_multiview_refinement(snapshots,observations,transforms,folder,progress)
+            refinement_base=snapshots
+            if options.refinement_source=='shape_corrected':
+                import trimesh
+                refinement_base=tuple(trimesh.load(folder/s/f'mesh_{s}_shape_corrected.obj',process=False,force='mesh') for s in ('closed','open'))
+            display,diagnostics=finish_multiview_refinement(refinement_base,observations,transforms,folder,progress)
+            for state,original,mesh,info in zip(('closed','open'),snapshots,display,diagnostics):
+                import trimesh
+                raw_reference,_=trimesh.remesh.subdivide(original.vertices,original.faces)
+                info.update(input_geometry=options.refinement_source,
+                    cumulative_change_from_stage2_max_m=float(np.linalg.norm(mesh.vertices-raw_reference,axis=1).max()))
+                write_json(folder/state/'stage3_report.json',info)
         timing['refinement_s']=time.perf_counter()-phase_started if refine else 0.
         report.update(status='complete',stage='complete',fitting=fitting,refinement=diagnostics,timing=timing,elapsed_s=time.perf_counter()-started)
         write_json(folder/'report.json',report)

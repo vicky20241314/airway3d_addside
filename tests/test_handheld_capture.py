@@ -73,9 +73,9 @@ class HandheldTests(unittest.TestCase):
         self.assertEqual(result[0,0],0);self.assertEqual(result[1,1],0)
 
     def test_each_side_failure_falls_back_but_implementation_errors_propagate(self):
-        from core.multiview_registration import select_registered_views
+        from core.multiview_registration import select_registered_views,RegistrationError
         obs=[fixture('front','closed'),fixture('front','open'),fixture('left','open')]
-        with tempfile.TemporaryDirectory() as d,patch('core.multiview_registration.register_to_front',side_effect=ValueError('missing lips')):
+        with tempfile.TemporaryDirectory() as d,patch('core.multiview_registration.register_to_front',side_effect=RegistrationError('unreliable rigid seed')):
             kept,transforms,_,excluded=select_registered_views(obs,d)
             self.assertEqual([o.view_id for o in kept],['closed_front','open_front'])
             self.assertEqual(transforms,{})
@@ -89,6 +89,8 @@ class HandheldTests(unittest.TestCase):
         obs[-1]=fixture('left','open')
         with tempfile.TemporaryDirectory() as d,patch('core.multiview_registration.register_to_front',side_effect=RuntimeError('implementation error')):
             with self.assertRaises(RuntimeError):select_registered_views(obs,d)
+        with tempfile.TemporaryDirectory() as d,patch('core.multiview_registration.register_to_front',side_effect=ValueError('implementation error')):
+            with self.assertRaises(ValueError):select_registered_views(obs,d)
 
 
 if __name__=='__main__':unittest.main()

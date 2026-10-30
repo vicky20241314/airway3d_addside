@@ -1,0 +1,12 @@
+[
+  {"label":"A_front_stage2","front_only":true,"refine":false,"options":{"pose_strategy":"joint","registration_fallback":false,"side_expression_policy":"strict","side_landmark_mode":"legacy"}},
+  {"label":"B_legacy_multiview","refine":false,"options":{"pose_strategy":"joint","registration_fallback":false,"side_expression_policy":"strict","side_landmark_mode":"legacy"}},
+  {"label":"C_registration","refine":false,"options":{"pose_strategy":"joint","side_landmark_mode":"legacy"}},
+  {"label":"D_pose_prior","refine":false,"options":{"pose_strategy":"prior","side_landmark_mode":"legacy"}},
+  {"label":"E_soft_landmarks","refine":false,"options":{"pose_strategy":"prior","side_landmark_mode":"soft"}},
+  {"label":"F_profile","refine":false,"options":{"pose_strategy":"prior","side_landmark_mode":"soft","side_contour_weight":0.3}},
+  {"label":"G_canonical","refine":false,"options":{"pose_strategy":"prior","side_landmark_mode":"soft","side_contour_weight":0.3,"canonical_shape_enabled":true}},
+  {"label":"H_profile_stage3","refine":true,"options":{"pose_strategy":"prior","side_landmark_mode":"soft","side_contour_weight":0.3}},
+  {"label":"G_front_capacity","front_only":true,"refine":false,"options":{"pose_strategy":"prior","side_landmark_mode":"soft","canonical_shape_enabled":true}},
+  {"label":"A_front_stage3","front_only":true,"refine":true,"options":{"pose_strategy":"joint","registration_fallback":false,"side_expression_policy":"strict","side_landmark_mode":"legacy"}}
+]

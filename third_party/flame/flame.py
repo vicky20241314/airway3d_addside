@@ -206,7 +206,8 @@ class FLAME(nn.Module):
         return dyn_lmk_faces_idx, dyn_lmk_b_coords
 
     def forward(self, shape_params=None, expression_params=None,
-                pose_params=None, eye_pose=None, transl=None, view_rotation=None):
+                pose_params=None, eye_pose=None, transl=None, view_rotation=None,
+                canonical_offset=None):
         """
         Input:
             shape_params:      (N, S) shape coefficients
@@ -224,6 +225,13 @@ class FLAME(nn.Module):
         transl = transl if transl is not None else self.transl
         full_pose = torch.cat([self.head_pose, pose_params, eye_pose], dim=1)
         template_vertices = self.v_template.unsqueeze(0).repeat(self.batch_size, 1, 1)
+        if canonical_offset is not None:
+            if canonical_offset.shape != self.v_template.shape:
+                raise ValueError('One shared canonical (V,3) correction is required')
+            # LBS regresses rest joints from the corrected shaped template.
+            # Expression and pose blend shapes then follow the original FLAME
+            # path; the same identity correction is used in every state.
+            template_vertices = template_vertices + canonical_offset.unsqueeze(0)
 
         vertices, _ = lbs(
             betas, full_pose, template_vertices,

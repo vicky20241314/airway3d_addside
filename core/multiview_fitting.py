@@ -34,13 +34,15 @@ class MultiLayout:
         self.size=cursor
 
     def active(self,stage):
-        if stage==2:return list(range(self.size))
+        if stage==2:
+            omitted={i for b in getattr(self,'fixed_views',()) for s in (self.rot[b],self.trans[b]) for i in range(s.start,s.stop)}
+            return [i for i in range(self.size) if i not in omitted]
         # First camera-only pass: shape, expression AND joint pose are fixed.
         return [i for a,b in zip(self.rot,self.trans) for s in (a,b) for i in range(s.start,s.stop)]
 
 
 class MultiProblem(JointProblem):
-    def __init__(self,flame,observations,initial,transforms,options):
+    def __init__(self,flame,observations,initial,transforms,options,raw_profiles=None):
         self.flame=flame;self.options=options;self.observations=observations
         self.faces=flame.faces_tensor;self.device=flame.v_template.device;self.dtype=flame.v_template.dtype
         self.layout=MultiLayout(options.shape_components,options.expression_components,options.pose_indices,
@@ -64,6 +66,17 @@ class MultiProblem(JointProblem):
         self.quality=np.array([o.quality.get('weight',1.) for o in observations],float)
         self.quality/=self.quality.sum()
         self.context=[];self.embedding=None;self.jaw=[];self.view_diagnostics=[]
+        self.front_indices={s:next(i for i,o in enumerate(observations) if o.state==s and o.view=='front') for s in self.layout.state_slots}
+        from core.multiview_constraints import relative_transforms
+        self.initial_relative=relative_transforms(self.rotations.cpu().numpy(),
+            np.stack([T.t for T in transforms]),self.front_indices,observations)
+        self.fixed_relative={}
+        self.profiles=[];self.silhouette_topology=None
+        if options.side_contour_weight>0:
+            from core.side_silhouette import observed_profile,silhouette_topology
+            self.profiles=[raw_profiles[o.view_id] if raw_profiles and o.view_id in raw_profiles else
+                observed_profile(o) if o.view!='front' else None for o in observations]
+            self.silhouette_topology=silhouette_topology(self.faces.cpu().numpy())
         from core.jaw_constraints import prepare_jaw
         for b,o in enumerate(observations):
             yaw=math.degrees(math.atan2(transforms[b].R[0,2],transforms[b].R[2,2]))
@@ -73,6 +86,36 @@ class MultiProblem(JointProblem):
                 jaw['reason']='side_depth_only' if o.view!='front' else 'oblique_pose_fallback'
             jaw['initial_yaw_deg']=yaw
             self.jaw.append(jaw)
+
+    def parameters(self,theta):
+        shape,expr,pose,rot,trans=super().parameters(theta)
+        if self.fixed_relative:
+            rot=rot.clone();trans=trans.clone()
+            for b,T in self.fixed_relative.items():
+                i=self.front_indices[self.observations[b].state]
+                r=theta.new_tensor(T.R);t=theta.new_tensor(T.t)
+                rot[b]=r@rot[i];trans[b]=r@trans[i]+t
+        return shape,expr,pose,rot,trans
+
+    def begin_shape_fit(self,theta):
+        if self.options.pose_strategy=='fixed':
+            # Freeze the trustworthy registration, not drift accumulated by
+            # independently aligning a model whose identity is still frontal.
+            self.fixed_relative=dict(self.initial_relative)
+            self.layout.fixed_views=tuple(self.fixed_relative)
+
+    def pose_prior(self,theta):
+        from core.multiview_constraints import pose_prior_values
+        *_,rot,trans=self.parameters(theta)
+        return pose_prior_values(rot.cpu().numpy(),trans.cpu().numpy(),self.front_indices,
+            self.observations,self.initial_relative,self.options)
+
+    def iteration_diagnostics(self,theta,stage):
+        from core.multiview_constraints import pose_drift
+        *_,rot,trans=self.parameters(theta)
+        return dict(relative_pose_from_registration=pose_drift(rot.cpu().numpy(),trans.cpu().numpy(),
+            self.front_indices,self.observations,self.initial_relative),views=self.view_diagnostics,
+            residual_terms=getattr(self,'residual_terms',[]),shared_regularizers_once=True)
 
     def _embedding(self,theta,vertices):
         pose=self.parameters(theta)[2];rot=self.parameters(theta)[3]
@@ -99,7 +142,20 @@ class MultiProblem(JointProblem):
 
     @torch.no_grad()
     def vertex_jacobians(self,theta,stage):
-        if stage==2:return super().vertex_jacobians(theta,stage)
+        if stage==2:
+            fixed=getattr(self.layout,'fixed_views',())
+            if not fixed:return super().vertex_jacobians(theta,stage)
+            self.layout.fixed_views=()
+            try:full=super().vertex_jacobians(theta,stage)
+            finally:self.layout.fixed_views=fixed
+            # A reference-camera perturbation now moves every same-state view.
+            eps=1e-4 if theta.dtype==torch.float32 else 1e-5
+            for b in self.front_indices.values():
+                for s in (self.layout.rot[b],self.layout.trans[b]):
+                    for i in range(s.start,s.stop):
+                        plus=theta.clone();minus=theta.clone();plus[i]+=eps;minus[i]-=eps
+                        full[:,:,:,i]=(self.forward(plus)[0]-self.forward(minus)[0])/(2*eps)
+            return full[:,:,:,self.layout.active(stage)]
         active=self.layout.active(stage);col={i:j for j,i in enumerate(active)}
         jac=theta.new_zeros((self.layout.frames,len(self.flame.v_template),3,len(active)))
         eps=1e-4 if theta.dtype==torch.float32 else 1e-5
@@ -131,22 +187,41 @@ class MultiProblem(JointProblem):
             weights*=torch.clamp(.003/distance.clamp_min(1e-12),max=1)
             weights=(weights/weights.sum().clamp_min(1e-12)*self.quality[b]).sqrt()
             valid=visible_landmarks(vnp,fnp,lm[b].cpu().numpy(),o.uv,o.valid,o.camera,o.depth)
-            if o.view!='front':
+            ldiag={};lw=None
+            if o.view!='front' and self.options.side_landmark_mode=='soft':
+                from core.multiview_constraints import soft_side_landmarks
+                ids,lw,valid,ldiag=soft_side_landmarks(o,vnp,fnp,lm[b].cpu().numpy(),
+                    self.options.side_landmark_huber_m,self.options.side_landmark_gross_m)
+            elif o.view!='front':
                 # Never trust occluded-side detector predictions. Static internal
                 # landmarks must also agree in 3-D with the current surface.
                 valid &= np.linalg.norm(np.nan_to_num(o.xyz)-lm[b].cpu().numpy(),axis=1)<.006
             # Even frontal chin 8 is a view contour, not a fixed 3-D material
             # landmark. Keep it for observed metrics, use only 2-D jaw normals.
-            ids=np.array([21,22,33,50,51,52,56,57,58])
-            ids=ids[valid[ids]]
+            if lw is None:
+                ids=np.array([21,22,33,50,51,52,56,57,58]);ids=ids[valid[ids]];lw=np.ones(len(ids))
             jaw=self.jaw[b];jids=jaw['ids']
             if len(jids):
                 r=((project(lm[b][jids],o.camera)-self.lmk2d[b][jids])*torch.as_tensor(jaw['normals'],device=self.device,dtype=self.dtype)).sum(1)*jaw['pixel_to_m']
                 irls=torch.clamp(self.options.jaw_contour_huber_m/r.abs().clamp_min(1e-12),max=1)
             else:irls=theta.new_empty(0)
-            self.context.append(dict(points=self.points[b][keep],tri=tri,bary=bary,normals=normal,weights=weights,ids=ids,valid=valid,jaw_irls=irls))
+            self.context.append(dict(points=self.points[b][keep],tri=tri,bary=bary,normals=normal,weights=weights,ids=ids,valid=valid,jaw_irls=irls,
+                landmark_weights=theta.new_tensor(lw).sqrt()))
+            profile_diag={}
+            if self.profiles and self.profiles[b] is not None and stage==2:
+                from core.side_silhouette import freeze_profile
+                frozen=freeze_profile(vnp,fnp,o,self.profiles[b],self.silhouette_topology)
+                if len(frozen['edges']):
+                    mid=v[torch.as_tensor(frozen['edges'],device=self.device)].mean(1)
+                    residual=((project(mid,o.camera)-theta.new_tensor(frozen['target']))*theta.new_tensor(frozen['normal'])).sum(1)
+                    frozen['irls']=torch.clamp(self.options.side_contour_huber_px/residual.abs().clamp_min(1e-12),max=1)
+                self.context[-1]['profile']=frozen
+                profile_diag=dict(profile_status=self.profiles[b]['status'],profile_observed_points=len(self.profiles[b]['uv']),
+                    profile_equations=len(frozen['edges']),profile_target_uv=frozen['target'].tolist(),profile_filter_counts=self.profiles[b].get('filter_counts',{}))
             self.view_diagnostics.append(dict(view_id=o.view_id,valid_points=int(keep.sum()),visible_faces=int(visible.sum()),
-                landmark_ids=ids.tolist(),quality=float(self.quality[b]),jaw_reason=jaw['reason'],initial_yaw_deg=jaw['initial_yaw_deg']))
+                observed_points=len(o.points),sampled_points=len(self.points[b]),distance_rejected=int((~keep).sum()),
+                correspondence_keep_ratio=float(keep.float().mean()),captured=True,registration_accepted=True,stage2_used=True,
+                landmark_ids=ids.tolist(),quality=float(self.quality[b]),jaw_reason=jaw['reason'],initial_yaw_deg=jaw['initial_yaw_deg'],**ldiag,**profile_diag))
 
     @torch.no_grad()
     def residual(self,theta,stage,need_jac=True):
@@ -154,22 +229,42 @@ class MultiProblem(JointProblem):
         dj=self.vertex_jacobians(theta,stage) if need_jac else None
         tri_lm,bary_lm=self.embedding
         active=self.layout.active(stage);mapping={i:k for k,i in enumerate(active)}
-        rs=[];js=[]
-        def add(r,j,scale=1.):
+        rs=[];js=[];terms=[];view='shared'
+        def add(r,j,scale=1.,name='other'):
             rs.append((r*scale).reshape(-1))
             if need_jac:js.append((j*scale).reshape(r.numel(),len(active)))
+            terms.append(dict(view_id=view,term=name,equations=r.numel(),weighted_square_sum=float((r*scale).square().sum())))
         for b,(o,ctx) in enumerate(zip(self.observations,self.context)):
+            view=o.view_id
             tri=ctx['tri'];bary=ctx['bary'];w=ctx['weights']
             diff=(verts[b][tri]*bary[:,:,None]).sum(1)-ctx['points']
             j=(dj[b][tri]*bary[:,:,None,None]).sum(1) if need_jac else None
-            add(diff*w[:,None],j*w[:,None,None] if need_jac else None,math.sqrt(.1))
+            add(diff*w[:,None],j*w[:,None,None] if need_jac else None,math.sqrt(.1),name='depth_point_m')
+            terms[-1]['raw_rmse_m']=float(diff.square().sum(1).mean().sqrt())
             add((diff*ctx['normals']).sum(1)*w,
-                torch.einsum('ni,nip->np',ctx['normals'],j)*w[:,None] if need_jac else None,math.sqrt(.9))
+                torch.einsum('ni,nip->np',ctx['normals'],j)*w[:,None] if need_jac else None,math.sqrt(.9),name='depth_plane_m')
+            terms[-1]['raw_rmse_m']=float((diff*ctx['normals']).sum(1).square().mean().sqrt())
             jl=(dj[b][tri_lm[b]]*bary_lm[b,:,:,None,None]).sum(1) if need_jac else None
             uv,pj=project(lm[b],o.camera,True);juv=pj@jl if need_jac else None
             if stage==2:
+                profile=ctx.get('profile')
+                if profile and len(profile['edges']):
+                    edges=torch.as_tensor(profile['edges'],device=self.device,dtype=torch.long);mid=verts[b][edges].mean(1)
+                    puv,pjac=project(mid,o.camera,True)
+                    normals=theta.new_tensor(profile['normal']);target=theta.new_tensor(profile['target'])
+                    raw=((puv-target)*normals).sum(1)
+                    derivative=torch.einsum('ni,nip->np',normals,pjac@dj[b][edges].mean(1)) if need_jac else None
+                    # Pixels are whitened by their own noise, then assigned a
+                    # 1 mm residual budget; depth/regularizer units stay metres.
+                    weight=(profile['irls']*self.quality[b]*self.options.side_contour_weight/len(edges)).sqrt()*.001/self.options.side_contour_noise_px
+                    add(raw*weight,derivative*weight[:,None] if need_jac else None,name='side_profile_px_whitened')
+                    terms[-1]['raw_rmse_px']=float(raw.square().mean().sqrt())
                 ids=ctx['ids']
-                if len(ids):add(lm[b][ids]-self.lmk3d[b][ids],jl[ids] if need_jac else None,math.sqrt(2*self.quality[b]/(3*len(ids))))
+                if len(ids):
+                    wl=ctx.get('landmark_weights',theta.new_ones(len(ids)))
+                    add((lm[b][ids]-self.lmk3d[b][ids])*wl[:,None],jl[ids]*wl[:,None,None] if need_jac else None,
+                        math.sqrt(2*self.quality[b]/(3*len(ids))),name='landmark_m')
+                    terms[-1]['raw_rmse_m']=float((lm[b][ids]-self.lmk3d[b][ids]).square().sum(1).mean().sqrt())
                 jaw=self.jaw[b];ids=jaw['ids']
                 if len(ids) and self.options.jaw_contour_weight>0:
                     normals=theta.new_tensor(jaw['normals']);unit=jaw['pixel_to_m']
@@ -186,13 +281,24 @@ class MultiProblem(JointProblem):
                     add(distance-(target[i]-target[k]).norm(),(delta/distance)@(derivative[i]-derivative[k]) if need_jac else None,
                         math.sqrt((10 if stage==1 else 1e-5)*self.quality[b]/max(len(pairs),1)))
         if stage==2:
+            view='shared'
+            if self.options.pose_strategy=='prior':
+                value=self.pose_prior(theta);j=theta.new_zeros((len(value),len(active))) if need_jac else None
+                if need_jac and len(value):
+                    eps=1e-4 if theta.dtype==torch.float32 else 1e-6
+                    columns={i for s in (*self.layout.rot,*self.layout.trans) for i in range(s.start,s.stop)}
+                    for i in columns:
+                        plus=theta.clone();minus=theta.clone();plus[i]+=eps;minus[i]-=eps
+                        j[:,mapping[i]]=theta.new_tensor((self.pose_prior(plus)-self.pose_prior(minus))/(2*eps))
+                if len(value):add(theta.new_tensor(value),j,math.sqrt(self.options.pose_prior_weight),name='relative_pose_whitened')
             # One identity prior and ONE expression prior per state, not per camera.
             regs=[(self.layout.shape,self.options.shape_reg)]+[(s[0],self.options.expression_reg) for s in self.layout.state_slots.values()]
             for s,weight in regs:
                 j=theta.new_zeros((s.stop-s.start,len(active))) if need_jac else None
                 if need_jac:
                     for row,i in enumerate(range(s.start,s.stop)):j[row,mapping[i]]=1
-                add(theta[s],j,math.sqrt(weight))
+                add(theta[s],j,math.sqrt(weight),name='shared_regularizer')
+        self.residual_terms=terms
         return torch.cat(rs),torch.cat(js) if need_jac else None
 
 
@@ -202,7 +308,13 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     from core.pipeline import write_json
     options=options or FitOptions();options.schedule();folder=Path(folder)
     timing={};started=time.perf_counter()
-    observations,side_to_front,registration,excluded=select_registered_views(observations,folder,progress)
+    observations,side_to_front,registration,excluded=select_registered_views(observations,folder,progress,options=options)
+    # Extract silhouette evidence BEFORE constraint_observation rewrites the
+    # outside semantic labels to 255 for the head-only depth/transition path.
+    raw_profiles={}
+    if options.side_contour_weight>0:
+        from core.side_silhouette import observed_profile
+        raw_profiles={o.view_id:observed_profile(o) for o in observations if o.view!='front'}
     from core.side_constraints import constraint_observation
     observations=[constraint_observation(o) for o in observations]
     timing['registration_s']=time.perf_counter()-started
@@ -211,11 +323,19 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     # Real legacy front fit provides metric-scale identity and state initialization.
     progress('使用正面闭口/张口拟合初始化多视角 FLAME...')
     started=time.perf_counter()
-    initial_meshes=train(c.xyz,o.xyz,c.uv,o.uv,c.valid,o.valid,c.points,o.points,c.camera,
-        parsing_closed=c.parsing,parsing_open=o.parsing,options=options,device=device,
-        progress=lambda s:progress('正面初始化｜'+s),camera_open=o.camera)
+    from core.multiview_initialization import initialization_signature,load_initialization,save_initialization
+    signature=initialization_signature(fronts,options)
+    cache=Path(options.front_initialization_cache) if options.front_initialization_cache else None
+    if cache and cache.exists():
+        initial=load_initialization(cache,signature);progress('复用输入与配置哈希一致的正面初始化')
+    else:
+        initial_meshes=train(c.xyz,o.xyz,c.uv,o.uv,c.valid,o.valid,c.points,o.points,c.camera,
+            parsing_closed=c.parsing,parsing_open=o.parsing,options=options,device=device,
+            progress=lambda s:progress('正面初始化｜'+s),camera_open=o.camera)
+        initial={s:m.metadata['flame_parameters'] for s,m in zip(('closed','open'),initial_meshes)}
+        if cache:save_initialization(cache,signature,initial)
+    save_initialization(folder/'front_initialization.npz',signature,initial)
     timing['front_initialization_s']=time.perf_counter()-started
-    initial={s:m.metadata['flame_parameters'] for s,m in zip(('closed','open'),initial_meshes)}
     transforms=[]
     for obs in observations:
         p=initial[obs.state];front_T=RigidCamera(p['rotation'],p['translation'])
@@ -224,13 +344,17 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     write_json(folder/'registration.json',registration)
     device=device or ('cuda:0' if torch.cuda.is_available() else 'cpu')
     flame=make_flame(options,device,batch=len(observations))
-    problem=MultiProblem(flame,observations,initial,transforms,options)
+    problem=MultiProblem(flame,observations,initial,transforms,options,raw_profiles=raw_profiles)
     started=time.perf_counter()
     theta,stage1=solve_stage(problem,problem.theta,1,lambda s:progress('多视角相机对齐｜'+s))
+    problem.begin_shape_fit(theta)
     timing['camera_fit_s']=time.perf_counter()-started
     started=time.perf_counter()
     theta,stage2=solve_progressive(problem,theta,lambda s:progress('多视角联合拟合｜'+s))
     timing['joint_fit_s']=time.perf_counter()-started
+    problem.refresh(theta,2);problem.residual(theta,2,False)
+    from core.multiview_diagnostics import save_fit_diagnostics
+    save_fit_diagnostics(problem,theta,folder)
     problem.embedding=None;vertices,landmarks=problem.forward(theta)
     shape,expr,pose,rotation,translation=problem.parameters(theta)
     meshes={};view_transforms={};front_indices={s:next(i for i,v in enumerate(observations) if v.state==s and v.view=='front') for s in fronts}
@@ -249,7 +373,18 @@ def fit_multiview(observations,folder,*,options=None,device=None,progress=lambda
     np.savez_compressed(folder/'flame_parameters.npz',shared_shape=shape[0].cpu().numpy(),
         expression_by_view=expr.cpu().numpy(),pose_by_view=pose.cpu().numpy(),rotation=rotation.cpu().numpy(),translation=translation.cpu().numpy(),
         view_ids=np.array([o.view_id for o in observations]),states=np.array([o.state for o in observations]))
+    canonical_report=dict(enabled=False,geometry_stage='stage2')
+    if options.canonical_shape_enabled:
+        from core.canonical_shape_refine import correct_shape
+        progress('实验：固定状态/相机，联合求解共享静止空间低频形状修正…')
+        started=time.perf_counter();_,canonical_report=correct_shape(problem,theta,folder)
+        timing['canonical_shape_s']=time.perf_counter()-started
     report=dict(stage1=stage1,stage2=stage2,views=problem.view_diagnostics,registration=registration,
+        pose_strategy=options.pose_strategy,final_diagnostics=problem.iteration_diagnostics(theta,2),
+        front_initialization_signature=signature,
+        canonical_shape=canonical_report,
+        constraint_policies={v.view_id:dict(upper_face_only=bool(v.quality.get('upper_face_only')),expression_status=v.quality.get('expression_status')) for v in observations},
+        degraded_to_front_only=not any(v.view!='front' for v in observations),
         timing=timing,side_constraint_region='head_only',side_neck_used=False,
         used_view_ids=[o.view_id for o in observations],excluded_views=excluded,
         sharing='one shape; one expression/neck/jaw per state; SE3 per view; no scale',

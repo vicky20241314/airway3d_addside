@@ -303,7 +303,8 @@ class JointProblem:
 def solve_stage(problem, theta, stage, progress=lambda _: None, basis=None):
     options = problem.options
     count = options.stage1_outer if stage == 1 else options.stage2_outer
-    active = problem.layout.active(stage)
+    full_active = problem.layout.active(stage)
+    active = list(full_active)
     if stage == 2 and basis is not None:
         shape_n, expr_n = basis
         layout = problem.layout
@@ -326,8 +327,8 @@ def solve_stage(problem, theta, stage, progress=lambda _: None, basis=None):
         for step in range(options.inner_steps):
             if r is None:
                 r, jac = problem.residual(theta, stage)
-                if stage == 2 and basis is not None:
-                    jac = jac[:, active]
+                if active != full_active:
+                    jac = jac[:, [full_active.index(i) for i in active]]
                 if not torch.isfinite(r).all() or not torch.isfinite(jac).all():
                     raise ValueError('LM 残差或雅可比出现非有限值')
                 # Accumulate/solve the small normal equations in double precision.
@@ -372,6 +373,8 @@ def solve_stage(problem, theta, stage, progress=lambda _: None, basis=None):
         history.append(dict(outer=outer+1, loss=final_loss, accepted=accepted,
                             inner_reason=inner_reason, damping=damping, max_move_m=movement,
                             points=[len(c['points']) for c in problem.context]))
+        if hasattr(problem,'iteration_diagnostics'):
+            history[-1]['diagnostics']=problem.iteration_diagnostics(theta,stage)
         previous_loss = final_loss
         # Don't stop after an entirely rejected inner loop: refresh and retry.
         if outer+1 >= options.min_outer and settled and movement < options.vertex_step_tol_m:
