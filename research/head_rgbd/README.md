@@ -5,6 +5,10 @@
 运行时资产、环境及结果放在仓库外；所有入口拒绝覆盖既有结果目录。
 最终实测结果见 `RESULTS.md`，机器记录见 `experiment-final-20261030.json`。
 
+2026-10-30 后续独立实现 C：方法与边界见 [C_METHOD.md](C_METHOD.md)，
+真实运行、回归记录及交付见 [C_RESULTS.md](C_RESULTS.md)。独立入口
+`fit_c.py`、`evaluate_c.py`、`verify_c.py` 不替换本文件原 B 入口。
+
 ## 方法边界
 
 A 使用作者 `linchaobao/hifi3dface` 的实际几何脚本。`run_a.py` 复制作者

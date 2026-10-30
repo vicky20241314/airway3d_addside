@@ -1,0 +1,4 @@
+# Use a NEW environment if dependencies must be installed. Shared env-b is read-only.
+-r requirements-b.txt
+rtree==1.4.1
+matplotlib==3.10.9
