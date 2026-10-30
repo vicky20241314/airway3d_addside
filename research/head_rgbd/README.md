@@ -1,5 +1,8 @@
 # 单相机 RGB-D 人头独立研究入口
 
+整体头部与观测人脸的组合入口、实测结果和许可边界见
+[HEAD_COMBINED.md](HEAD_COMBINED.md)。仅为本地非商业研究，整头未观测部分为先验。
+
 后续独立 A3 几何实现与真实米制导出见 [A3_README.md](A3_README.md)，
 结果与边界见 [A3_RESULTS.md](A3_RESULTS.md)，逐项许可核查见
 [LICENSES_A.md](LICENSES_A.md)。该入口不加载作者或 FLAME/TUFA 模型，

@@ -1,0 +1,41 @@
+{
+  "schema": "head_rgbd.head_combination_license_scope.v1",
+  "date": "2026-10-30",
+  "scope": "follow-up to original model-free A3; existing model-derived full head is now an input",
+  "inherited_runtime_inventory": "A_DEPENDENCIES.json: CPython 3.10.22, NumPy 1.26.4, SciPy 1.11.4 and bundled runtimes; Pillow 11.1.0 optional QA",
+  "items": [
+    {
+      "name": "Existing B coarse full-head artifacts",
+      "source": "local rgbd-head-research-runtime-20261030/b-final/parameters.npz and report.json; original project make_flame interface",
+      "version_or_sha": "research base 159a894dcfb0760633723092133a2964f1fd6490; inherited model SHA 8fb1af0db1abb51053ead8fd1f2624a63d01c9602f4a4fb4ea23bd2c82017fa0; exact input artifact SHA in private provenance.json",
+      "license": "user-confirmed official FLAME Academic Model License; inherited data/upstream conditions also apply",
+      "allowed_use": "this local noncommercial research experiment only; model weights not loaded or modified",
+      "modification_and_redistribution": "derived mesh stays local; preserve FLAME citation and provenance; no public asset/mesh/parameter redistribution or commercial grant established",
+      "commercial_explicit": false,
+      "evidence": "user confirmation in current chat; private head-research-authorization.json; b-final/report.json model hash; https://flame.is.tue.mpg.de/modellicense.html",
+      "unclear": "acquisition contract not independently authenticated; not proven FLAME 2023 Open; upstream rights not cleared for future products"
+    },
+    {
+      "name": "Original project baseline stage2 full-head artifacts",
+      "source": "local baseline-v0120 result closed/open mesh_*_stage2.obj and benchmark.json",
+      "version_or_sha": "3e409af77a4686b0cf435fff2230b90a8d26e11d, v0.12.0; same existing FLAME model provenance; exact source SHA in private provenance.json",
+      "license": "same confirmed academic-model research scope, plus original data conditions",
+      "allowed_use": "local read and research combination; actual capture-session SHA and reference indices are checked",
+      "modification_and_redistribution": "no model or derived mesh publication; source-only adapter does not relicense baseline assets; no default algorithm replacement",
+      "commercial_explicit": false,
+      "evidence": "baseline benchmark, fixed project asset_manifest, private authorization record, HEAD_COMBINATION_LICENSES.md",
+      "unclear": "commercial use, sharing of model-derived artifacts and data-subject rights beyond current local task remain unresolved"
+    },
+    {
+      "name": "A3 observed face and new whole-head output",
+      "source": "private formal-v4 and combined-head experiment directories; this task's independent numerical adapter",
+      "version_or_sha": "A3 code commit 9012daf8b5a0b6ca379f5b7b6d6670fecb9f4f99; exact code/manifest/mesh hashes in private reports and public aggregate summary",
+      "license": "user-authorized local processing of real capture; combined output retains FLAME and data restrictions",
+      "allowed_use": "local noncommercial geometric inspection and export",
+      "modification_and_redistribution": "no RGB, depth, landmarks, pose arrays, meshes or QA images in Git; only new source, notices and aggregate diagnostics published",
+      "commercial_explicit": null,
+      "evidence": "original task instruction, current academic-use confirmation, HEAD_COMBINED.md, private provenance and authorization hashes",
+      "unclear": "full-head scan accuracy, data publication consent, commercial/redistribution/patent/contract clearance not established"
+    }
+  ]
+}
