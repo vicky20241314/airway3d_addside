@@ -1,0 +1,391 @@
+{
+  "schema": "head_rgbd.a3_public_aggregate.v1",
+  "date": "2026-10-30",
+  "branch": "codex/rgbd-head-a-adapt-20261030",
+  "research_base": "159a894dcfb0760633723092133a2964f1fd6490",
+  "route": "A3 independent model-free observed-face prototype",
+  "author_method_reproduction": false,
+  "status": {
+    "implementation": "independent research prototype implemented",
+    "real_pipeline": "passed with explicit frame exclusion",
+    "real_geometry_effect_acceptance": "NOT PASSED: visible holes/seam, lower side overlap and no independent truth",
+    "license_audit": "execution inventory and evidence recorded; unclear assets isolated",
+    "commercial_and_redistribution_clearance": "not established"
+  },
+  "models_loaded": [],
+  "source_code_sha256": {
+    "a3_geometry.py": "586f45b3cc40ef3826cc839c3ea78095d157421e15b610b6c1c5e2bc8aab251f",
+    "audit_a3.py": "83ae73465af653f2a0a3e8a850e4b2b5968acd169c54243b5a97687ab4594c92",
+    "check_a3.py": "5e76df5190f185506873dd894e62fb5d58648f33f4cc703789dcea89bac19119",
+    "expand_a3_frames.py": "ed4f64b979f908c70b434e27efa331f7831a7b7321369f5d4ac4268b4b300320",
+    "record_a3_summary.py": "c87d1c05488a0487e6b1b4444848e8d015e290a63f1d87e7b98295a00150eebc",
+    "run_a3.py": "6b0337b7e8febeab380a7499bcd0420ef124893fb298e424e66d5fef5ec28ae3",
+    "test_a3.py": "ec95ebf5c1b41865aa2ca97d42b319a0264e116fde2d65ef5e46470e02efbd6a"
+  },
+  "fitted_manifest_sha256": "1e7ce9d1e2557f3cfb0dd7ce1dd401eabc062d85543ec2bf2879f0220e14b352",
+  "outputs": {
+    "closed": {
+      "reference_frame_id": "closed_front_1",
+      "missing_views": [
+        "up"
+      ],
+      "unit": "m",
+      "coordinates": "X_right_Y_down_Z_forward",
+      "geometry": {
+        "coarse": {
+          "vertices": 21353,
+          "triangles": 41477,
+          "mesh_sha256": "b47f98e7a23cb16a6a507dc6c813ff704670d3faee81c8f8003f7ccb73b9d3c1",
+          "finite": true,
+          "supported_at_least_one_fraction": 1.0,
+          "supported_at_least_two_fraction": 0.9992975225963565,
+          "actual_multiframe_fusion_fraction": 0.992741066829017,
+          "unobserved_completion_vertices": 0,
+          "connectivity_filter": {
+            "components": 15,
+            "discarded_vertices": 300,
+            "discarded_triangles": 360,
+            "policy": "largest connected observed skin surface; no hole fill"
+          }
+        },
+        "refined": {
+          "vertices": 21329,
+          "triangles": 41408,
+          "mesh_sha256": "67e32d4ba474f7bd5b943deb49b56f8167ed0d0e967f1e4a3a714d5de9f65885",
+          "finite": true,
+          "supported_at_least_one_fraction": 1.0,
+          "supported_at_least_two_fraction": 0.9992967321487177,
+          "actual_multiframe_fusion_fraction": 0.9927797833935018,
+          "unobserved_completion_vertices": 0,
+          "connectivity_filter": {
+            "components": 17,
+            "discarded_vertices": 321,
+            "discarded_triangles": 377,
+            "policy": "largest connected observed skin surface; no hole fill"
+          }
+        }
+      }
+    },
+    "open": {
+      "reference_frame_id": "open_front_2",
+      "missing_views": [
+        "left",
+        "right",
+        "up"
+      ],
+      "unit": "m",
+      "coordinates": "X_right_Y_down_Z_forward",
+      "geometry": {
+        "coarse": {
+          "vertices": 21530,
+          "triangles": 41587,
+          "mesh_sha256": "2025a5d8f91ad9dd5964cd6b0646e0ae2d796c9d9c5287e0c0241b8b824d1eec",
+          "finite": true,
+          "supported_at_least_one_fraction": 1.0,
+          "supported_at_least_two_fraction": 0.9992568509057129,
+          "actual_multiframe_fusion_fraction": 0.9912215513237344,
+          "unobserved_completion_vertices": 0,
+          "connectivity_filter": {
+            "components": 24,
+            "discarded_vertices": 929,
+            "discarded_triangles": 1294,
+            "policy": "largest connected observed skin surface; no hole fill"
+          }
+        },
+        "refined": {
+          "vertices": 21502,
+          "triangles": 41498,
+          "mesh_sha256": "c2ab390e409e2e43a5d7e89a4a817072d5a0487a61384ac99b80f708ead1a15c",
+          "finite": true,
+          "supported_at_least_one_fraction": 1.0,
+          "supported_at_least_two_fraction": 0.9992558831736582,
+          "actual_multiframe_fusion_fraction": 0.9913031345921309,
+          "unobserved_completion_vertices": 0,
+          "connectivity_filter": {
+            "components": 27,
+            "discarded_vertices": 953,
+            "discarded_triangles": 1312,
+            "policy": "largest connected observed skin surface; no hole fill"
+          }
+        }
+      }
+    }
+  },
+  "budget": {
+    "icp_iterations_per_gate": 30,
+    "gates_m": [
+      0.015,
+      0.008,
+      0.005
+    ],
+    "stride": 2,
+    "front_only": false,
+    "cpu_diagnostics": false,
+    "refine_passes": 2,
+    "support_tolerance_m": 0.003,
+    "lower_fusion_gate_m": 0.0015,
+    "max_triangle_edge_m": 0.006
+  },
+  "frames": [
+    {
+      "id": "closed_front_1",
+      "state": "closed",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "manual_seed",
+      "exclusion_reason": null,
+      "icp_iterations": 0
+    },
+    {
+      "id": "closed_front_0",
+      "state": "closed",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 73
+    },
+    {
+      "id": "closed_front_2",
+      "state": "closed",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 90
+    },
+    {
+      "id": "closed_front_3",
+      "state": "closed",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 20
+    },
+    {
+      "id": "closed_front_4",
+      "state": "closed",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 20
+    },
+    {
+      "id": "closed_left_0",
+      "state": "closed",
+      "view": "left",
+      "accepted": true,
+      "annotation_origin": "manual_seed",
+      "exclusion_reason": null,
+      "icp_iterations": 67
+    },
+    {
+      "id": "closed_left_1",
+      "state": "closed",
+      "view": "left",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 69
+    },
+    {
+      "id": "closed_left_2",
+      "state": "closed",
+      "view": "left",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 31
+    },
+    {
+      "id": "closed_left_3",
+      "state": "closed",
+      "view": "left",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 72
+    },
+    {
+      "id": "closed_left_4",
+      "state": "closed",
+      "view": "left",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 73
+    },
+    {
+      "id": "closed_right_0",
+      "state": "closed",
+      "view": "right",
+      "accepted": false,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": "at least four finite paired XYZ landmarks required",
+      "icp_iterations": 0
+    },
+    {
+      "id": "closed_right_1",
+      "state": "closed",
+      "view": "right",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 69
+    },
+    {
+      "id": "closed_right_2",
+      "state": "closed",
+      "view": "right",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 71
+    },
+    {
+      "id": "closed_right_3",
+      "state": "closed",
+      "view": "right",
+      "accepted": true,
+      "annotation_origin": "manual_seed",
+      "exclusion_reason": null,
+      "icp_iterations": 72
+    },
+    {
+      "id": "closed_right_4",
+      "state": "closed",
+      "view": "right",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 53
+    },
+    {
+      "id": "open_front_0",
+      "state": "open",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 67
+    },
+    {
+      "id": "open_front_1",
+      "state": "open",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 67
+    },
+    {
+      "id": "open_front_2",
+      "state": "open",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "manual_seed",
+      "exclusion_reason": null,
+      "icp_iterations": 36
+    },
+    {
+      "id": "open_front_3",
+      "state": "open",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 48
+    },
+    {
+      "id": "open_front_4",
+      "state": "open",
+      "view": "front",
+      "accepted": true,
+      "annotation_origin": "classical_NCC_from_manual_seed_on_actual_RGB",
+      "exclusion_reason": null,
+      "icp_iterations": 67
+    }
+  ],
+  "selected_candidate_count": 20,
+  "accepted_count": 19,
+  "frame_policy": "20 real frames in 4 short bursts; manual seeds + classical RGB NCC; 19 accepted, no up views; no long-sequence claim",
+  "performance": {
+    "full_elapsed_s": 12.075315900146961,
+    "front_only_elapsed_s": 6.380409599980339,
+    "full_peak_process_working_set_mib": 573.84375,
+    "front_peak_process_working_set_mib": 333.359375,
+    "device": "CPU",
+    "cuda_used": false,
+    "gpu_memory": "not applicable; no CUDA context",
+    "timing_scope": "raw I/O, mask/landmark lifting, fitting, fusion and export; excludes manual seeds, NCC expansion and separate diagnostics/QA",
+    "NCC_expansion_time_s": null,
+    "NCC_time_status": "not separately instrumented",
+    "comparison_equal_accuracy": false
+  },
+  "export_verification": {
+    "full": "passed",
+    "front_only": "passed",
+    "shared_identity": [
+      {
+        "stage": "coarse",
+        "shared_upper_vertices": 13374,
+        "max_identity_discrepancy_m": 1.4916601747746807e-10
+      },
+      {
+        "stage": "refined",
+        "shared_upper_vertices": 13350,
+        "max_identity_discrepancy_m": 1.4636032491058718e-10
+      }
+    ]
+  },
+  "environment": {
+    "python": "3.10.22 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:15:38) [MSC v.1942 64 bit (AMD64)]",
+    "numpy": "1.26.4",
+    "scipy": "1.11.4",
+    "platform": "Windows-10-10.0.26200-SP0"
+  },
+  "independent_acceptance": {
+    "independent_front_surface_error": "unverified",
+    "independent_side_surface_error": "unverified",
+    "manual_contour_error": "unverified",
+    "independent_surface_coverage": "unverified",
+    "front_non_degradation": "unverified",
+    "jaw_accuracy": "unverified",
+    "facial_thickness_accuracy": "unverified"
+  },
+  "limitations": [
+    "manual per-frame ROI/landmarks required; not fully automatic",
+    "2.5D common-camera surface; unseen/overhanging head regions not recovered",
+    "no learned shape/expression model; lower-face sharing restricted to reference-compatible same-burst measurements",
+    "identity upper shared; expression reference-specific; no continuous temporal inference across gaps",
+    "no independent calibration, scan, silhouette truth or external poses",
+    "RGB-D alignment and sensor metric calibration not independently measured",
+    "multi-frame support does not mean independent angular coverage",
+    "visible holes at nose/eyes/boundaries and expression seam persist",
+    "side-jaw identity not merged across bursts; lower face remains reference-specific",
+    "same-frame lower medians cannot establish improved scan accuracy"
+  ],
+  "failure_history": [
+    {
+      "experiment": "smoke-v1",
+      "issue": "detached oral/depth islands, open Z extent 319mm",
+      "resolution": "largest connected surface, preserve excluded data; no oral-completion claim"
+    },
+    {
+      "experiment": "formal-v2/checks-v2",
+      "issue": "shared fine upper identity leaked across expression seam, max ~0.83mm",
+      "resolution": "separate smoothing neighbourhoods, regression test, final exported identity agreement <1e-8m"
+    },
+    {
+      "experiment": "formal-v4",
+      "issue": "closed_right_0 has fewer than four valid 3D seed correspondences",
+      "resolution": "excluded, four other actual right frames retained"
+    }
+  ],
+  "publication": {
+    "private_RGB_depth_landmarks_poses_meshes_previews_included": false,
+    "contents": "source, notices and aggregate numerical diagnostics only; data/commercial rights unresolved"
+  }
+}

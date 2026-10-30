@@ -1,0 +1,6 @@
+# Existing read-only environment verified; do not install into the shared env.
+# Python 3.10.22 (existing interpreter; Python >=3.10 required for int.bit_count).
+numpy==1.26.4
+scipy==1.11.4
+# Optional local QA only, not needed by run_a3.py:
+# Pillow==11.1.0

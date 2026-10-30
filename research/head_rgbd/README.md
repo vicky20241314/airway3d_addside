@@ -1,5 +1,10 @@
 # 单相机 RGB-D 人头独立研究入口
 
+后续独立 A3 几何实现与真实米制导出见 [A3_README.md](A3_README.md)，
+结果与边界见 [A3_RESULTS.md](A3_RESULTS.md)，逐项许可核查见
+[LICENSES_A.md](LICENSES_A.md)。该入口不加载作者或 FLAME/TUFA 模型，
+不代表本页历史 A/B 方法已经通过独立几何精度验收。
+
 本目录不改变 GUI、默认算法、VERSION 或共享标签。基线固定为
 `3e409af77a4686b0cf435fff2230b90a8d26e11d`（v0.12.0）。
 运行时资产、环境及结果放在仓库外；所有入口拒绝覆盖既有结果目录。

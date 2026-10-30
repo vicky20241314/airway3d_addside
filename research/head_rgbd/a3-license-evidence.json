@@ -1,0 +1,127 @@
+{
+  "python": "3.10.22 | packaged by Anaconda, Inc. | (main, Oct  1 2026, 20:15:38) [MSC v.1942 64 bit (AMD64)]",
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.11.4",
+    "Pillow": "11.1.0"
+  },
+  "notices": [
+    {
+      "name": "python",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\env-b\\LICENSE_PYTHON.txt",
+      "sha256": "3b2f81fe21d181c499c59a256c8e1968455d6689d269aa85373bfb6af41da3bf",
+      "retained_notice": "python.txt"
+    },
+    {
+      "name": "python-distribution",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\env-b\\LICENSE",
+      "sha256": "b9ee12782ca117b887588d99ae1b8c24deb59105e05417fe28ffbd7a55896dd1",
+      "retained_notice": "python-distribution.txt"
+    },
+    {
+      "name": "hifi3dface",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\hifi3dface\\LICENSE.md",
+      "sha256": "7fa010eba518786d711552fdf12afc4671c13400f75e38ffed7f3a758abe4f26",
+      "retained_notice": "hifi3dface.txt"
+    },
+    {
+      "name": "hifi3dface-model-terms",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\hifi3dface\\3DMM\\readme.md",
+      "sha256": "2ffbb32b15233e746482de4d84fd8c68ff5ec2ff8b92f92719bfa4d0957a6812",
+      "retained_notice": "hifi3dface-model-terms.txt"
+    },
+    {
+      "name": "hifi3dface-sample-terms",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\hifi3dface\\readme.txt",
+      "sha256": "e348a9d78498bd53c91cb0834f5cb8ded10cab2577ad2bf79fb019bd16d5be32",
+      "retained_notice": "hifi3dface-sample-terms.txt"
+    },
+    {
+      "name": "numpy",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\env-b\\lib\\site-packages\\numpy-1.26.4.dist-info\\LICENSE.txt",
+      "sha256": "e261222a74adff28f88160dac1c5cb302d93b67e9ca989eb83bf311e11a9970a",
+      "retained_notice": "numpy.txt"
+    },
+    {
+      "name": "scipy",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\env-b\\lib\\site-packages\\scipy-1.11.4.dist-info\\LICENSE.txt",
+      "sha256": "576cf05d9893a49dbb0d3adf40bbf0d4136e895b1b6fce7aae744387b94bca34",
+      "retained_notice": "scipy.txt"
+    },
+    {
+      "name": "Pillow",
+      "path": "D:\\proiect\\rgbd-head-research-runtime-20261030\\env-b\\lib\\site-packages\\pillow-11.1.0.dist-info\\LICENSE",
+      "sha256": "17f240ae101143707e5e7303a5d800450d9ccc7475b463cedb555cefdb3c6ece",
+      "retained_notice": "Pillow.txt"
+    }
+  ],
+  "archives": [
+    {
+      "name": "sample",
+      "sha256": "b5f9ec86a876e1c047f06a588b27254e76657b64f001716b838a058e4c58e4fd",
+      "expected_sha256": "b5f9ec86a876e1c047f06a588b27254e76657b64f001716b838a058e4c58e4fd",
+      "matches": true,
+      "notice_entries": [
+        "readme.txt"
+      ]
+    },
+    {
+      "name": "model",
+      "sha256": "f95800d1d4ea3853f8b87f7bf80736e8f54f8583352067d9c0a158773b8e6e6f",
+      "expected_sha256": "f95800d1d4ea3853f8b87f7bf80736e8f54f8583352067d9c0a158773b8e6e6f",
+      "matches": true,
+      "notice_entries": [
+        "readme.md"
+      ]
+    },
+    {
+      "name": "resources",
+      "sha256": "b7b70dc2b02ad2a2947a74aa3926c702b0279546c6473dbaf85fe9ce07819109",
+      "expected_sha256": "b7b70dc2b02ad2a2947a74aa3926c702b0279546c6473dbaf85fe9ce07819109",
+      "matches": true,
+      "notice_entries": [
+        "readme.txt"
+      ]
+    }
+  ],
+  "bundled_binaries": [
+    {
+      "file": "libopenblas64__v0.3.23-293-gc2f4bdbb-gcc_10_3_0-2bde3a66a51006b2b53eb373ff767a3f.dll",
+      "sha256": "57b87772bf676b5c2d718c79dddc9f039d79ec3319fee1398cc305adff7b69e5",
+      "bytes": 38168576
+    },
+    {
+      "file": "libopenblas_v0.3.20-571-g3dec11c6-gcc_10_3_0-c2315440d6b6cef5037bad648efc8c59.dll",
+      "sha256": "28fb32464697b8b8ed85e6f6ab1208d6f7ff410edcfe9d2869e84a25e2ff791b",
+      "bytes": 35938219
+    }
+  ],
+  "existing_A_patches": [
+    {
+      "name": "patch_a_camera.py",
+      "sha256": "876f363f826c941dd4a4c91b4178bd55d0dd30424cfef6dd0f98fa6a043c091b",
+      "used_in_new_A3": false
+    },
+    {
+      "name": "patch_a_compat.py",
+      "sha256": "dce8b727efc3bd006ca0566d5b5e2bcd9be59c1b27efa0cd0fd0724f3eab8edb",
+      "used_in_new_A3": false
+    },
+    {
+      "name": "patch_a_cpu_graphs.py",
+      "sha256": "8e640081cd90e7a8338623a0808ca6266859e73f5010fc24b23e4ed33832801e",
+      "used_in_new_A3": false
+    },
+    {
+      "name": "patch_a_uv_bounds.py",
+      "sha256": "ddcc7dc8c5e84d7c26d3e3cbdb2dc3ce63f90ec5f87a22177f03e0bd44cd78ca",
+      "used_in_new_A3": false
+    }
+  ],
+  "author_sha": "d5accd138359ad534662805cd710f58de4ee4c74",
+  "A3_loaded_models": [],
+  "sample_reexecution": false,
+  "sample_evidence": "prior research commit 159a894; a-author-sample-v5: ten-step export only; not full 100-step quality reproduction",
+  "commercial_clearance": false,
+  "reason": "individual dependency grants are recorded; data consent, distribution contracts and other rights not cleared"
+}

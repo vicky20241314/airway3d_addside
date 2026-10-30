@@ -1,0 +1,743 @@
+{
+  "schema": "head_rgbd.a3_public_comparison.v1",
+  "metric": "same-frame, same manual ROI, in-sample camera-axis depth diagnostic",
+  "independent_extrinsics": false,
+  "independent_reference_scan": false,
+  "manual_silhouette_truth": false,
+  "original_pixel_stride": 4,
+  "frames": [
+    {
+      "frame_id": "closed_front_1",
+      "state": "closed",
+      "view": "front",
+      "baseline": {
+        "face_roi": {
+          "valid_pixels": 5142,
+          "hit_pixels": 5102,
+          "median_axial_mm": 1.6864039095338401,
+          "p95_axial_mm": 8.459295410430144,
+          "ray_overlap": 0.9922209257098406,
+          "within_3mm_fraction": 0.7199533255542591
+        },
+        "upper_shared": {
+          "valid_pixels": 3123,
+          "hit_pixels": 3090,
+          "median_axial_mm": 1.9469715825766454,
+          "p95_axial_mm": 10.466959659528426,
+          "ray_overlap": 0.989433237271854,
+          "within_3mm_fraction": 0.6509766250400256
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2019,
+          "hit_pixels": 2012,
+          "median_axial_mm": 1.3958126034805396,
+          "p95_axial_mm": 5.237772126845108,
+          "ray_overlap": 0.9965329370975731,
+          "within_3mm_fraction": 0.8266468548786527
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 677,
+          "hit_pixels": 677,
+          "median_axial_mm": 0.8876929418868418,
+          "p95_axial_mm": 3.17752421003121,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.9364844903988183
+        },
+        "mouth_box": {
+          "valid_pixels": 528,
+          "hit_pixels": 528,
+          "median_axial_mm": 1.079611877547515,
+          "p95_axial_mm": 3.885576538354297,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.8977272727272727
+        }
+      },
+      "B": {
+        "face_roi": {
+          "valid_pixels": 5142,
+          "hit_pixels": 5133,
+          "median_axial_mm": 1.1444125233189273,
+          "p95_axial_mm": 5.721296360305058,
+          "ray_overlap": 0.9982497082847142,
+          "within_3mm_fraction": 0.823609490470634
+        },
+        "upper_shared": {
+          "valid_pixels": 3123,
+          "hit_pixels": 3115,
+          "median_axial_mm": 0.8227597762289762,
+          "p95_axial_mm": 3.119296645416184,
+          "ray_overlap": 0.9974383605507525,
+          "within_3mm_fraction": 0.9436439321165546
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2019,
+          "hit_pixels": 2018,
+          "median_axial_mm": 2.1419682951664964,
+          "p95_axial_mm": 7.013596017344061,
+          "ray_overlap": 0.9995047052996533,
+          "within_3mm_fraction": 0.6379395740465577
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 677,
+          "hit_pixels": 677,
+          "median_axial_mm": 2.303674407836298,
+          "p95_axial_mm": 5.741746463938811,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.6454948301329394
+        },
+        "mouth_box": {
+          "valid_pixels": 528,
+          "hit_pixels": 528,
+          "median_axial_mm": 0.7499611205336043,
+          "p95_axial_mm": 102.97399779593552,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.9488636363636364
+        }
+      },
+      "A3": {
+        "face_roi": {
+          "valid_pixels": 5142,
+          "hit_pixels": 4929,
+          "median_axial_mm": 0.3074512816506614,
+          "p95_axial_mm": 1.1271067776712698,
+          "ray_overlap": 0.9585764294049008,
+          "within_3mm_fraction": 0.9531310774017892
+        },
+        "upper_shared": {
+          "valid_pixels": 3123,
+          "hit_pixels": 2996,
+          "median_axial_mm": 0.3554290818886807,
+          "p95_axial_mm": 1.2682933018268865,
+          "ray_overlap": 0.9593339737431956,
+          "within_3mm_fraction": 0.9513288504642972
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2019,
+          "hit_pixels": 1933,
+          "median_axial_mm": 0.2517011901518873,
+          "p95_axial_mm": 0.8737198577935421,
+          "ray_overlap": 0.9574046557701833,
+          "within_3mm_fraction": 0.9559187716691432
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 677,
+          "hit_pixels": 652,
+          "median_axial_mm": 0.2660191163432746,
+          "p95_axial_mm": 0.9726231484123853,
+          "ray_overlap": 0.9630723781388478,
+          "within_3mm_fraction": 0.9615952732644018
+        },
+        "mouth_box": {
+          "valid_pixels": 528,
+          "hit_pixels": 528,
+          "median_axial_mm": 0.23680860081590205,
+          "p95_axial_mm": 0.7173606843117353,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 1.0
+        }
+      },
+      "A3_front_only": {
+        "face_roi": {
+          "valid_pixels": 5142,
+          "hit_pixels": 4908,
+          "median_axial_mm": 0.29842285590500617,
+          "p95_axial_mm": 1.0230122995775162,
+          "ray_overlap": 0.9544924154025671,
+          "within_3mm_fraction": 0.9506028782574873
+        },
+        "upper_shared": {
+          "valid_pixels": 3123,
+          "hit_pixels": 2975,
+          "median_axial_mm": 0.3408602877983391,
+          "p95_axial_mm": 1.1002575475838605,
+          "ray_overlap": 0.952609670188921,
+          "within_3mm_fraction": 0.94716618635927
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2019,
+          "hit_pixels": 1933,
+          "median_axial_mm": 0.2517011901518873,
+          "p95_axial_mm": 0.8737198577935421,
+          "ray_overlap": 0.9574046557701833,
+          "within_3mm_fraction": 0.9559187716691432
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 677,
+          "hit_pixels": 652,
+          "median_axial_mm": 0.2660191163432746,
+          "p95_axial_mm": 0.9726231484123853,
+          "ray_overlap": 0.9630723781388478,
+          "within_3mm_fraction": 0.9615952732644018
+        },
+        "mouth_box": {
+          "valid_pixels": 528,
+          "hit_pixels": 528,
+          "median_axial_mm": 0.23680860081590205,
+          "p95_axial_mm": 0.7173606843117353,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 1.0
+        }
+      },
+      "common_ray_diagnostic": {
+        "common_pixels": 4898,
+        "input_valid_roi_pixels": 5142,
+        "common_roi_fraction": 0.9525476468300272,
+        "methods": {
+          "baseline": {
+            "median_axial_mm": 1.6754424081693864,
+            "p95_axial_mm": 7.003233750936455
+          },
+          "B": {
+            "median_axial_mm": 1.1234782782327535,
+            "p95_axial_mm": 4.973449859824691
+          },
+          "A3": {
+            "median_axial_mm": 0.30585446676867356,
+            "p95_axial_mm": 1.0903429471194879
+          },
+          "A3_front_only": {
+            "median_axial_mm": 0.29742593383483285,
+            "p95_axial_mm": 1.02136479094175
+          }
+        },
+        "caution": "all methods evaluated on the SAME jointly rendered rays; unrendered ROI remains missing, not accurate"
+      }
+    },
+    {
+      "frame_id": "closed_left_0",
+      "state": "closed",
+      "view": "left",
+      "baseline": {
+        "face_roi": {
+          "valid_pixels": 4569,
+          "hit_pixels": 4500,
+          "median_axial_mm": 1.6501673936655248,
+          "p95_axial_mm": 5.879876681454552,
+          "ray_overlap": 0.9848982271831911,
+          "within_3mm_fraction": 0.7866053841103086
+        },
+        "upper_shared": {
+          "valid_pixels": 2715,
+          "hit_pixels": 2646,
+          "median_axial_mm": 1.5531668894498696,
+          "p95_axial_mm": 7.416388836488707,
+          "ray_overlap": 0.974585635359116,
+          "within_3mm_fraction": 0.7705340699815838
+        },
+        "lower_reference_state": {
+          "valid_pixels": 1854,
+          "hit_pixels": 1854,
+          "median_axial_mm": 1.7317317058737625,
+          "p95_axial_mm": 4.334088938915381,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.8101402373247033
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 840,
+          "hit_pixels": 840,
+          "median_axial_mm": 1.3089626496180229,
+          "p95_axial_mm": 4.220907824560998,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.925
+        },
+        "mouth_box": {
+          "valid_pixels": 353,
+          "hit_pixels": 353,
+          "median_axial_mm": 2.3692469235374602,
+          "p95_axial_mm": 5.037595182922192,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.6118980169971672
+        }
+      },
+      "B": {
+        "face_roi": {
+          "valid_pixels": 4569,
+          "hit_pixels": 4563,
+          "median_axial_mm": 0.4928475642981822,
+          "p95_axial_mm": 2.0959387788242054,
+          "ray_overlap": 0.9986868023637557,
+          "within_3mm_fraction": 0.9704530531845043
+        },
+        "upper_shared": {
+          "valid_pixels": 2715,
+          "hit_pixels": 2710,
+          "median_axial_mm": 0.5087511428092661,
+          "p95_axial_mm": 2.2951062128550856,
+          "ray_overlap": 0.998158379373849,
+          "within_3mm_fraction": 0.9642725598526704
+        },
+        "lower_reference_state": {
+          "valid_pixels": 1854,
+          "hit_pixels": 1853,
+          "median_axial_mm": 0.47212507641647417,
+          "p95_axial_mm": 1.7406016602896948,
+          "ray_overlap": 0.9994606256742179,
+          "within_3mm_fraction": 0.9795037756202805
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 840,
+          "hit_pixels": 839,
+          "median_axial_mm": 0.5067748963347163,
+          "p95_axial_mm": 1.6922880916075815,
+          "ray_overlap": 0.9988095238095238,
+          "within_3mm_fraction": 0.9738095238095238
+        },
+        "mouth_box": {
+          "valid_pixels": 353,
+          "hit_pixels": 352,
+          "median_axial_mm": 0.8085649005344364,
+          "p95_axial_mm": 3.0065360161772023,
+          "ray_overlap": 0.9971671388101983,
+          "within_3mm_fraction": 0.9461756373937678
+        }
+      },
+      "A3": {
+        "face_roi": {
+          "valid_pixels": 4569,
+          "hit_pixels": 3933,
+          "median_axial_mm": 0.60991261253307,
+          "p95_axial_mm": 2.7833339735704006,
+          "ray_overlap": 0.860801050558109,
+          "within_3mm_fraction": 0.8218428540161961
+        },
+        "upper_shared": {
+          "valid_pixels": 2715,
+          "hit_pixels": 2439,
+          "median_axial_mm": 0.5004055140928054,
+          "p95_axial_mm": 2.0557394671952745,
+          "ray_overlap": 0.8983425414364641,
+          "within_3mm_fraction": 0.8729281767955801
+        },
+        "lower_reference_state": {
+          "valid_pixels": 1854,
+          "hit_pixels": 1494,
+          "median_axial_mm": 0.8937906573371346,
+          "p95_axial_mm": 3.643982176254891,
+          "ray_overlap": 0.8058252427184466,
+          "within_3mm_fraction": 0.7470334412081985
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 840,
+          "hit_pixels": 673,
+          "median_axial_mm": 0.8075271472374745,
+          "p95_axial_mm": 3.928970923961268,
+          "ray_overlap": 0.8011904761904762,
+          "within_3mm_fraction": 0.7404761904761905
+        },
+        "mouth_box": {
+          "valid_pixels": 353,
+          "hit_pixels": 352,
+          "median_axial_mm": 1.0699407709403586,
+          "p95_axial_mm": 5.873795890056325,
+          "ray_overlap": 0.9971671388101983,
+          "within_3mm_fraction": 0.7790368271954674
+        }
+      },
+      "common_ray_diagnostic": {
+        "common_pixels": 3864,
+        "input_valid_roi_pixels": 4569,
+        "common_roi_fraction": 0.8456992777413,
+        "methods": {
+          "baseline": {
+            "median_axial_mm": 1.5721457400752203,
+            "p95_axial_mm": 6.073679979065007
+          },
+          "B": {
+            "median_axial_mm": 0.4639162368406946,
+            "p95_axial_mm": 1.68884419652226
+          },
+          "A3": {
+            "median_axial_mm": 0.5973942297327617,
+            "p95_axial_mm": 2.4956040519777036
+          }
+        },
+        "caution": "all methods evaluated on the SAME jointly rendered rays; unrendered ROI remains missing, not accurate"
+      }
+    },
+    {
+      "frame_id": "closed_right_3",
+      "state": "closed",
+      "view": "right",
+      "baseline": {
+        "face_roi": {
+          "valid_pixels": 4783,
+          "hit_pixels": 4728,
+          "median_axial_mm": 1.836073295499785,
+          "p95_axial_mm": 6.3709261056450925,
+          "ray_overlap": 0.9885009408321137,
+          "within_3mm_fraction": 0.7081329709387414
+        },
+        "upper_shared": {
+          "valid_pixels": 3040,
+          "hit_pixels": 2993,
+          "median_axial_mm": 1.7620758530660918,
+          "p95_axial_mm": 6.876809059548616,
+          "ray_overlap": 0.9845394736842106,
+          "within_3mm_fraction": 0.6845394736842105
+        },
+        "lower_reference_state": {
+          "valid_pixels": 1743,
+          "hit_pixels": 1735,
+          "median_axial_mm": 1.9221333519930939,
+          "p95_axial_mm": 4.841353854015164,
+          "ray_overlap": 0.9954102122776821,
+          "within_3mm_fraction": 0.7492828456683879
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 515,
+          "hit_pixels": 515,
+          "median_axial_mm": 1.2342925215121925,
+          "p95_axial_mm": 3.477447838457658,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.9320388349514563
+        },
+        "mouth_box": {
+          "valid_pixels": 480,
+          "hit_pixels": 480,
+          "median_axial_mm": 2.355498562198549,
+          "p95_axial_mm": 4.615201614624989,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.74375
+        }
+      },
+      "B": {
+        "face_roi": {
+          "valid_pixels": 4783,
+          "hit_pixels": 4776,
+          "median_axial_mm": 0.48032239385667475,
+          "p95_axial_mm": 1.9582349706970537,
+          "ray_overlap": 0.9985364833786327,
+          "within_3mm_fraction": 0.9732385532092829
+        },
+        "upper_shared": {
+          "valid_pixels": 3040,
+          "hit_pixels": 3033,
+          "median_axial_mm": 0.4776242419913257,
+          "p95_axial_mm": 1.7308329499093558,
+          "ray_overlap": 0.9976973684210526,
+          "within_3mm_fraction": 0.98125
+        },
+        "lower_reference_state": {
+          "valid_pixels": 1743,
+          "hit_pixels": 1743,
+          "median_axial_mm": 0.4894088303065147,
+          "p95_axial_mm": 2.690332303765394,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.9592656339644291
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 515,
+          "hit_pixels": 515,
+          "median_axial_mm": 0.5122392104846551,
+          "p95_axial_mm": 2.679554003081165,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.9669902912621359
+        },
+        "mouth_box": {
+          "valid_pixels": 480,
+          "hit_pixels": 480,
+          "median_axial_mm": 0.6005234125358583,
+          "p95_axial_mm": 4.033108249641457,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.9104166666666667
+        }
+      },
+      "A3": {
+        "face_roi": {
+          "valid_pixels": 4783,
+          "hit_pixels": 4412,
+          "median_axial_mm": 0.9259009129048978,
+          "p95_axial_mm": 4.365022430311403,
+          "ray_overlap": 0.9224336190675309,
+          "within_3mm_fraction": 0.823959857829814
+        },
+        "upper_shared": {
+          "valid_pixels": 3040,
+          "hit_pixels": 2876,
+          "median_axial_mm": 0.6391678850777016,
+          "p95_axial_mm": 3.34614627154195,
+          "ray_overlap": 0.9460526315789474,
+          "within_3mm_fraction": 0.8891447368421053
+        },
+        "lower_reference_state": {
+          "valid_pixels": 1743,
+          "hit_pixels": 1536,
+          "median_axial_mm": 1.8525560583468603,
+          "p95_axial_mm": 5.095618648695427,
+          "ray_overlap": 0.8812392426850258,
+          "within_3mm_fraction": 0.7102696500286861
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 515,
+          "hit_pixels": 491,
+          "median_axial_mm": 2.060980981252958,
+          "p95_axial_mm": 4.634447564403982,
+          "ray_overlap": 0.9533980582524272,
+          "within_3mm_fraction": 0.8038834951456311
+        },
+        "mouth_box": {
+          "valid_pixels": 480,
+          "hit_pixels": 480,
+          "median_axial_mm": 1.6599735486823586,
+          "p95_axial_mm": 5.8159133557021185,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.7958333333333333
+        }
+      },
+      "common_ray_diagnostic": {
+        "common_pixels": 4359,
+        "input_valid_roi_pixels": 4783,
+        "common_roi_fraction": 0.9113527075057495,
+        "methods": {
+          "baseline": {
+            "median_axial_mm": 1.7663065062357708,
+            "p95_axial_mm": 6.413986530189924
+          },
+          "B": {
+            "median_axial_mm": 0.4770975360620655,
+            "p95_axial_mm": 1.9269272875193977
+          },
+          "A3": {
+            "median_axial_mm": 0.9162930761397736,
+            "p95_axial_mm": 4.215270115496322
+          }
+        },
+        "caution": "all methods evaluated on the SAME jointly rendered rays; unrendered ROI remains missing, not accurate"
+      }
+    },
+    {
+      "frame_id": "open_front_2",
+      "state": "open",
+      "view": "front",
+      "baseline": {
+        "face_roi": {
+          "valid_pixels": 5054,
+          "hit_pixels": 4980,
+          "median_axial_mm": 2.1589733559616575,
+          "p95_axial_mm": 56.8400150802108,
+          "ray_overlap": 0.9853581321725366,
+          "within_3mm_fraction": 0.594380688563514
+        },
+        "upper_shared": {
+          "valid_pixels": 2537,
+          "hit_pixels": 2475,
+          "median_axial_mm": 2.1277401725367517,
+          "p95_axial_mm": 10.507773980515882,
+          "ray_overlap": 0.9755616870319275,
+          "within_3mm_fraction": 0.6011036657469452
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2517,
+          "hit_pixels": 2505,
+          "median_axial_mm": 2.198061979708066,
+          "p95_axial_mm": 145.33319921528113,
+          "ray_overlap": 0.9952324195470799,
+          "within_3mm_fraction": 0.5876042908224076
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 693,
+          "hit_pixels": 692,
+          "median_axial_mm": 1.6183549480639214,
+          "p95_axial_mm": 11.020606203863512,
+          "ray_overlap": 0.9985569985569985,
+          "within_3mm_fraction": 0.7777777777777778
+        },
+        "mouth_box": {
+          "valid_pixels": 513,
+          "hit_pixels": 513,
+          "median_axial_mm": 5.826951156508164,
+          "p95_axial_mm": 163.13462716352154,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.4269005847953216
+        }
+      },
+      "B": {
+        "face_roi": {
+          "valid_pixels": 5054,
+          "hit_pixels": 4996,
+          "median_axial_mm": 1.1248065259592266,
+          "p95_axial_mm": 58.478857491927506,
+          "ray_overlap": 0.9885239414325286,
+          "within_3mm_fraction": 0.813612979817966
+        },
+        "upper_shared": {
+          "valid_pixels": 2537,
+          "hit_pixels": 2487,
+          "median_axial_mm": 0.8286334071353485,
+          "p95_axial_mm": 3.507226861990501,
+          "ray_overlap": 0.980291683090264,
+          "within_3mm_fraction": 0.910524241229799
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2517,
+          "hit_pixels": 2509,
+          "median_axial_mm": 1.6263588449814126,
+          "p95_axial_mm": 136.44996495039624,
+          "ray_overlap": 0.9968216130313866,
+          "within_3mm_fraction": 0.7159316646801748
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 693,
+          "hit_pixels": 692,
+          "median_axial_mm": 1.386513821574259,
+          "p95_axial_mm": 10.989038183103082,
+          "ray_overlap": 0.9985569985569985,
+          "within_3mm_fraction": 0.810966810966811
+        },
+        "mouth_box": {
+          "valid_pixels": 513,
+          "hit_pixels": 513,
+          "median_axial_mm": 3.0281886510423184,
+          "p95_axial_mm": 159.44608594643307,
+          "ray_overlap": 1.0,
+          "within_3mm_fraction": 0.49707602339181284
+        }
+      },
+      "A3": {
+        "face_roi": {
+          "valid_pixels": 5054,
+          "hit_pixels": 4545,
+          "median_axial_mm": 0.4175920653362031,
+          "p95_axial_mm": 2.1997188355691883,
+          "ray_overlap": 0.8992876929165018,
+          "within_3mm_fraction": 0.8713889988128215
+        },
+        "upper_shared": {
+          "valid_pixels": 2537,
+          "hit_pixels": 2477,
+          "median_axial_mm": 0.558794932344786,
+          "p95_axial_mm": 3.212913806703055,
+          "ray_overlap": 0.9763500197083169,
+          "within_3mm_fraction": 0.9219550650374458
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2517,
+          "hit_pixels": 2068,
+          "median_axial_mm": 0.30139399516440624,
+          "p95_axial_mm": 1.046107722079964,
+          "ray_overlap": 0.8216130313865713,
+          "within_3mm_fraction": 0.8204211362733412
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 693,
+          "hit_pixels": 568,
+          "median_axial_mm": 0.25552584908652975,
+          "p95_axial_mm": 0.8331007441462284,
+          "ray_overlap": 0.8196248196248196,
+          "within_3mm_fraction": 0.8196248196248196
+        },
+        "mouth_box": {
+          "valid_pixels": 513,
+          "hit_pixels": 291,
+          "median_axial_mm": 0.2822293918017249,
+          "p95_axial_mm": 0.8747414965776801,
+          "ray_overlap": 0.5672514619883041,
+          "within_3mm_fraction": 0.5672514619883041
+        }
+      },
+      "A3_front_only": {
+        "face_roi": {
+          "valid_pixels": 5054,
+          "hit_pixels": 4435,
+          "median_axial_mm": 0.3845394081238296,
+          "p95_axial_mm": 1.9968172481461506,
+          "ray_overlap": 0.8775227542540562,
+          "within_3mm_fraction": 0.8555599525128611
+        },
+        "upper_shared": {
+          "valid_pixels": 2537,
+          "hit_pixels": 2368,
+          "median_axial_mm": 0.49241452335432867,
+          "p95_axial_mm": 2.8532950702146125,
+          "ray_overlap": 0.9333858888450927,
+          "within_3mm_fraction": 0.8908159243200631
+        },
+        "lower_reference_state": {
+          "valid_pixels": 2517,
+          "hit_pixels": 2067,
+          "median_axial_mm": 0.30098513274706695,
+          "p95_axial_mm": 0.9935785947167864,
+          "ray_overlap": 0.8212157330154947,
+          "within_3mm_fraction": 0.8200238379022646
+        },
+        "chin_jaw_band": {
+          "valid_pixels": 693,
+          "hit_pixels": 568,
+          "median_axial_mm": 0.25552584908652975,
+          "p95_axial_mm": 0.8331007441462284,
+          "ray_overlap": 0.8196248196248196,
+          "within_3mm_fraction": 0.8196248196248196
+        },
+        "mouth_box": {
+          "valid_pixels": 513,
+          "hit_pixels": 291,
+          "median_axial_mm": 0.2822293918017249,
+          "p95_axial_mm": 0.8747414965776801,
+          "ray_overlap": 0.5672514619883041,
+          "within_3mm_fraction": 0.5672514619883041
+        }
+      },
+      "common_ray_diagnostic": {
+        "common_pixels": 4426,
+        "input_valid_roi_pixels": 5054,
+        "common_roi_fraction": 0.8757419865453107,
+        "methods": {
+          "baseline": {
+            "median_axial_mm": 1.903295119393078,
+            "p95_axial_mm": 7.824960861249064
+          },
+          "B": {
+            "median_axial_mm": 1.0145903699744219,
+            "p95_axial_mm": 4.017219056046184
+          },
+          "A3": {
+            "median_axial_mm": 0.4083728423173172,
+            "p95_axial_mm": 2.07589245490597
+          },
+          "A3_front_only": {
+            "median_axial_mm": 0.38341906177041807,
+            "p95_axial_mm": 1.9870960499999701
+          }
+        },
+        "caution": "all methods evaluated on the SAME jointly rendered rays; unrendered ROI remains missing, not accurate"
+      }
+    }
+  ],
+  "baseline_commit": "3e409af77a4686b0cf435fff2230b90a8d26e11d",
+  "historical_budgets": {
+    "baseline": {
+      "baseline_commit": "3e409af77a4686b0cf435fff2230b90a8d26e11d",
+      "baseline_version": "v0.12.0",
+      "stage": "stage2_only",
+      "device": "cuda",
+      "elapsed_s": 109.79236559988931,
+      "cuda_peak_allocated_mib": 341.724609375,
+      "cuda_peak_reserved_mib": 654.0
+    },
+    "B": {
+      "steps": 240,
+      "elapsed_s": 35.78940650005825,
+      "cuda_peak_allocated_mib": 63.5771484375,
+      "cuda_peak_reserved_mib": 86.0
+    }
+  },
+  "A3_budget": {
+    "icp_iterations_per_gate": 30,
+    "gates_m": [
+      0.015,
+      0.008,
+      0.005
+    ],
+    "stride": 2,
+    "front_only": false,
+    "cpu_diagnostics": false,
+    "refine_passes": 2,
+    "support_tolerance_m": 0.003,
+    "lower_fusion_gate_m": 0.0015,
+    "max_triangle_edge_m": 0.006
+  },
+  "A3_elapsed_s": 12.075315900146961,
+  "front_only_elapsed_s": 6.380409599980339,
+  "timing_comparable_as_equal_accuracy": false,
+  "caution": "Different topology, number of frames, ROI construction, expression treatment and fitting budget; historical runs not repeated. More overlap/residual reduction is not proof of scan accuracy."
+}

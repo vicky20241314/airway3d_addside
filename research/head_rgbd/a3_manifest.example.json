@@ -1,0 +1,14 @@
+{
+  "schema": "head_rgbd.a3_manual.v1",
+  "depth_unit": "mm",
+  "rgb_depth_alignment": "capture_claim_not_independently_calibrated",
+  "data_rights": {
+    "local_processing_authorized": false,
+    "publication_authorized": false,
+    "note": "Populate with actual authorization evidence; do not mark true for an unauthorized dataset."
+  },
+  "annotation": "EMPTY SCHEMA SKELETON ONLY. No real or fabricated face coordinates are supplied. See A3_README.md to annotate actual frames locally.",
+  "references": {"closed": "ACTUAL_CLOSED_REFERENCE_ID"},
+  "rigid_landmark_names": ["eye_image_left_outer","eye_image_left_inner","eye_image_right_inner","eye_image_right_outer","nose_bridge","nose_tip"],
+  "frames": []
+}

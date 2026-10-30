@@ -1,0 +1,2 @@
+# Preserve exact original notice bytes (including archive line endings).
+*.txt -text -diff
